@@ -6,5 +6,11 @@
   // Static site: everything in public/ is served as-is, no build step.
   "assets": {
     "directory": "./public"
-  }
+  },
+  // Wrangler replaces the Worker's routes on every deploy, so both domains
+  // must be listed here or they get dropped.
+  "routes": [
+    { "pattern": "byhamza.dev", "custom_domain": true },
+    { "pattern": "www.byhamza.dev", "custom_domain": true }
+  ]
 }
