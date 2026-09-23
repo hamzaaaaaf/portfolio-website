@@ -3,41 +3,208 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Testing Test</title>
-  <style>
-    :root { color-scheme: light dark; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: #0f172a;
-      color: #e2e8f0;
-      text-align: center;
-      padding: 16px;
-      box-sizing: border-box;
-    }
-    h1 { font-size: clamp(2rem, 8vw, 4rem); margin: 0 0 0.5rem; }
-    p { color: #94a3b8; margin: 0.25rem 0; }
-    .badge {
-      display: inline-block;
-      margin-top: 1.5rem;
-      padding: 0.4rem 0.9rem;
-      border: 1px solid #38bdf8;
-      border-radius: 999px;
-      color: #38bdf8;
-      font-size: 0.9rem;
-    }
-  </style>
+  <title>Hamza — Computer Science Portfolio</title>
+  <meta name="description" content="Hamza is a computer science student building thoughtful software — systems, the web and machine learning.">
+  <meta name="theme-color" content="#0a0a0b">
+  <meta property="og:title" content="Hamza — Computer Science Portfolio">
+  <meta property="og:description" content="Thoughtful software, built from first principles.">
+  <meta property="og:url" content="https://byhamza.dev">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/InterTight.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/InstrumentSerif-Italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fonts.css">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add('js');</script>
 </head>
-<body>
+<body class="is-loading">
+  <a class="skip" href="#work">Skip to work</a>
+
+  <div class="loader" aria-hidden="true">
+    <div class="loader__top">
+      <span>Hamza</span>
+      <span>Portfolio — 2026</span>
+    </div>
+    <div class="loader__bottom">
+      <span class="loader__word"><em>Loading</em></span>
+      <span class="loader__count">000</span>
+    </div>
+    <div class="loader__bar"><span></span></div>
+  </div>
+
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"><span class="cursor__label">View</span></div>
+
+  <header class="nav">
+    <a class="nav__brand" href="#top" data-magnetic>Hamza<sup>©</sup></a>
+    <span class="nav__time mono"><span class="dot"></span><span data-clock>--:--</span> UK</span>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
   <main>
-    <h1>Testing Test</h1>
-    <p>This is a test page for my comp sci portfolio.</p>
-    <p>Testing, testing, 1, 2, 3.</p>
-    <span class="badge">Deployed on Cloudflare Pages</span>
+    <!-- Hero -->
+    <section class="hero" id="top">
+      <canvas class="hero__field" aria-hidden="true"></canvas>
+      <div class="hero__inner">
+        <div class="hero__meta mono">
+          <span class="line"><span class="line__inner" style="--i:0">Computer Science — Year 2</span></span>
+          <span class="line"><span class="line__inner" style="--i:1">Portfolio ©2026</span></span>
+        </div>
+        <h1 class="hero__title">
+          <span class="line"><span class="line__inner" style="--i:1">Crafting</span></span>
+          <span class="line"><span class="line__inner" style="--i:2"><em>thoughtful</em> software</span></span>
+          <span class="line"><span class="line__inner" style="--i:3">from first principles.</span></span>
+        </h1>
+        <div class="hero__foot">
+          <p class="hero__intro fade" style="--i:5">I'm Hamza — a computer science student who likes the quiet details: clean systems, fast interfaces and code that's a pleasure to read.</p>
+          <span class="pill fade mono" style="--i:6"><span class="pill__dot"></span>Open to internships — Summer 2027</span>
+          <a class="hero__scroll fade mono" style="--i:7" href="#intro" aria-label="Scroll to introduction">Scroll<span class="hero__scroll-line"></span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Statement -->
+    <section class="statement" id="intro">
+      <div class="statement__sticky">
+        <span class="label mono">(01) — Intro</span>
+        <p class="statement__text" data-words>
+          I study how computers think, then use that to build things people <em>actually enjoy</em> using. From algorithms on paper to products on screen, I care about the craft as much as the result — simple on the surface, rigorous underneath.
+        </p>
+      </div>
+    </section>
+
+    <!-- Work (horizontal) -->
+    <section class="work" id="work">
+      <div class="work__sticky">
+        <div class="work__head">
+          <span class="label mono">(02) — Selected work</span>
+          <div class="work__progress" aria-hidden="true"><span></span></div>
+          <span class="label mono">2025 — 2026</span>
+        </div>
+        <div class="work__track">
+          <div class="work__intro">
+            <h2 class="h2">Things I've <em>built</em>, broken &amp; rebuilt.</h2>
+            <p class="muted">A few projects from coursework, hackathons and late nights. Each one taught me something the lecture didn't.</p>
+          </div>
+
+          <article class="project" data-cursor="View">
+            <a class="project__link" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener">
+              <div class="project__media"><div class="art art--1"></div><span class="project__glyph">A*</span></div>
+              <div class="project__info">
+                <span class="project__index mono">01</span>
+                <h3 class="project__title">Pathfinder</h3>
+                <span class="project__year mono">2026</span>
+                <p class="project__desc">An interactive visualiser for A*, Dijkstra and BFS on a live, editable grid.</p>
+                <ul class="tags mono"><li>TypeScript</li><li>Canvas</li><li>Algorithms</li></ul>
+              </div>
+            </a>
+          </article>
+
+          <article class="project" data-cursor="View">
+            <a class="project__link" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener">
+              <div class="project__media"><div class="art art--2"></div><span class="project__glyph">λ</span></div>
+              <div class="project__info">
+                <span class="project__index mono">02</span>
+                <h3 class="project__title">Tiny Compiler</h3>
+                <span class="project__year mono">2026</span>
+                <p class="project__desc">A compiler for a small expression language, from tokens to stack-machine bytecode.</p>
+                <ul class="tags mono"><li>Python</li><li>Parsing</li><li>VMs</li></ul>
+              </div>
+            </a>
+          </article>
+
+          <article class="project" data-cursor="View">
+            <a class="project__link" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener">
+              <div class="project__media"><div class="art art--3"></div><span class="project__glyph">∑</span></div>
+              <div class="project__info">
+                <span class="project__index mono">03</span>
+                <h3 class="project__title">Neural Digits</h3>
+                <span class="project__year mono">2025</span>
+                <p class="project__desc">A handwritten-digit classifier written from scratch with NumPy — no frameworks, just maths.</p>
+                <ul class="tags mono"><li>Python</li><li>NumPy</li><li>ML</li></ul>
+              </div>
+            </a>
+          </article>
+
+          <article class="project" data-cursor="View">
+            <a class="project__link" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener">
+              <div class="project__media"><div class="art art--4"></div><span class="project__glyph">◐</span></div>
+              <div class="project__info">
+                <span class="project__index mono">04</span>
+                <h3 class="project__title">Lumen</h3>
+                <span class="project__year mono">2025</span>
+                <p class="project__desc">A calm study and habit tracker with streaks, focus sessions and weekly insights.</p>
+                <ul class="tags mono"><li>React</li><li>SQL</li><li>Product</li></ul>
+              </div>
+            </a>
+          </article>
+
+          <a class="work__more" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener" data-magnetic>
+            <span class="mono">More on</span>
+            <span class="work__more-big">GitHub <span aria-hidden="true">↗</span></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Toolkit marquee -->
+    <section class="toolkit" aria-label="Toolkit">
+      <span class="label mono toolkit__label">(03) — Toolkit</span>
+      <div class="marquee" data-dir="-1">
+        <div class="marquee__inner">
+          <span>Python</span><i>✦</i><span><em>TypeScript</em></span><i>✦</i><span>Java</span><i>✦</i><span><em>React</em></span><i>✦</i><span>C</span><i>✦</i><span><em>SQL</em></span><i>✦</i>
+        </div>
+      </div>
+      <div class="marquee marquee--outline" data-dir="1">
+        <div class="marquee__inner">
+          <span>Algorithms</span><i>✦</i><span>Linux</span><i>✦</i><span>Git</span><i>✦</i><span>Data Structures</span><i>✦</i><span>Machine Learning</span><i>✦</i>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="about" id="about">
+      <span class="label mono">(04) — About</span>
+      <div class="about__body">
+        <p class="about__lead reveal">Second-year computer science student. I'm most at home where <em>theory meets product</em> — turning a clean idea into something fast, reliable and quietly delightful.</p>
+        <ul class="rows">
+          <li class="row reveal"><span class="row__k mono">Studying</span><span class="row__v">BSc Computer Science</span><span class="row__d muted">Year 2</span></li>
+          <li class="row reveal"><span class="row__k mono">Focus</span><span class="row__v">Systems, web &amp; machine learning</span><span class="row__d muted">Always learning</span></li>
+          <li class="row reveal"><span class="row__k mono">Currently</span><span class="row__v">Building this site, learning Rust</span><span class="row__d muted">2026</span></li>
+          <li class="row reveal"><span class="row__k mono">Looking for</span><span class="row__v">Software engineering internships</span><span class="row__d muted">Summer 2027</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact" id="contact">
+      <span class="label mono">(05) — Contact</span>
+      <h2 class="contact__title reveal">Let's build <em>something</em> worth using.</h2>
+      <div class="contact__row">
+        <a class="btn" href="mailto:hello@byhamza.dev" data-magnetic><span>hello@byhamza.dev</span></a>
+        <ul class="socials mono">
+          <li><a href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></li>
+          <li><a href="#" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a></li>
+          <li><a href="#" target="_blank" rel="noopener">CV <span aria-hidden="true">↗</span></a></li>
+        </ul>
+      </div>
+    </section>
   </main>
+
+  <footer class="footer">
+    <div class="footer__mark reveal" aria-label="Hamza"><span aria-hidden="true" data-chars>HAMZA</span></div>
+    <div class="footer__bar mono">
+      <span>© 2026 Hamza</span>
+      <span>Local time <span data-clock>--:--</span></span>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js" defer></script>
+  <script src="main.js" defer></script>
 </body>
 </html>
