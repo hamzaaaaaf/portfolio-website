@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Kaleidoscope · Hamza</title>
+  <meta name="description" content="Draw anything and it gets mirrored into a pattern. Save it when you're done.">
+  <meta name="theme-color" content="#0a0a0b">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/InterTight.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/fonts.css">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    #paper { cursor: crosshair; }
+    .hint { top: 50%; translate: -50% -50%; transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+    .hint h1 { font-size: clamp(2.6rem, 8vw, 6rem); font-weight: 500; letter-spacing: -0.05em; line-height: 0.95; }
+    .hint p { color: var(--muted); }
+    .has-drawn .hint { opacity: 0; transform: scale(0.96); }
+    .bar {
+      position: fixed; left: 50%; translate: -50% 0; bottom: calc(20px + env(safe-area-inset-bottom)); z-index: 30;
+      display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px;
+      padding: 6px; width: max-content; max-width: calc(100vw - 32px); border-radius: 22px;
+    }
+    .bar__group { display: flex; align-items: center; gap: 2px; padding: 0 4px; }
+    .bar__sep { width: 1px; height: 22px; background: var(--line); }
+    .swatch {
+      width: 26px; height: 26px; border-radius: 50%; border: 0; cursor: pointer; background: var(--c);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12); transition: transform 0.4s var(--ease), box-shadow 0.3s;
+    }
+    .swatch[aria-pressed="true"] { transform: scale(1.1); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--fg); }
+    .swatch--rainbow { background: conic-gradient(#ef6f6c, #e9b949, #5fd0b3, #6fb7ff, #8c7cf0, #ef6f6c); }
+    .size { width: 84px; accent-color: var(--accent); }
+    .icon-btn { height: 34px; min-width: 34px; padding: 0 10px; font-size: 11px; }
+    @media (max-width: 700px) { .bar__sep { display: none; } .size { width: 64px; } }
+  </style>
+</head>
+<body class="app" data-page="draw">
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"><span class="cursor__label">View</span></div>
+
+  <header class="nav">
+    <a class="nav__brand" href="/" data-magnetic>Hamza<sup>©</sup></a>
+    <span class="nav__time mono">Kaleidoscope</span>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="/#work">Work</a>
+      <a href="/play">Play</a>
+      <a href="/draw" aria-current="page">Draw</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <canvas class="app-canvas" id="guides" aria-hidden="true"></canvas>
+  <canvas class="app-canvas" id="paper" aria-label="Drawing canvas"></canvas>
+
+  <div class="hud hint">
+    <h1>Draw <em>anything.</em></h1>
+    <p>It gets mirrored into a pattern as you go.</p>
+  </div>
+
+  <div class="bar glass" role="toolbar" aria-label="Drawing tools">
+    <div class="bar__group" data-group="sym" aria-label="Symmetry">
+      <button class="icon-btn" data-sym="1">1</button>
+      <button class="icon-btn" data-sym="4">4</button>
+      <button class="icon-btn" data-sym="6">6</button>
+      <button class="icon-btn" data-sym="8" aria-pressed="true">8</button>
+      <button class="icon-btn" data-sym="12">12</button>
+      <button class="icon-btn" id="mirror" aria-pressed="true" title="Mirror each slice">Mirror</button>
+    </div>
+    <span class="bar__sep"></span>
+    <div class="bar__group" data-group="brush" aria-label="Brush">
+      <button class="icon-btn" data-brush="ink" aria-pressed="true">Ink</button>
+      <button class="icon-btn" data-brush="glow">Glow</button>
+    </div>
+    <span class="bar__sep"></span>
+    <div class="bar__group" data-group="color" aria-label="Colour">
+      <button class="swatch" data-color="#edebe6" style="--c:#edebe6" aria-label="Ivory"></button>
+      <button class="swatch" data-color="#d8c4a0" style="--c:#d8c4a0" aria-label="Champagne" aria-pressed="true"></button>
+      <button class="swatch" data-color="#ef6f6c" style="--c:#ef6f6c" aria-label="Coral"></button>
+      <button class="swatch" data-color="#5fd0b3" style="--c:#5fd0b3" aria-label="Mint"></button>
+      <button class="swatch" data-color="#8c7cf0" style="--c:#8c7cf0" aria-label="Violet"></button>
+      <button class="swatch swatch--rainbow" data-color="rainbow" aria-label="Rainbow"></button>
+    </div>
+    <span class="bar__sep"></span>
+    <div class="bar__group">
+      <input class="size" id="size" type="range" min="1" max="24" value="5" aria-label="Brush size">
+    </div>
+    <span class="bar__sep"></span>
+    <div class="bar__group">
+      <button class="icon-btn" id="undo" title="Undo (Ctrl+Z)">Undo</button>
+      <button class="icon-btn" id="clear">Clear</button>
+      <button class="icon-btn" id="save">Save</button>
+    </div>
+  </div>
+
+  <script src="/main.js" defer></script>
+  <script src="/draw.js" defer></script>
+</body>
+</html>

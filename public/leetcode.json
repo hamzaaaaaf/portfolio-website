@@ -1,0 +1,60 @@
+{
+  "username": "hamza57",
+  "solved": {
+    "All": 9,
+    "Easy": 8,
+    "Medium": 1,
+    "Hard": 0
+  },
+  "totals": {
+    "All": 4060,
+    "Easy": 966,
+    "Medium": 2117,
+    "Hard": 977
+  },
+  "activeDays": 9,
+  "calendar": {
+    "1767571200": 5,
+    "1767744000": 3,
+    "1769558400": 8,
+    "1784160000": 6,
+    "1784505600": 1,
+    "1784592000": 2,
+    "1785110400": 2,
+    "1785196800": 6,
+    "1787961600": 1
+  },
+  "recent": [
+    {
+      "title": "Valid Anagram",
+      "slug": "valid-anagram",
+      "ts": 1788018702
+    },
+    {
+      "title": "Group Anagrams",
+      "slug": "group-anagrams",
+      "ts": 1785197749
+    },
+    {
+      "title": "Two Sum",
+      "slug": "two-sum",
+      "ts": 1784594965
+    },
+    {
+      "title": "Contains Duplicate",
+      "slug": "contains-duplicate",
+      "ts": 1784219518
+    },
+    {
+      "title": "Concatenation of Array",
+      "slug": "concatenation-of-array",
+      "ts": 1784213815
+    },
+    {
+      "title": "Kids With the Greatest Number of Candies",
+      "slug": "kids-with-the-greatest-number-of-candies",
+      "ts": 1767799117
+    }
+  ],
+  "updated": 1790254197
+}

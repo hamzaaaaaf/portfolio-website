@@ -3,9 +3,14 @@
   // Must match the Worker name in the Cloudflare dashboard.
   "name": "portfolio-website",
   "compatibility_date": "2026-09-23",
-  // Static site: everything in public/ is served as-is, no build step.
+  // Only /api/* runs code (src/worker.js); every other path is a static
+  // file from public/, with no build step.
+  "main": "src/worker.js",
   "assets": {
-    "directory": "./public"
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
+    "not_found_handling": "404-page"
   },
   // Wrangler replaces the Worker's routes on every deploy, so both domains
   // must be listed here or they get dropped.
