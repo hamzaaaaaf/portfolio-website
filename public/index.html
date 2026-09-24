@@ -3,30 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hamza — Computer Science, Aston University</title>
-  <meta name="description" content="Hamza is a second-year Computer Science student at Aston University, Birmingham, looking for a placement year in 2027/28.">
+  <title>Hamza · Computer Science at Aston</title>
+  <meta name="description" content="Hamza is a Computer Science student at Aston University in Birmingham. Projects, LeetCode, a little game and a drawing toy.">
   <meta name="theme-color" content="#0a0a0b">
-  <meta property="og:title" content="Hamza — Computer Science, Aston University">
+  <meta property="og:title" content="Hamza · Computer Science at Aston">
   <meta property="og:description" content="Turning curious ideas into real software.">
   <meta property="og:url" content="https://byhamza.dev">
   <meta property="og:type" content="website">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="fonts/InterTight.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="fonts/InstrumentSerif-Italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="fonts.css">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/InterTight.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/InstrumentSerif-Italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/fonts.css">
+  <link rel="stylesheet" href="/styles.css">
   <script>document.documentElement.classList.add('js');</script>
 </head>
-<body class="is-loading">
+<body class="is-loading" data-page="home">
   <a class="skip" href="#work">Skip to work</a>
 
   <div class="loader" aria-hidden="true">
     <div class="loader__top">
       <span>Hamza</span>
-      <span>Portfolio — 2026</span>
+      <span>Birmingham, UK</span>
     </div>
     <div class="loader__bottom">
-      <span class="loader__word"><em>Loading</em></span>
+      <span class="loader__word"><em>Hello</em></span>
       <span class="loader__count">000</span>
     </div>
     <div class="loader__bar"><span></span></div>
@@ -36,11 +36,12 @@
   <div class="cursor" aria-hidden="true"><span class="cursor__label">View</span></div>
 
   <header class="nav">
-    <a class="nav__brand" href="#top" data-magnetic>Hamza<sup>©</sup></a>
+    <a class="nav__brand" href="/" data-magnetic>Hamza<sup>©</sup></a>
     <span class="nav__time mono"><span class="dot"></span><span data-clock>--:--</span> Birmingham</span>
     <nav class="nav__links" aria-label="Primary">
       <a href="#work">Work</a>
-      <a href="#about">About</a>
+      <a href="/play">Play</a>
+      <a href="/draw">Draw</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
@@ -51,7 +52,7 @@
       <canvas class="hero__field" aria-hidden="true"></canvas>
       <div class="hero__inner">
         <div class="hero__meta mono">
-          <span class="line"><span class="line__inner" style="--i:0">Computer Science — Aston University</span></span>
+          <span class="line"><span class="line__inner" style="--i:0">Computer Science at Aston</span></span>
           <span class="line"><span class="line__inner" style="--i:1">Birmingham, UK</span></span>
         </div>
         <h1 class="hero__title">
@@ -60,8 +61,8 @@
           <span class="line"><span class="line__inner" style="--i:3">real software.</span></span>
         </h1>
         <div class="hero__foot">
-          <p class="hero__intro fade" style="--i:5">I'm Hamza — a second-year Computer Science student at Aston University. I learn by building: I take an idea, shape it with AI tools and ship something people can actually use.</p>
-          <span class="pill fade mono" style="--i:6"><span class="pill__dot"></span>Seeking a placement year — 2027/28</span>
+          <p class="hero__intro fade" style="--i:5">Hi, I'm Hamza. I study Computer Science at Aston University and I like making things for the internet. This site is my little corner of it, so have a look around, play the game, or draw something.</p>
+          <a class="pill fade mono" style="--i:6" href="/play"><span class="pill__dot"></span>New: a stacking game, go beat my score</a>
           <a class="hero__scroll fade mono" style="--i:7" href="#intro" aria-label="Scroll to introduction">Scroll<span class="hero__scroll-line"></span></a>
         </div>
       </div>
@@ -70,9 +71,9 @@
     <!-- Statement -->
     <section class="statement" id="intro">
       <div class="statement__sticky">
-        <span class="label mono">(01) — Intro</span>
+        <span class="label mono">01 / Intro</span>
         <p class="statement__text" data-words>
-          I'm early in my journey, and upfront about how I build. I pair with AI to turn ideas into shipped projects, while my degree gives me the foundations — data structures, algorithms, object-oriented design — to understand <em>what's happening underneath</em>, and to get better every term.
+          I'm early on, and honest about how I work. AI helps me build things, and uni teaches me what's actually going on underneath: data structures, algorithms, how to design code that doesn't fall apart. The plan is simple. Keep shipping, and need the AI <em>a little less every term.</em>
         </p>
       </div>
     </section>
@@ -81,14 +82,14 @@
     <section class="work" id="work">
       <div class="work__sticky">
         <div class="work__head">
-          <span class="label mono">(02) — Selected work</span>
+          <span class="label mono">02 / Work</span>
           <div class="work__progress" aria-hidden="true"><span></span></div>
           <span class="label mono">2026</span>
         </div>
         <div class="work__track">
           <div class="work__intro">
-            <h2 class="h2">Things I've <em>built</em> &amp; shipped.</h2>
-            <p class="muted">Two projects I took from idea to release — built with Claude as my pair-programmer, then tested, debugged and refined by me.</p>
+            <h2 class="h2">Stuff I've <em>made.</em></h2>
+            <p class="muted">Two projects I took from an idea to something that actually works. Claude was my pair programmer. The testing, fixing and polishing was on me.</p>
           </div>
 
           <article class="project" data-cursor="View">
@@ -98,7 +99,7 @@
                 <span class="project__index mono">01</span>
                 <h3 class="project__title">Panic Pack!</h3>
                 <span class="project__year mono">2026</span>
-                <p class="project__desc">A first-person race against the clock: search the house, grab everything on a randomised packing list and make the taxi before your flight leaves. Playable Windows build.</p>
+                <p class="project__desc">Your taxi's outside and you haven't packed. Run around the house, grab everything on a random packing list, and get out the door before you miss your flight. First person, made in Godot, with a playable Windows build.</p>
                 <ul class="tags mono"><li>Godot 4</li><li>GDScript</li><li>3D game</li><li>AI-assisted</li></ul>
               </div>
             </a>
@@ -111,7 +112,7 @@
                 <span class="project__index mono">02</span>
                 <h3 class="project__title">Instagram Unliker</h3>
                 <span class="project__year mono">2026</span>
-                <p class="project__desc">A browser tool that bulk-removes your old Instagram likes. It drives Instagram's own Select mode in batches, handles the confirmations and paces itself so the page keeps up.</p>
+                <p class="project__desc">Years of old likes, gone in one go. You paste it into your browser and it works through Instagram's own select screen in batches, clicks through the confirmations and slows itself down so the page can keep up.</p>
                 <ul class="tags mono"><li>JavaScript</li><li>Browser automation</li><li>AI-assisted</li></ul>
               </div>
             </a>
@@ -125,9 +126,46 @@
       </div>
     </section>
 
+    <!-- LeetCode -->
+    <section class="lc" id="leetcode" data-leetcode>
+      <div class="lc__head">
+        <span class="label mono">03 / Practice</span>
+        <h2 class="lc__title reveal">Getting reps in on <em>LeetCode.</em></h2>
+        <p class="lc__lede muted reveal">I practise problems alongside my data structures module. This part updates itself from my profile, so it's the real numbers, small as they are for now.</p>
+      </div>
+
+      <div class="lc__grid">
+        <div class="lc__card lc__solved reveal">
+          <span class="mono muted">Solved</span>
+          <span class="lc__big" data-lc="all">·</span>
+          <div class="lc__split">
+            <div class="lc__diff lc__diff--easy"><span class="mono">Easy</span><b data-lc="easy">·</b></div>
+            <div class="lc__diff lc__diff--med"><span class="mono">Medium</span><b data-lc="medium">·</b></div>
+            <div class="lc__diff lc__diff--hard"><span class="mono">Hard</span><b data-lc="hard">·</b></div>
+          </div>
+        </div>
+
+        <div class="lc__card lc__cal reveal">
+          <div class="lc__cal-head">
+            <span class="mono muted" data-lc="range">Last 12 months</span>
+            <span class="mono muted"><b data-lc="days">·</b> active days</span>
+          </div>
+          <div class="lc__months mono" aria-hidden="true"></div>
+          <div class="lc__heat" role="img" aria-label="LeetCode activity over the last year"></div>
+          <div class="lc__legend mono muted">Less <i></i><i></i><i></i><i></i><i></i> More</div>
+        </div>
+
+        <div class="lc__card lc__recent reveal">
+          <span class="mono muted">Recently solved</span>
+          <ol class="lc__list"></ol>
+          <a class="lc__profile mono" href="https://leetcode.com/u/hamza57/" target="_blank" rel="noopener">Full profile ↗</a>
+        </div>
+      </div>
+    </section>
+
     <!-- Toolkit marquee -->
     <section class="toolkit" aria-label="Toolkit">
-      <span class="label mono toolkit__label">(03) — Toolkit &amp; coursework</span>
+      <span class="label mono toolkit__label">04 / Toolkit</span>
       <div class="marquee" data-dir="-1">
         <div class="marquee__inner">
           <span>Python</span><i>✦</i><span><em>Java</em></span><i>✦</i><span>Godot</span><i>✦</i><span><em>Git &amp; GitHub</em></span><i>✦</i><span>Claude</span><i>✦</i><span><em>Cloudflare</em></span><i>✦</i>
@@ -140,29 +178,60 @@
       </div>
     </section>
 
+    <!-- Playground -->
+    <section class="play" id="playground">
+      <div class="play__head">
+        <span class="label mono">05 / Playground</span>
+        <h2 class="play__title reveal">Not everything needs to be <em>useful.</em></h2>
+      </div>
+      <div class="play__grid">
+        <a class="toy reveal" href="/play" data-cursor="Play">
+          <div class="toy__media toy__media--stack" aria-hidden="true">
+            <div class="mini-stack"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="toy__info">
+            <span class="mono muted">Game</span>
+            <h3 class="toy__title">Stack</h3>
+            <p class="muted">One button. Drop each block on the last one. Miss and it gets trimmed. How high can you go?</p>
+          </div>
+        </a>
+        <a class="toy reveal" href="/draw" data-cursor="Draw">
+          <div class="toy__media toy__media--draw" aria-hidden="true">
+            <div class="mini-kaleido"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="toy__info">
+            <span class="mono muted">Toy</span>
+            <h3 class="toy__title">Kaleidoscope</h3>
+            <p class="muted">Scribble anything and it gets mirrored into a pattern. Pretty hard to make something ugly. Save it when you're done.</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
     <!-- About -->
     <section class="about" id="about">
-      <span class="label mono">(04) — About</span>
+      <span class="label mono">06 / About</span>
       <div class="about__body">
-        <p class="about__lead reveal">Second-year Computer Science student at Aston University, Birmingham. I'm building my foundations in Java and Python while learning to <em>ship real projects</em> — and I'm looking for a placement year to put it all to work.</p>
+        <p class="about__lead reveal">I'm a Computer Science student at Aston in Birmingham. Most of my time goes on Java and Python, and on building <em>whatever I'm curious about</em> that week.</p>
         <ul class="rows">
           <li class="row reveal"><span class="row__k mono">Studying</span><span class="row__v">BSc Computer Science</span><span class="row__d muted">Aston University</span></li>
-          <li class="row reveal"><span class="row__k mono">Coursework</span><span class="row__v">Data structures &amp; algorithms, OOP, software engineering</span><span class="row__d muted">In progress</span></li>
-          <li class="row reveal"><span class="row__k mono">Languages</span><span class="row__v">Python, Java</span><span class="row__d muted">Learning</span></li>
-          <li class="row reveal"><span class="row__k mono">Looking for</span><span class="row__v">A 12-month placement year</span><span class="row__d muted">2027/28</span></li>
+          <li class="row reveal"><span class="row__k mono">Modules</span><span class="row__v">Data structures, algorithms, OOP, software engineering</span><span class="row__d muted">In progress</span></li>
+          <li class="row reveal"><span class="row__k mono">Languages</span><span class="row__v">Python, Java</span><span class="row__d muted">Always learning</span></li>
+          <li class="row reveal"><span class="row__k mono">Based in</span><span class="row__v">Birmingham, UK</span><span class="row__d muted" data-clock>--:--</span></li>
         </ul>
       </div>
     </section>
 
     <!-- Contact -->
     <section class="contact" id="contact">
-      <span class="label mono">(05) — Contact</span>
-      <h2 class="contact__title reveal">Let's build <em>something</em> worth using.</h2>
+      <span class="label mono">07 / Contact</span>
+      <h2 class="contact__title reveal">Got an idea, or just want to <em>say hi?</em></h2>
       <div class="contact__row">
         <a class="btn" href="mailto:hello@byhamza.dev" data-magnetic><span>hello@byhamza.dev</span></a>
         <ul class="socials mono">
           <li><a href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></li>
           <li><a href="https://www.linkedin.com/in/hamza-faisal-125833263/" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a></li>
+          <li><a href="https://leetcode.com/u/hamza57/" target="_blank" rel="noopener">LeetCode <span aria-hidden="true">↗</span></a></li>
         </ul>
       </div>
     </section>
@@ -172,12 +241,12 @@
     <div class="footer__mark reveal" aria-label="Hamza"><span aria-hidden="true" data-chars>HAMZA</span></div>
     <div class="footer__bar mono">
       <span>© 2026 Hamza</span>
-      <span>Local time <span data-clock>--:--</span></span>
+      <span>Made in Birmingham</span>
       <a href="#top">Back to top ↑</a>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js" defer></script>
-  <script src="main.js" defer></script>
+  <script src="/main.js" defer></script>
 </body>
 </html>
