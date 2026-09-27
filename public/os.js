@@ -13,10 +13,8 @@
   const page = document.body.dataset.page || 'home';
   const onHome = page === 'home';
   const go = (href) => { location.href = href; };
-  const goSection = (id) => {
-    if (onHome) { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth' }); }
-    else go(`/#${id}`);
-  };
+  const copyEmail = () => navigator.clipboard.writeText('hello@byhamza.dev').then(() => toast('Copied hello@byhamza.dev'), () => toast('hello@byhamza.dev'));
+  document.addEventListener('click', (e) => { if (e.target.closest('[data-copy-email]')) copyEmail(); });
 
   /* ---------- Preferences ---------- */
   const WALLS = ['butter', 'honey', 'lemon', 'sunset', 'paper'];
@@ -140,7 +138,7 @@
   addEventListener('scroll', () => openMenus.forEach((m) => isOpen(m) && hideMenu(m)), { passive: true });
 
   const actions = {
-    about: () => goSection('about'),
+    about: () => go('/about'),
     settings: () => go('/settings'),
     terminal: () => go('/terminal'),
     theme: toggleTheme,
@@ -306,10 +304,12 @@
   const ICON = (bg, glyph) => `<span class="spot__ico" style="background:${bg};color:#fff">${glyph}</span>`;
   const entries = [
     { g: 'Pages', t: 'Home', k: 'start top desktop', run: () => (onHome ? scrollTo({ top: 0, behavior: 'smooth' }) : go('/')), i: ICON('linear-gradient(#fff3a6,#f5b800)', '<i style="font:italic 18px Instrument Serif,serif;color:#2b2100">h</i>') },
-    { g: 'Pages', t: 'Work', k: 'projects portfolio panic pack instagram', run: () => goSection('work'), i: ICON('linear-gradient(#8fd0ff,#3d97f2)', '▤') },
-    { g: 'Pages', t: 'LeetCode', k: 'practice stats problems', run: () => goSection('leetcode'), i: ICON('#1f1d17', '<b style="color:#ffa116">{}</b>') },
-    { g: 'Pages', t: 'About This Hamza', k: 'about me info university aston', run: () => goSection('about'), i: ICON('radial-gradient(circle at 30% 30%,#fffbe0,#f5b800)', '<i style="font:italic 16px Instrument Serif,serif;color:#3a2c00">h</i>') },
-    { g: 'Pages', t: 'Contact', k: 'email mail hello message', run: () => goSection('contact'), i: ICON('linear-gradient(#7cc8ff,#1f7cf2)', '✉') },
+    { g: 'Pages', t: 'Work', k: 'projects case studies portfolio', run: () => go('/work'), i: ICON('linear-gradient(#8fd0ff,#3d97f2)', '▤') },
+    { g: 'Pages', t: 'Panic Pack!', k: 'godot game project', run: () => go('/work#panic-pack'), i: ICON('linear-gradient(#ffb347,#ff8a5c)', '!') },
+    { g: 'Pages', t: 'Instagram Unliker', k: 'javascript project script', run: () => go('/work#instagram-unliker'), i: ICON('linear-gradient(#ff9ab0,#ff7aa2)', '♡') },
+    { g: 'Pages', t: 'Stats', k: 'leetcode github numbers practice', run: () => go('/stats'), i: ICON('#1f1d17', '<b style="color:#ffa116">{}</b>') },
+    { g: 'Pages', t: 'About', k: 'about me info university aston now timeline', run: () => go('/about'), i: ICON('radial-gradient(circle at 30% 30%,#fffbe0,#f5b800)', '<i style="font:italic 16px Instrument Serif,serif;color:#3a2c00">h</i>') },
+    { g: 'Pages', t: 'Contact', k: 'email mail hello message', run: () => go('/about#contact'), i: ICON('linear-gradient(#7cc8ff,#1f7cf2)', '✉') },
     { g: 'Apps', t: 'Stack', k: 'game play blocks leaderboard', run: () => go('/play'), i: ICON('linear-gradient(#fff1a8,#ffcf3a)', '<b style="color:#ff8a5c">≡</b>') },
     { g: 'Apps', t: 'Kaleidoscope', k: 'draw paint art', run: () => go('/draw'), i: ICON('#1c1a12', '<b style="color:#ffd84d">✺</b>') },
     { g: 'Apps', t: 'Terminal', k: 'shell command line zsh cli', run: () => go('/terminal'), i: ICON('#1c1a12', '<b style="color:#ffd84d;font-family:monospace">&gt;_</b>') },
@@ -317,9 +317,10 @@
     { g: 'Actions', t: 'Toggle Dark Mode', k: 'theme light night appearance', run: toggleTheme, i: ICON('#3a3a3c', '◐') },
     { g: 'Actions', t: 'Change Wallpaper', k: 'background colour color', run: cycleWallpaper, i: ICON('linear-gradient(160deg,#fff3a6,#ffcf3a)', '') },
     { g: 'Actions', t: 'Leave a Spark', k: 'like star spark', run: () => spark(), i: ICON('#1c1a12', '<b style="color:#ffd84d">✦</b>') },
-    { g: 'Actions', t: 'Copy Email Address', k: 'hello@byhamza.dev clipboard', run: () => navigator.clipboard.writeText('hello@byhamza.dev').then(() => toast('Copied hello@byhamza.dev')), i: ICON('#2f7bff', '⧉') },
+    { g: 'Actions', t: 'Copy Email Address', k: 'hello@byhamza.dev clipboard', run: copyEmail, i: ICON('#2f7bff', '⧉') },
     { g: 'Actions', t: 'New Sticky Note', k: 'note write', run: () => newSticky(), i: ICON('#fff2a0', '<b style="color:#3a3316">✎</b>') },
     { g: 'Actions', t: 'Sleep', k: 'lock screen', run: sleep, i: ICON('#3a3a3c', '☾') },
+    { g: 'Actions', t: 'Keyboard Shortcuts', k: 'help keys hotkeys', run: () => shortcuts(), i: ICON('#3a3a3c', '⌘') },
     { g: 'Links', t: 'GitHub', k: 'code source repos hamzaaaaaf', run: () => window.open('https://github.com/hamzaaaaaf', '_blank', 'noopener'), i: ICON('#24292f', '⌥') },
     { g: 'Links', t: 'LinkedIn', k: 'cv profile work', run: () => window.open('https://www.linkedin.com/in/hamza-faisal-125833263/', '_blank', 'noopener'), i: ICON('#0a66c2', '<b>in</b>') },
     { g: 'Links', t: 'LeetCode Profile', k: 'hamza57', run: () => window.open('https://leetcode.com/u/hamza57/', '_blank', 'noopener'), i: ICON('#1f1d17', '<b style="color:#ffa116">{}</b>') },
@@ -392,6 +393,39 @@
   window.openSpotlight = openSpot;
 
   /* ---------- Keyboard ---------- */
+  const sheet = makeMenu('keysheet', `
+    <div style="padding:8px 10px 4px;font-weight:600">Keyboard shortcuts</div>
+    <hr>
+    <button data-go="spot">Spotlight <kbd>⌘K</kbd></button>
+    <button data-go="/">Home <kbd>G H</kbd></button>
+    <button data-go="/work">Work <kbd>G W</kbd></button>
+    <button data-go="/stats">Stats <kbd>G S</kbd></button>
+    <button data-go="/play">Stack <kbd>G P</kbd></button>
+    <button data-go="/draw">Kaleidoscope <kbd>G D</kbd></button>
+    <button data-go="/terminal">Terminal <kbd>G T</kbd></button>
+    <button data-go="/about">About <kbd>G A</kbd></button>
+    <button data-go="theme">Toggle dark mode <kbd>⇧D</kbd></button>`);
+  sheet.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-go]');
+    if (!b) return;
+    hideMenu(sheet);
+    const g = b.dataset.go;
+    if (g === 'spot') openSpot(); else if (g === 'theme') toggleTheme(); else go(g);
+  });
+  function shortcuts() { showMenu(sheet, innerWidth / 2 - 130, innerHeight / 2 - 170); }
+  const GO = { h: '/', w: '/work', s: '/stats', p: '/play', d: '/draw', t: '/terminal', a: '/about' };
+  let gPending = 0;
+  addEventListener('keydown', (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target.closest && e.target.closest('input, textarea, [contenteditable], dialog')) return;
+    if (page === 'play' || page === 'terminal') return;
+    const k = e.key.toLowerCase();
+    if (e.key === '?') { e.preventDefault(); shortcuts(); return; }
+    if (e.key === 'D' && e.shiftKey) { toggleTheme(); return; }
+    if (k === 'g') { gPending = Date.now(); return; }
+    if (gPending && Date.now() - gPending < 1200 && GO[k]) { gPending = 0; go(GO[k]); }
+  });
+
   const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
   let kpos = 0;
   addEventListener('keydown', (e) => {
