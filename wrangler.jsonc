@@ -4,7 +4,7 @@
   "name": "portfolio-website",
   "compatibility_date": "2026-09-23",
   // Only /api/* runs code (src/worker.js); every other path is a static
-  // file from public/, with no build step.
+  // file from public/, with no build step. D1 holds the Stack leaderboard.
   "main": "src/worker.js",
   "assets": {
     "directory": "./public",
@@ -12,6 +12,9 @@
     "run_worker_first": ["/api/*"],
     "not_found_handling": "404-page"
   },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "portfolio-db", "database_id": "acb84a8a-c265-4afb-8fd8-ba55c0b3ae42" }
+  ],
   // Wrangler replaces the Worker's routes on every deploy, so both domains
   // must be listed here or they get dropped.
   "routes": [

@@ -18,7 +18,10 @@ try { best = Number(localStorage.getItem('stack-best')) || 0; } catch (e) { /* s
 bestEl.textContent = best;
 
 let soundOn = true;
-try { soundOn = localStorage.getItem('stack-sound') !== 'off'; } catch (e) { /* storage blocked */ }
+try {
+  const prefs = JSON.parse(localStorage.getItem('prefs') || '{}');
+  soundOn = prefs.sound !== false && localStorage.getItem('stack-sound') !== 'off';
+} catch (e) { /* storage blocked */ }
 soundBtn.setAttribute('aria-pressed', String(soundOn));
 
 /* ---------- Three setup ---------- */
@@ -73,6 +76,7 @@ function blip(freq, dur = 0.12, type = 'sine', gain = 0.12) {
 }
 soundBtn.addEventListener('click', (e) => {
   e.stopPropagation();
+  soundBtn.blur();
   soundOn = !soundOn;
   soundBtn.setAttribute('aria-pressed', String(soundOn));
   try { localStorage.setItem('stack-sound', soundOn ? 'on' : 'off'); } catch (err) { /* storage blocked */ }
@@ -121,7 +125,55 @@ function spawn() {
   mesh.position.set(current.x, topY() + BLOCK_H / 2, current.z);
 }
 
+/* ---------- Global leaderboard ---------- */
+const board = document.getElementById('board');
+const boardList = document.getElementById('board-list');
+const submitForm = document.getElementById('submit');
+const initialsIn = document.getElementById('initials');
+let top10 = [];
+let myName = '';
+try { myName = localStorage.getItem('stack-initials') || ''; } catch (e) { /* storage blocked */ }
+
+function renderBoard(list) {
+  top10 = list || [];
+  if (!top10.length) { boardList.innerHTML = '<li class="muted">No scores yet. Be first.</li>'; return; }
+  boardList.replaceChildren(...top10.map((r) => {
+    const li = document.createElement('li');
+    if (r.name === myName) li.className = 'me';
+    const n = document.createElement('span'); n.className = 'n'; n.textContent = r.name;
+    const v = document.createElement('b'); v.textContent = r.score;
+    li.append(n, v);
+    return li;
+  }));
+}
+fetch('/api/scores').then((r) => r.json()).then((d) => renderBoard(d.scores)).catch(() => { boardList.innerHTML = '<li class="muted">Offline</li>'; });
+document.getElementById('board-toggle').addEventListener('click', (e) => {
+  const collapsed = board.classList.toggle('is-collapsed');
+  e.currentTarget.textContent = collapsed ? 'Show' : 'Hide';
+  e.currentTarget.setAttribute('aria-expanded', String(!collapsed));
+});
+const qualifies = (s) => s >= 3 && (top10.length < 10 || s > top10[top10.length - 1].score);
+let postedScore = 0;
+submitForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = initialsIn.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (name.length !== 3) { initialsIn.focus(); window.toast && window.toast('Three letters or numbers.'); return; }
+  submitForm.hidden = true;
+  fetch('/api/scores', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name, score: postedScore }) })
+    .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
+    .then(({ ok, d }) => {
+      if (!ok) throw new Error(d.error || 'Could not post');
+      myName = name;
+      try { localStorage.setItem('stack-initials', name); } catch (err) { /* storage blocked */ }
+      renderBoard(d.scores);
+      window.toast && window.toast(`Posted ${postedScore} as ${name}.`);
+    })
+    .catch((err) => { window.toast && window.toast(err.message); });
+});
+initialsIn.addEventListener('input', () => { initialsIn.value = initialsIn.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 3); });
+
 function start() {
+  submitForm.hidden = true;
   if (state === 'over') reset();
   state = 'playing';
   document.body.classList.add('is-playing');
@@ -176,6 +228,9 @@ function place() {
     clearTimeout(place.t);
     place.t = setTimeout(() => perfectEl.classList.remove('show'), 700);
     blip(440 * Math.pow(2, Math.min(combo, 12) / 12), 0.18, 'triangle', 0.14);
+    if (navigator.vibrate) navigator.vibrate(12);
+    // Three perfects in a row earns a little width back.
+    if (combo >= 3) c[sizeKey] = Math.min(START_SIZE, c[sizeKey] + 0.12);
   } else {
     combo = 0;
     const keep = size - overhang;
@@ -217,6 +272,12 @@ function gameOver() {
     promptTitle.innerHTML = s === 1 ? '1 block. <em>Warm up?</em>' : `${s} blocks.`;
   }
   promptHint.textContent = 'Tap to go again';
+  if (qualifies(s)) {
+    postedScore = s;
+    initialsIn.value = myName;
+    submitForm.hidden = false;
+    setTimeout(() => initialsIn.focus({ preventScroll: true }), 400);
+  }
   blip(140, 0.4, 'sawtooth', 0.06);
   // Pull the camera back so the whole tower is visible.
   targetZoom = Math.max(1, (stack.length * BLOCK_H + 6) / 12);
@@ -229,6 +290,7 @@ function action() {
 
 canvas.addEventListener('pointerdown', (e) => { e.preventDefault(); action(); });
 addEventListener('keydown', (e) => {
+  if (e.target.closest && e.target.closest('input, textarea, dialog')) return;
   if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); action(); }
 });
 
