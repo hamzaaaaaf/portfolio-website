@@ -6,12 +6,12 @@
   const sizeInput = document.getElementById('size');
   const mirrorBtn = document.getElementById('mirror');
 
-  const settings = { sym: 8, mirror: true, brush: 'ink', color: '#d8c4a0', size: 5 };
+  const settings = { sym: 8, mirror: true, brush: 'ink', color: '#ffd84d', size: 5 };
   let strokes = [];
   let cleared = null; // last cleared drawing, so Undo can bring it back
   let active = null;
   let hue = 0;
-  let dpr = 1, W = 0, H = 0;
+  let dpr = 1, W = 0, H = 0, left = 0, top = 0;
 
   /* ---------- Toolbar ---------- */
   function pick(group, btn) {
@@ -60,7 +60,8 @@
   /* ---------- Rendering ---------- */
   function resize() {
     dpr = Math.min(2, devicePixelRatio || 1);
-    W = innerWidth; H = innerHeight;
+    const r = paper.getBoundingClientRect();
+    W = r.width; H = r.height; left = r.left; top = r.top;
     for (const c of [paper, guides]) { c.width = W * dpr; c.height = H * dpr; }
     drawGuides();
     redraw();
@@ -149,7 +150,7 @@
 
   /* ---------- Input ---------- */
   function point(e, prev) {
-    const x = e.clientX - W / 2, y = e.clientY - H / 2;
+    const x = e.clientX - left - W / 2, y = e.clientY - top - H / 2;
     let w = 1;
     if (e.pointerType === 'pen' && e.pressure > 0) w = 0.3 + e.pressure * 1.2;
     else if (prev) {
@@ -162,6 +163,8 @@
   }
 
   paper.addEventListener('pointerdown', (e) => {
+    const r = paper.getBoundingClientRect();
+    left = r.left; top = r.top;
     paper.setPointerCapture(e.pointerId);
     active = { ...settings, pts: [point(e)] };
     strokes.push(active);
@@ -174,7 +177,7 @@
     const events = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
     for (const ev of events) {
       const prev = active.pts[active.pts.length - 1];
-      if (Math.hypot(ev.clientX - W / 2 - prev.x, ev.clientY - H / 2 - prev.y) < 1.5) continue;
+      if (Math.hypot(ev.clientX - left - W / 2 - prev.x, ev.clientY - top - H / 2 - prev.y) < 1.5) continue;
       active.pts.push(point(ev, prev));
       drawSegment(active, active.pts.length - 1);
     }
@@ -188,7 +191,7 @@
     const out = document.createElement('canvas');
     out.width = paper.width; out.height = paper.height;
     const o = out.getContext('2d');
-    o.fillStyle = '#0a0a0b';
+    o.fillStyle = '#14120c';
     o.fillRect(0, 0, out.width, out.height);
     o.drawImage(paper, 0, 0);
     o.font = `${12 * dpr}px "JetBrains Mono", monospace`;
@@ -206,5 +209,6 @@
 
   let t;
   addEventListener('resize', () => { clearTimeout(t); t = setTimeout(resize, 120); });
+  if (window.ResizeObserver) new ResizeObserver(() => { clearTimeout(t); t = setTimeout(resize, 60); }).observe(paper);
   resize();
 })();
