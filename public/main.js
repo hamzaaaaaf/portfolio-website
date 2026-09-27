@@ -11,23 +11,18 @@
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => [...document.querySelectorAll(s)];
 
-  /* ---------- Smooth scroll (home only; app pages don't scroll) ---------- */
-  let lenis = null;
-  if (page === 'home' && !reduce && window.Lenis) {
-    lenis = new window.Lenis({ lerp: 0.085, smoothWheel: true, wheelMultiplier: 0.9 });
-  }
-  const scrollY = () => window.scrollY || window.pageYOffset;
-
-  $$('a[href^="#"], a[href^="/#"]').forEach((a) => {
-    const href = a.getAttribute('href');
-    if (href.startsWith('/#') && page !== 'home') return;
+  // Scrolling is native on purpose: no scroll-jacking library, nothing
+  // pinned, and no layout reads per frame. Motion below only touches
+  // transform and opacity, which the compositor handles off the main thread.
+  $$('a[href^="#"]').forEach((a) => {
     a.addEventListener('click', (e) => {
-      const id = href.replace(/^\//, '');
+      const id = a.getAttribute('href');
       const target = id === '#top' ? body : $(id);
       if (!target) return;
       e.preventDefault();
-      if (lenis) lenis.scrollTo(id === '#top' ? 0 : target, { duration: 1.6 });
+      if (id === '#top') scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
       else target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+      history.replaceState(null, '', id === '#top' ? location.pathname : id);
     });
   });
 
@@ -36,7 +31,6 @@
   function finishLoading() {
     body.classList.remove('is-loading');
     body.classList.add('is-loaded');
-    lenis && lenis.start();
     try { sessionStorage.setItem('seen-loader', '1'); } catch (e) { /* storage blocked */ }
     if (loader) {
       loader.addEventListener('transitionend', () => loader.classList.add('is-done'), { once: true });
@@ -50,7 +44,6 @@
     loader && loader.classList.add('is-done');
     requestAnimationFrame(finishLoading);
   } else {
-    lenis && lenis.stop();
     const dur = 1300;
     const start = performance.now();
     const ease = (t) => 1 - Math.pow(1 - t, 3);
@@ -166,7 +159,7 @@
           if (m !== lastMonth && col < weeks - 2) {
             const span = document.createElement('span');
             span.style.gridColumn = String(col + 1);
-            span.textContent = date.toLocaleDateString('en-GB', { month: 'short', timeZone: 'UTC' });
+            span.textContent = date.toLocaleDateString('en-GB', { month: 'short', timeZone: 'UTC' }).slice(0, 3);
             if (lastMonth !== -1 || date.getUTCDate() <= 7) labels.push(span);
             lastMonth = m;
           }
@@ -190,10 +183,9 @@
         li.appendChild(a);
         return li;
       }));
-      layout();
     };
     // Live numbers from the Worker, falling back to the last saved snapshot.
-    fetch('/api/leetcode')
+    fetch('/api/leetcode', { signal: AbortSignal.timeout(7000) })
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
       .catch(() => fetch('/leetcode.json').then((r) => r.json()))
       .then(render)
@@ -264,7 +256,6 @@
     } else if (light.classList.contains('light--y')) {
       win.classList.toggle('is-shaded');
       if (win.classList.contains('app-win')) win.classList.remove('is-zoomed');
-      layout();
     } else if (light.classList.contains('light--g')) {
       zoom(win);
     }
@@ -360,57 +351,60 @@
     });
   }
 
-  /* ---------- Layout measurements (home) ---------- */
-  const hero = $('.hero');
-  const heroInner = $('.hero__inner');
-  const statement = $('.statement');
-  const work = $('.work');
-  const track = $('.work__track');
-  const progress = $('.work__progress');
-  const arts = $$('.art');
-  const nav = $('.nav');
-
-  let vw = innerWidth, vh = innerHeight;
-  let statementTop = 0, statementLen = 1;
-  let workTop = 0, workLen = 1, workDist = 0, pinned = false;
-
-  const offsetTop = (el) => el.getBoundingClientRect().top + scrollY();
-
-  function layout() {
-    vw = innerWidth; vh = innerHeight;
-    if (work && track) {
-      pinned = vw > 900 && !reduce;
-      if (pinned) {
-        track.style.transform = 'none';
-        workDist = Math.max(0, track.scrollWidth - vw);
-        work.style.height = `${workDist + vh}px`;
-      } else {
-        work.style.height = '';
-        track.style.transform = '';
-        workDist = 0;
-      }
-      workTop = offsetTop(work);
-      workLen = Math.max(1, work.offsetHeight - vh);
-    }
-    if (statement) {
-      statementTop = offsetTop(statement);
-      statementLen = Math.max(1, statement.offsetHeight - vh);
-    }
-    lenis && lenis.resize();
+  /* ---------- GitHub (stats page) ---------- */
+  const gh = $('[data-github]');
+  if (gh) {
+    const LANG = { Python: '#3572A5', Java: '#b07219', JavaScript: '#f1e05a', GDScript: '#355570', HTML: '#e34c26', CSS: '#563d7c', TypeScript: '#3178c6' };
+    fetch('/api/github', { signal: AbortSignal.timeout(7000) })
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .catch(() => fetch('/github.json').then((r) => r.json()))
+      .then((d) => {
+        gh.querySelector('[data-gh="repos"]').textContent = d.repos.length;
+        const total = Object.values(d.languages).reduce((a, b) => a + b, 0) || 1;
+        const langs = Object.entries(d.languages).sort((a, b) => b[1] - a[1]);
+        gh.querySelector('.gh__bar').replaceChildren(...langs.map(([l, n]) => {
+          const i = document.createElement('i');
+          i.style.flex = String(n / total);
+          i.style.background = LANG[l] || '#aaa';
+          i.title = `${l} ${Math.round((n / total) * 100)}%`;
+          return i;
+        }));
+        gh.querySelector('.gh__langs').replaceChildren(...langs.map(([l, n]) => {
+          const li = document.createElement('li');
+          li.innerHTML = `<i style="background:${LANG[l] || '#aaa'}"></i>${l} <span class="muted">${Math.round((n / total) * 100)}%</span>`;
+          return li;
+        }));
+        gh.querySelector('.gh__repos').replaceChildren(...d.repos.slice(0, 6).map((r) => {
+          const a = document.createElement('a');
+          a.href = r.url; a.target = '_blank'; a.rel = 'noopener';
+          const n = document.createElement('b'); n.textContent = r.name;
+          const m = document.createElement('span'); m.className = 'mono muted';
+          m.textContent = `${r.language || '·'} · ${new Date(r.pushed).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`;
+          a.append(n, m);
+          return a;
+        }));
+      })
+      .catch(() => gh.classList.add('is-offline'));
   }
 
-  /* ---------- Marquees ---------- */
-  const marquees = $$('.marquee').map((el) => {
-    const inner = el.querySelector('.marquee__inner');
-    inner.innerHTML += inner.innerHTML + inner.innerHTML;
-    return { inner, dir: Number(el.dataset.dir) || -1, x: 0, w: 0 };
-  });
-  const measureMarquees = () => marquees.forEach((m) => { m.w = m.inner.scrollWidth / 3; });
+  /* ---------- Site stats (stats page) ---------- */
+  const site = $('[data-sitestats]');
+  if (site) {
+    fetch('/api/scores').then((r) => r.json()).then(({ scores }) => {
+      const top = scores[0];
+      site.querySelector('[data-site="top"]').textContent = top ? `${top.score}` : '0';
+      site.querySelector('[data-site="topname"]').textContent = top ? `by ${top.name}` : 'be first';
+      site.querySelector('[data-site="players"]').textContent = scores.length;
+    }).catch(() => {});
+  }
+
+  /* ---------- Marquees: pure CSS animation, content duplicated once ---------- */
+  $$('.marquee__inner').forEach((inner) => { inner.innerHTML += inner.innerHTML; });
 
   /* ---------- Hero dot field ---------- */
   const canvas = $('.hero__field');
   const ctx = canvas && canvas.getContext('2d');
-  let dots = [], dpr = 1, heroVisible = !!canvas;
+  let dots = [], dpr = 1, heroVisible = false;
   const mouse = { x: -9999, y: -9999, tx: -9999, ty: -9999 };
 
   function buildField() {
@@ -418,21 +412,20 @@
     dpr = Math.min(2, devicePixelRatio || 1);
     const w = canvas.clientWidth, h = canvas.clientHeight;
     canvas.width = w * dpr; canvas.height = h * dpr;
-    const gap = w < 700 ? 22 : 30;
+    const gap = w < 700 ? 24 : 30;
     dots = [];
-    for (let y = gap / 2; y < h; y += gap) {
-      for (let x = gap / 2; x < w; x += gap) dots.push({ x, y });
-    }
+    for (let y = gap / 2; y < h; y += gap) for (let x = gap / 2; x < w; x += gap) dots.push({ x, y });
   }
 
   function drawField(t) {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
-    mouse.x = lerp(mouse.x, mouse.tx, 0.08);
-    mouse.y = lerp(mouse.y, mouse.ty, 0.08);
+    mouse.x = lerp(mouse.x, mouse.tx, 0.1);
+    mouse.y = lerp(mouse.y, mouse.ty, 0.1);
     const R = Math.min(w, h) * 0.28, R2 = R * R;
     const cx = w * 0.72, cy = h * 0.42;
+    ctx.fillStyle = `rgb(${fgRGB})`;
     for (let i = 0; i < dots.length; i++) {
       const d = dots[i];
       const wave = Math.sin(d.x * 0.012 + t * 0.0006) * Math.cos(d.y * 0.014 - t * 0.0005);
@@ -447,135 +440,66 @@
         y += (dy / len) * f * 26;
         a += f * 0.55;
       }
-      // soft spotlight so the field fades toward the text side
       const gx = (d.x - cx) / w, gy = (d.y - cy) / h;
-      a *= clamp(1.25 - Math.sqrt(gx * gx + gy * gy) * 1.6, 0.25, 1);
-      ctx.fillStyle = `rgba(${fgRGB},${(a * 0.8).toFixed(3)})`;
+      ctx.globalAlpha = a * 0.8 * clamp(1.25 - Math.sqrt(gx * gx + gy * gy) * 1.6, 0.25, 1);
       ctx.fillRect(x - 0.75, y - 0.75, 1.5, 1.5);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  if (canvas) {
+    new IntersectionObserver(([en]) => { heroVisible = en.isIntersecting; }).observe(canvas);
+    if (finePointer) {
+      // Canvas rect is cached on resize so pointermove never forces layout.
+      let rect = canvas.getBoundingClientRect();
+      addEventListener('resize', () => { rect = canvas.getBoundingClientRect(); });
+      addEventListener('scroll', () => { rect = null; }, { passive: true });
+      addEventListener('pointermove', (e) => {
+        if (!heroVisible) return;
+        if (!rect) rect = canvas.getBoundingClientRect();
+        mouse.tx = e.clientX - rect.left;
+        mouse.ty = e.clientY - rect.top;
+      }, { passive: true });
     }
   }
 
-  if (hero) new IntersectionObserver(([en]) => { heroVisible = en.isIntersecting; }).observe(hero);
-  if (canvas && finePointer) {
-    addEventListener('pointermove', (e) => {
-      const r = canvas.getBoundingClientRect();
-      mouse.tx = e.clientX - r.left;
-      mouse.ty = e.clientY - r.top;
-    }, { passive: true });
-  }
-
-  /* ---------- Cursor & magnetic ---------- */
+  /* ---------- Cursor bubble ---------- */
   const cursor = $('.cursor');
   const label = cursor && cursor.querySelector('.cursor__label');
   const cur = { x: -100, y: -100, tx: -100, ty: -100 };
+  let cursorOn = false;
   if (cursor && finePointer && !reduce) {
     root.classList.add('has-cursor');
     addEventListener('pointermove', (e) => { cur.tx = e.clientX; cur.ty = e.clientY; }, { passive: true });
     document.addEventListener('pointerover', (e) => {
       const view = e.target.closest('[data-cursor]');
-      cursor.classList.toggle('is-view', !!view);
+      cursorOn = !!view;
+      cursor.classList.toggle('is-view', cursorOn);
       if (view) label.textContent = view.dataset.cursor;
-    });
-    document.addEventListener('pointerleave', () => { cur.tx = cur.ty = -100; });
-
-    $$('[data-magnetic]').forEach((el) => {
-      if (el.hasAttribute('data-drag')) return;
-      el.addEventListener('pointermove', (e) => {
-        const r = el.getBoundingClientRect();
-        const x = e.clientX - (r.left + r.width / 2);
-        const y = e.clientY - (r.top + r.height / 2);
-        el.style.transition = 'transform 0.2s ease-out';
-        el.style.transform = `translate(${x * 0.28}px, ${y * 0.34}px)`;
-      });
-      el.addEventListener('pointerleave', () => {
-        el.style.transition = 'transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)';
-        el.style.transform = '';
-      });
     });
   }
 
-  /* ---------- Frame loop ---------- */
-  let lastY = scrollY();
-  let navHidden = false;
-  let lastWordP = -1;
-
+  /* ---------- Frame loop: only runs work that is visible ---------- */
+  // The dot field rests while the page is being scrolled, so every frame
+  // during a scroll goes to the scroll itself.
+  let scrolling = 0;
+  addEventListener('scroll', () => { scrolling = performance.now(); }, { passive: true });
   function frame(t) {
-    lenis && lenis.raf(t);
-    const y = scrollY();
-    const vel = lenis ? lenis.velocity : y - lastY;
-
-    // nav hides on scroll down, returns on scroll up
-    if (nav && Math.abs(y - lastY) > 2) {
-      const hide = y > lastY && y > vh * 0.6;
-      if (hide !== navHidden) { navHidden = hide; nav.classList.toggle('is-hidden', hide); }
-    }
-    lastY = y;
-
-    if (heroInner && !reduce && y < vh * 1.2) {
-      const p = clamp(y / vh);
-      heroInner.style.transform = `translate3d(0, ${y * 0.3}px, 0)`;
-      heroInner.style.opacity = String(1 - p * 1.1);
-    }
-    if (canvas && heroVisible && !reduce) drawField(t);
-
-    // statement words light up with scroll
-    if (!reduce && words.length) {
-      const p = clamp((y - statementTop + vh * 0.2) / statementLen);
-      if (Math.abs(p - lastWordP) > 0.001) {
-        lastWordP = p;
-        const n = words.length, spread = 6;
-        const head = p * (n + spread);
-        for (let i = 0; i < n; i++) {
-          words[i].style.opacity = (0.14 + 0.86 * clamp((head - i) / spread)).toFixed(3);
-        }
-      }
-    }
-
-    // horizontal work track
-    if (pinned) {
-      const p = clamp((y - workTop) / workLen);
-      track.style.transform = `translate3d(${-p * workDist}px, 0, 0)`;
-      progress.style.setProperty('--p', p.toFixed(4));
-      if (y > workTop - vh && y < workTop + workLen + vh) {
-        for (const art of arts) {
-          const r = art.parentElement.getBoundingClientRect();
-          const off = (r.left + r.width / 2 - vw / 2) / vw;
-          art.style.transform = `translate3d(${off * -12}%, 0, 0)`;
-        }
-      }
-    }
-
-    // marquees: steady drift, pushed along by scroll velocity
-    if (!reduce) {
-      for (const m of marquees) {
-        if (!m.w) continue;
-        m.x += m.dir * (0.6 + Math.min(Math.abs(vel), 60) * 0.35);
-        if (m.x <= -m.w) m.x += m.w;
-        if (m.x > 0) m.x -= m.w;
-        m.inner.style.transform = `translate3d(${m.x}px, 0, 0)`;
-      }
-    }
-
-    if (root.classList.contains('has-cursor')) {
-      cur.x = lerp(cur.x, cur.tx, 0.2);
-      cur.y = lerp(cur.y, cur.ty, 0.2);
+    if (canvas && heroVisible && !reduce && !document.hidden && t - scrolling > 140) drawField(t);
+    if (cursorOn || Math.abs(cur.x - cur.tx) > 0.5) {
+      cur.x = lerp(cur.x, cur.tx, 0.22);
+      cur.y = lerp(cur.y, cur.ty, 0.22);
       cursor.style.transform = `translate3d(${cur.x}px, ${cur.y}px, 0) translate(-50%, -50%)`;
     }
-
     requestAnimationFrame(frame);
   }
 
-  /* ---------- Init ---------- */
   function onResize() {
     buildField();
-    measureMarquees();
-    layout();
     if (canvas && reduce) drawField(0);
   }
   let resizeTimer;
   addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(onResize, 120); });
   onResize();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(onResize);
-  addEventListener('load', onResize);
   requestAnimationFrame(frame);
 })();

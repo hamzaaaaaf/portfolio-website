@@ -4,18 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Hamza · Computer Science</title>
-  <meta name="description" content="Hamza studies Computer Science at Aston University. Projects, LeetCode, a stacking game, a kaleidoscope and a terminal.">
+  <meta name="description" content="Hamza studies Computer Science at Aston University. Projects, live stats, a stacking game, a kaleidoscope and a terminal.">
   <meta name="theme-color" content="#ffe066">
+  <link rel="canonical" href="https://byhamza.dev/">
   <meta property="og:title" content="Hamza · Computer Science">
-  <meta property="og:description" content="Hamza studies Computer Science at Aston University. Projects, LeetCode, a stacking game, a kaleidoscope and a terminal.">
+  <meta property="og:description" content="Hamza studies Computer Science at Aston University. Projects, live stats, a stacking game, a kaleidoscope and a terminal.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://byhamza.dev/">
+  <meta property="og:image" content="https://byhamza.dev/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/InterTight.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/InstrumentSerif-Italic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/fonts.css">
   <link rel="stylesheet" href="/styles.css">
   <script>(function(){var d=document.documentElement,p={};try{p=JSON.parse(localStorage.getItem('prefs')||'{}')}catch(e){}var t;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t;d.dataset.wall=p.wall||'butter';if(p.grain===false)d.dataset.grain='off';if(p.motion==='reduce')d.dataset.motion='reduce';if(p.dock)d.style.setProperty('--dock-size',p.dock+'px');d.classList.add('js')})();</script>
-  <meta property="og:url" content="https://byhamza.dev">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","mainEntity":{"@type":"Person","name":"Hamza","url":"https://byhamza.dev","jobTitle":"Computer Science student","affiliation":{"@type":"CollegeOrUniversity","name":"Aston University"},"address":{"@type":"PostalAddress","addressLocality":"Birmingham","addressCountry":"GB"},"sameAs":["https://github.com/hamzaaaaaf","https://www.linkedin.com/in/hamza-faisal-125833263/","https://leetcode.com/u/hamza57/"]}}</script>
 </head>
 <body class="is-loading" data-page="home">
   <a class="skip" href="#work">Skip to work</a>
@@ -33,12 +39,12 @@
     <div class="menubar__left">
       <button class="menubar__logo" type="button" data-menu="hmenu" aria-haspopup="menu" aria-label="Menu"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="currentColor"/><text x="16" y="22.5" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="21" fill="var(--bg)">h</text></svg></button>
       <a class="menubar__name" href="/">Hamza</a>
-      <a class="menubar__item" href="/#work">Work</a>
-      <a class="menubar__item" href="/#leetcode">LeetCode</a>
+      <a class="menubar__item" href="/work">Work</a>
+      <a class="menubar__item" href="/stats">Stats</a>
       <a class="menubar__item" href="/play">Play</a>
       <a class="menubar__item" href="/draw">Draw</a>
       <a class="menubar__item" href="/terminal">Terminal</a>
-      <a class="menubar__item" href="/#contact">Contact</a>
+      <a class="menubar__item" href="/about">About</a>
     </div>
     <div class="menubar__right">
       <button class="sparks" type="button" data-spark title="Leave a spark" aria-label="Leave a spark"><span class="sparks__icon" aria-hidden="true">✦</span><span class="sparks__n" data-sparks>·</span></button>
@@ -89,222 +95,84 @@
       </div>
     </section>
 
-    <section class="statement" id="intro">
-      <div class="statement__sticky">
-        <span class="label mono">01 / Intro</span>
-        <p class="statement__text" data-words>
-          I care about the details you feel before you notice them. The snap of a button, a page that's ready before you blink, code that still makes sense a month later. I'm learning the foundations properly and <em>shipping things along the way.</em>
-        </p>
-      </div>
-    </section>
-
-    <section class="work" id="work">
-      <div class="work__sticky">
-        <div class="work__head">
-          <span class="label mono">02 / Work</span>
-          <div class="work__progress" aria-hidden="true"><span></span></div>
-          <span class="label mono">2026</span>
+    <section class="section" id="work">
+      <div class="section__head section__row">
+        <div style="display:grid;gap:24px">
+          <span class="label mono">01 / Work</span>
+          <h2 class="h2 reveal">Selected <em>work.</em></h2>
         </div>
-        <div class="work__track">
-          <div class="work__intro">
-            <h2 class="h2">Selected <em>work.</em></h2>
-            <p class="lede">Small projects, finished and shipped. Each one started as a question I wanted answered.</p>
-          </div>
-
-          <article class="win project" data-cursor="Open" data-tilt>
-            <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">panic-pack · GitHub</span></div>
-            <a class="win__body" href="https://github.com/hamzaaaaaf/panic-pack-" target="_blank" rel="noopener">
+        <a class="more reveal" href="/work">All case studies <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="feature-grid">
+          <article class="win project reveal" style="--i:0" data-cursor="Read" data-tilt>
+            <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">panic-pack · Godot</span></div>
+            <a class="win__body" href="/work#panic-pack">
               <div class="project__media"><div class="art art--panic"></div><span class="project__glyph">!</span></div>
               <div class="project__info">
                 <h3 class="project__title">Panic Pack!</h3>
                 <span class="project__year mono">2026</span>
-                <p class="project__desc">A first-person race against the clock. Your taxi is outside, the packing list is random, and the front door is the finish line. Playable Windows build.</p>
+                <p class="project__desc">A first-person race against the clock. Grab everything on a random packing list and make the taxi.</p>
                 <ul class="tags mono"><li>Godot 4</li><li>GDScript</li><li>3D</li></ul>
               </div>
             </a>
           </article>
-
-          <article class="win project" data-cursor="Open" data-tilt>
-            <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">instagram-post-unliker · GitHub</span></div>
-            <a class="win__body" href="https://github.com/hamzaaaaaf/instagram-post-unliker" target="_blank" rel="noopener">
+          <article class="win project reveal" style="--i:1" data-cursor="Read" data-tilt>
+            <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">instagram-post-unliker · JS</span></div>
+            <a class="win__body" href="/work#instagram-unliker">
               <div class="project__media"><div class="art art--heart"></div><span class="project__glyph">♡</span></div>
               <div class="project__info">
                 <h3 class="project__title">Instagram Unliker</h3>
                 <span class="project__year mono">2026</span>
-                <p class="project__desc">Clears years of Instagram likes in one run. Works through the select screen in batches, confirms each step and paces itself so the page keeps up.</p>
-                <ul class="tags mono"><li>JavaScript</li><li>Automation</li><li>Browser</li></ul>
+                <p class="project__desc">Clears years of Instagram likes in one run, in batches, pacing itself so the page keeps up.</p>
+                <ul class="tags mono"><li>JavaScript</li><li>Automation</li></ul>
               </div>
             </a>
           </article>
-
-          <article class="win project" data-cursor="Tour" data-tilt>
-            <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">byhamza.dev · Source</span></div>
-            <a class="win__body" href="https://github.com/hamzaaaaaf/portfolio-website" target="_blank" rel="noopener">
+          <article class="win project reveal" style="--i:2" data-cursor="Read" data-tilt>
+            <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">byhamza.dev · Workers</span></div>
+            <a class="win__body" href="/work#this-site">
               <div class="project__media"><div class="art art--site"></div><span class="project__glyph">h</span></div>
               <div class="project__info">
                 <h3 class="project__title">This website</h3>
                 <span class="project__year mono">2026</span>
-                <p class="project__desc">A desktop in the browser. Windows, a dock, a terminal, a game with a global leaderboard and live LeetCode stats, on Cloudflare Workers and D1.</p>
+                <p class="project__desc">A desktop in the browser, with a game, a terminal and live stats on Cloudflare.</p>
                 <ul class="tags mono"><li>Workers</li><li>D1</li><li>Three.js</li></ul>
               </div>
             </a>
           </article>
-
-          <a class="work__more" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener">
-            <span class="mono">More on</span>
-            <span class="work__more-big">GitHub <span aria-hidden="true">↗</span></span>
-          </a>
-        </div>
       </div>
     </section>
 
-    <section class="section" id="leetcode" data-leetcode>
+    <section class="section section--tight cv-auto" id="explore">
       <div class="section__head">
-        <span class="label mono">03 / Practice</span>
-        <h2 class="h2 reveal">Daily reps on <em>LeetCode.</em></h2>
-        <p class="lede reveal">Problems alongside my data structures module, pulled live from my profile.</p>
+        <span class="label mono">02 / Explore</span>
+        <h2 class="h2 reveal">Open <em>something.</em></h2>
       </div>
-
-      <div class="win lc__win reveal">
-        <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">LeetCode · hamza57</span></div>
-        <div class="win__body">
-          <div class="panel">
-            <span class="mono muted">Solved</span>
-            <span class="lc__big" data-lc="all">·</span>
-            <div class="lc__split">
-              <div class="lc__diff lc__diff--easy"><span class="mono">Easy</span><b data-lc="easy">·</b></div>
-              <div class="lc__diff lc__diff--med"><span class="mono">Medium</span><b data-lc="medium">·</b></div>
-              <div class="lc__diff lc__diff--hard"><span class="mono">Hard</span><b data-lc="hard">·</b></div>
-            </div>
-          </div>
-          <div class="panel">
-            <span class="mono muted">Recently solved</span>
-            <ol class="lc__list"></ol>
-            <a class="lc__profile mono" href="https://leetcode.com/u/hamza57/" target="_blank" rel="noopener">Full profile ↗</a>
-          </div>
-          <div class="panel lc__cal">
-            <div class="lc__cal-head">
-              <span class="mono muted" data-lc="range">Last 12 months</span>
-              <span class="mono muted"><b data-lc="days">·</b> active days</span>
-            </div>
-            <div class="lc__months mono" aria-hidden="true"></div>
-            <div class="lc__heat" role="img" aria-label="LeetCode activity over the last year"></div>
-            <div class="lc__legend mono muted">Less <i></i><i></i><i></i><i></i><i></i> More</div>
-          </div>
-        </div>
-      </div>
+      <nav class="launch" aria-label="Apps">
+          <a href="/work" class="reveal" style="--i:0"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-work" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0ff"/><stop offset="1" stop-color="#3d97f2"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-work)"/><path d="M11 19a3 3 0 0 1 3-3h9l3 3h16a3 3 0 0 1 3 3v17a3 3 0 0 1-3 3H14a3 3 0 0 1-3-3Z" fill="#fff" fill-opacity=".92"/><path d="M11 24h34" stroke="#4aa3f5" stroke-opacity=".35" stroke-width="2"/></svg><span>Work<small>Case studies</small></span></a>
+          <a href="/stats" class="reveal" style="--i:1"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-lc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34322c"/><stop offset="1" stop-color="#16150f"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-lc)"/><text x="28" y="36" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="20" fill="#ffa116">{ }</text></svg><span>Stats<small>Live numbers</small></span></a>
+          <a href="/play" class="reveal" style="--i:2"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-stack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1a8"/><stop offset="1" stop-color="#ffcf3a"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-stack)"/><rect x="15" y="34" width="26" height="7" rx="2" fill="#ff8a5c"/><rect x="17" y="26" width="23" height="7" rx="2" fill="#ffb347"/><rect x="19" y="18" width="19" height="7" rx="2" fill="#fff"/></svg><span>Stack<small>Game</small></span></a>
+          <a href="/draw" class="reveal" style="--i:3"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-draw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2619"/><stop offset="1" stop-color="#100f0a"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-draw)"/><g transform="translate(28 28)" style="mix-blend-mode:screen"><ellipse rx="12" ry="4.6" cx="10" transform="rotate(0)" fill="#ffe066" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(60)" fill="#ff8a5c" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(120)" fill="#ff7aa2" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(180)" fill="#ffe066" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(240)" fill="#ff8a5c" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(300)" fill="#ff7aa2" fill-opacity=".85"/></g></svg><span>Kaleidoscope<small>Draw</small></span></a>
+          <a href="/terminal" class="reveal" style="--i:4"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-term" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b382f"/><stop offset="1" stop-color="#12110c"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-term)"/><path d="M15 21l7 7-7 7" fill="none" stroke="#ffd84d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 36h13" stroke="#f8f1d8" stroke-width="3.4" stroke-linecap="round"/></svg><span>Terminal<small>Shell</small></span></a>
+          <a href="/about" class="reveal" style="--i:5"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-home" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3a6"/><stop offset="1" stop-color="#f5b800"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-home)"/><text x="28" y="40" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="38" fill="#2b2100">h</text></svg><span>About<small>Me</small></span></a>
+          <a href="/settings" class="reveal" style="--i:6"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-set" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c7c7cc"/><stop offset="1" stop-color="#8e8e93"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-set)"/><g transform="translate(28 28)"><circle r="13.5" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="4.2 2.9"/><circle r="9.5" fill="#8e8e93"/><circle r="4.5" fill="#fff"/></g></svg><span>Settings<small>Make it yours</small></span></a>
+          <a href="/about#contact" class="reveal" style="--i:7"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-mail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc8ff"/><stop offset="1" stop-color="#1f7cf2"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-mail)"/><rect x="12" y="17" width="32" height="22" rx="3" fill="#fff"/><path d="m13 19 15 11 15-11" fill="none" stroke="#3d97f2" stroke-width="2.4" stroke-linejoin="round"/></svg><span>Mail<small>Say hi</small></span></a>
+      </nav>
     </section>
 
-    <section class="toolkit" aria-label="Toolkit">
-      <span class="label mono toolkit__label">04 / Toolkit</span>
-      <div class="marquee" data-dir="-1">
-        <div class="marquee__inner">
-          <span>Python</span><i>✦</i><span><em>Java</em></span><i>✦</i><span>Godot</span><i>✦</i><span><em>Git &amp; GitHub</em></span><i>✦</i><span>Cloudflare</span><i>✦</i><span><em>SQL</em></span><i>✦</i>
+    <section class="section section--tight cv-auto" id="contact">
+      <div class="win cta reveal">
+        <h2>Have an idea? <em>Say hello.</em></h2>
+        <div class="cta__btns">
+          <a class="mac-btn mac-btn--primary" href="/about#contact">Write to me</a>
+          <button class="mac-btn" type="button" data-copy-email>Copy email</button>
+          <a class="mac-btn" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
-      </div>
-      <div class="marquee marquee--outline" data-dir="1">
-        <div class="marquee__inner">
-          <span>Data Structures</span><i>✦</i><span>Algorithms</span><i>✦</i><span>Object-Oriented Design</span><i>✦</i><span>Software Engineering</span><i>✦</i>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="playground">
-      <div class="section__head">
-        <span class="label mono">05 / Playground</span>
-        <h2 class="h2 reveal">Not everything needs to be <em>useful.</em></h2>
-      </div>
-      <div class="play__grid">
-        <article class="win toy reveal" data-cursor="Play" data-tilt>
-          <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">Stack.app</span></div>
-          <a class="win__body" href="/play">
-            <div class="toy__media toy__media--stack" aria-hidden="true"><div class="mini-stack"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-            <div class="toy__info">
-              <span class="mono muted">Game · Global leaderboard</span>
-              <h3 class="toy__title">Stack</h3>
-              <p class="muted">One button. Land each block on the last. Miss and it gets trimmed.</p>
-            </div>
-          </a>
-        </article>
-        <article class="win toy reveal" data-cursor="Draw" data-tilt>
-          <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">Kaleidoscope.app</span></div>
-          <a class="win__body" href="/draw">
-            <div class="toy__media toy__media--draw" aria-hidden="true"><div class="mini-kaleido"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-            <div class="toy__info">
-              <span class="mono muted">Toy</span>
-              <h3 class="toy__title">Kaleidoscope</h3>
-              <p class="muted">Every stroke is mirrored into a pattern. Save the ones you like.</p>
-            </div>
-          </a>
-        </article>
-        <article class="win toy reveal" data-cursor="Open" data-tilt>
-          <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">Terminal.app</span></div>
-          <a class="win__body" href="/terminal">
-            <div class="toy__media toy__media--term" aria-hidden="true"><pre class="mini-term"><span class="y">hamza@byhamza</span> ~ % whoami
-CS student. Builder.
-<span class="y">hamza@byhamza</span> ~ % <i></i></pre></div>
-            <div class="toy__info">
-              <span class="mono muted">Shell</span>
-              <h3 class="toy__title">Terminal</h3>
-              <p class="muted">The whole site as a command line. Type <code>help</code> to start.</p>
-            </div>
-          </a>
-        </article>
-      </div>
-    </section>
-
-    <section class="section about" id="about">
-      <div class="win about__win reveal">
-        <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">About This Hamza</span></div>
-        <div class="win__body">
-          <div class="orb" aria-hidden="true">h</div>
-          <div>
-            <h2 class="about__name">Hamza</h2>
-            <p class="about__sub">Computer Science, second year</p>
-            <dl class="specs">
-              <dt>Studying</dt><dd>BSc Computer Science</dd>
-              <dt>University</dt><dd>Aston University</dd>
-              <dt>Location</dt><dd>Birmingham, UK</dd>
-              <dt>Languages</dt><dd>Python, Java</dd>
-              <dt>Modules</dt><dd>Data structures, algorithms, OOP, software engineering</dd>
-              <dt>My time</dt><dd data-tztext="dev">···</dd>
-              <dt>Your time</dt><dd data-tztext="viewer">···</dd>
-              <dt>Favourite colour</dt><dd>Yellow</dd>
-            </dl>
-            <div class="about__btns">
-              <a class="mac-btn" href="https://www.linkedin.com/in/hamza-faisal-125833263/" target="_blank" rel="noopener">More Info…</a>
-              <a class="mac-btn" href="/settings">System Settings…</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="contact">
-      <div class="contact__grid">
-        <div>
-          <span class="label mono">06 / Contact</span>
-          <h2 class="contact__title reveal" style="margin-top:24px">Have an idea? <em>Say hello.</em></h2>
-          <div class="socials">
-            <a href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener">GitHub ↗</a>
-            <a href="https://www.linkedin.com/in/hamza-faisal-125833263/" target="_blank" rel="noopener">LinkedIn ↗</a>
-            <a href="https://leetcode.com/u/hamza57/" target="_blank" rel="noopener">LeetCode ↗</a>
-          </div>
-        </div>
-        <form class="win mail reveal" action="mailto:hello@byhamza.dev" method="get" data-mail>
-          <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">New Message</span><button class="mail__send" type="submit" aria-label="Send"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4 21 12 3.4 3.6 3.3 10l12.4 2-12.4 2Z"/></svg></button></div>
-          <div class="win__body">
-            <div class="mail__row"><span>To:</span>hello@byhamza.dev</div>
-            <label class="mail__row"><span>Subject:</span><input name="subject" type="text" placeholder="Hello" autocomplete="off"></label>
-            <textarea name="body" aria-label="Message" placeholder="Write something…"></textarea>
-            <div class="mail__foot"><button class="mac-btn mac-btn--primary" type="submit">Send</button></div>
-          </div>
-        </form>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
+  <footer class="footer cv-auto">
     <div class="footer__mark reveal" aria-label="Hamza"><span aria-hidden="true" data-chars>HAMZA</span></div>
     <div class="footer__bar mono">
       <span>© 2026 Hamza</span>
@@ -315,19 +183,18 @@ CS student. Builder.
 
   <nav class="dock" aria-label="Dock">
     <a class="dock__item " href="/" aria-current="page" aria-label="Home"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-home" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3a6"/><stop offset="1" stop-color="#f5b800"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-home)"/><text x="28" y="40" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="38" fill="#2b2100">h</text></svg></span><span class="dock__tip">Home</span></a>
-    <a class="dock__item " href="/#work" aria-label="Projects"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-work" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0ff"/><stop offset="1" stop-color="#3d97f2"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-work)"/><path d="M11 19a3 3 0 0 1 3-3h9l3 3h16a3 3 0 0 1 3 3v17a3 3 0 0 1-3 3H14a3 3 0 0 1-3-3Z" fill="#fff" fill-opacity=".92"/><path d="M11 24h34" stroke="#4aa3f5" stroke-opacity=".35" stroke-width="2"/></svg></span><span class="dock__tip">Projects</span></a>
-    <a class="dock__item " href="/#leetcode" aria-label="LeetCode"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-lc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34322c"/><stop offset="1" stop-color="#16150f"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-lc)"/><text x="28" y="36" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="20" fill="#ffa116">{ }</text></svg></span><span class="dock__tip">LeetCode</span></a>
+    <a class="dock__item " href="/work" aria-label="Work"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-work" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0ff"/><stop offset="1" stop-color="#3d97f2"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-work)"/><path d="M11 19a3 3 0 0 1 3-3h9l3 3h16a3 3 0 0 1 3 3v17a3 3 0 0 1-3 3H14a3 3 0 0 1-3-3Z" fill="#fff" fill-opacity=".92"/><path d="M11 24h34" stroke="#4aa3f5" stroke-opacity=".35" stroke-width="2"/></svg></span><span class="dock__tip">Work</span></a>
+    <a class="dock__item " href="/stats" aria-label="Stats"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-lc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34322c"/><stop offset="1" stop-color="#16150f"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-lc)"/><text x="28" y="36" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="20" fill="#ffa116">{ }</text></svg></span><span class="dock__tip">Stats</span></a>
     <a class="dock__item " href="/play" aria-label="Stack"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-stack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1a8"/><stop offset="1" stop-color="#ffcf3a"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-stack)"/><rect x="15" y="34" width="26" height="7" rx="2" fill="#ff8a5c"/><rect x="17" y="26" width="23" height="7" rx="2" fill="#ffb347"/><rect x="19" y="18" width="19" height="7" rx="2" fill="#fff"/></svg></span><span class="dock__tip">Stack</span></a>
     <a class="dock__item " href="/draw" aria-label="Kaleidoscope"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-draw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2619"/><stop offset="1" stop-color="#100f0a"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-draw)"/><g transform="translate(28 28)" style="mix-blend-mode:screen"><ellipse rx="12" ry="4.6" cx="10" transform="rotate(0)" fill="#ffe066" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(60)" fill="#ff8a5c" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(120)" fill="#ff7aa2" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(180)" fill="#ffe066" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(240)" fill="#ff8a5c" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(300)" fill="#ff7aa2" fill-opacity=".85"/></g></svg></span><span class="dock__tip">Kaleidoscope</span></a>
     <a class="dock__item " href="/terminal" aria-label="Terminal"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-term" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b382f"/><stop offset="1" stop-color="#12110c"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-term)"/><path d="M15 21l7 7-7 7" fill="none" stroke="#ffd84d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 36h13" stroke="#f8f1d8" stroke-width="3.4" stroke-linecap="round"/></svg></span><span class="dock__tip">Terminal</span></a>
-    <a class="dock__item " href="/#contact" aria-label="Mail"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-mail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc8ff"/><stop offset="1" stop-color="#1f7cf2"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-mail)"/><rect x="12" y="17" width="32" height="22" rx="3" fill="#fff"/><path d="m13 19 15 11 15-11" fill="none" stroke="#3d97f2" stroke-width="2.4" stroke-linejoin="round"/></svg></span><span class="dock__tip">Mail</span></a>
+    <a class="dock__item " href="/about#contact" aria-label="Mail"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-mail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc8ff"/><stop offset="1" stop-color="#1f7cf2"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-mail)"/><rect x="12" y="17" width="32" height="22" rx="3" fill="#fff"/><path d="m13 19 15 11 15-11" fill="none" stroke="#3d97f2" stroke-width="2.4" stroke-linejoin="round"/></svg></span><span class="dock__tip">Mail</span></a>
     <a class="dock__item dock__extra" href="/settings" aria-label="System Settings"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-set" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c7c7cc"/><stop offset="1" stop-color="#8e8e93"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-set)"/><g transform="translate(28 28)"><circle r="13.5" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="4.2 2.9"/><circle r="9.5" fill="#8e8e93"/><circle r="4.5" fill="#fff"/></g></svg></span><span class="dock__tip">System Settings</span></a>
     <span class="dock__sep dock__extra" aria-hidden="true"></span>
     <a class="dock__item dock__extra" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener" aria-label="GitHub"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-gh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4048"/><stop offset="1" stop-color="#1b1f24"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-gh)"/><circle cx="21" cy="17" r="3.6" fill="none" stroke="#fff" stroke-width="2.6"/><circle cx="21" cy="39" r="3.6" fill="none" stroke="#fff" stroke-width="2.6"/><circle cx="35" cy="23" r="3.6" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M21 20.6v14.8M35 26.6c0 6-14 5-14 9" fill="none" stroke="#fff" stroke-width="2.6"/></svg></span><span class="dock__tip">GitHub</span></a>
     <a class="dock__item dock__extra" href="https://www.linkedin.com/in/hamza-faisal-125833263/" target="_blank" rel="noopener" aria-label="LinkedIn"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-li" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d8ae6"/><stop offset="1" stop-color="#0a66c2"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-li)"/><text x="28" y="38" text-anchor="middle" font-family="Inter Tight, Arial, sans-serif" font-weight="700" font-size="24" fill="#fff">in</text></svg></span><span class="dock__tip">LinkedIn</span></a>
   </nav>
 
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js" defer></script>
   <script src="/main.js" defer></script>
   <script src="/os.js" defer></script>
 </body>

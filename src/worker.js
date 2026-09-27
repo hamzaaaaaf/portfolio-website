@@ -1,4 +1,4 @@
-// Serves /api/* (LeetCode stats, Stack leaderboard, sparks); everything
+// Serves /api/* (LeetCode and GitHub stats, Stack leaderboard, sparks); everything
 // else is a static file from public/.
 // LeetCode's API doesn't allow browser requests from other sites, so the
 // Worker fetches it server-side and caches the result for an hour.
@@ -22,6 +22,7 @@ async function leetcode(ctx) {
   if (hit) return hit;
 
   const res = await fetch('https://leetcode.com/graphql', {
+    signal: AbortSignal.timeout(6000),
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -59,6 +60,42 @@ async function leetcode(ctx) {
       'content-type': 'application/json; charset=utf-8',
       'cache-control': `public, max-age=${CACHE_SECONDS}`,
     },
+  });
+  ctx.waitUntil(cache.put(key, out.clone()));
+  return out;
+}
+
+/* ---------- GitHub (public repos and languages) ---------- */
+
+const GITHUB_USER = 'hamzaaaaaf';
+
+async function github(ctx) {
+  const cache = caches.default;
+  const key = new Request('https://byhamza.dev/api/github?v=1');
+  const hit = await cache.match(key);
+  if (hit) return hit;
+
+  const headers = { 'user-agent': 'byhamza.dev', accept: 'application/vnd.github+json' };
+  const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=pushed`, { headers, signal: AbortSignal.timeout(6000) });
+  if (!res.ok) throw new Error(`GitHub responded ${res.status}`);
+  const repos = (await res.json()).filter((r) => !r.fork);
+
+  // Byte counts per language, summed across repos.
+  const languages = {};
+  await Promise.all(repos.map(async (r) => {
+    const l = await fetch(r.languages_url, { headers, signal: AbortSignal.timeout(6000) }).catch(() => null);
+    if (!l) return;
+    if (!l.ok) return;
+    for (const [name, bytes] of Object.entries(await l.json())) languages[name] = (languages[name] || 0) + bytes;
+  }));
+
+  const body = {
+    repos: repos.map((r) => ({ name: r.name, url: r.html_url, language: r.language, pushed: r.pushed_at, stars: r.stargazers_count })),
+    languages,
+    updated: Math.floor(Date.now() / 1000),
+  };
+  const out = new Response(JSON.stringify(body), {
+    headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': `public, max-age=${CACHE_SECONDS}` },
   });
   ctx.waitUntil(cache.put(key, out.clone()));
   return out;
@@ -137,6 +174,7 @@ export default {
     const url = new URL(request.url);
     try {
       if (url.pathname === '/api/leetcode') return await leetcode(ctx);
+      if (url.pathname === '/api/github') return await github(ctx);
       if (url.pathname === '/api/scores') return await scores(request, env);
       if (url.pathname === '/api/sparks') return await sparks(request, env);
     } catch (err) {

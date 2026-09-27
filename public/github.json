@@ -1,0 +1,32 @@
+{
+  "repos": [
+    {
+      "name": "portfolio-website",
+      "url": "https://github.com/hamzaaaaaf/portfolio-website",
+      "language": "JavaScript",
+      "pushed": "2026-09-27T22:21:18Z",
+      "stars": 0
+    },
+    {
+      "name": "panic-pack-",
+      "url": "https://github.com/hamzaaaaaf/panic-pack-",
+      "language": "GDScript",
+      "pushed": "2026-09-04T01:57:19Z",
+      "stars": 0
+    },
+    {
+      "name": "instagram-post-unliker",
+      "url": "https://github.com/hamzaaaaaf/instagram-post-unliker",
+      "language": "JavaScript",
+      "pushed": "2026-08-30T15:18:17Z",
+      "stars": 0
+    }
+  ],
+  "languages": {
+    "JavaScript": 106576,
+    "HTML": 99962,
+    "CSS": 59523,
+    "GDScript": 25858
+  },
+  "updated": 0
+}
