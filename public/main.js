@@ -16,9 +16,11 @@
   }
   const scrollY = () => window.scrollY || window.pageYOffset;
 
-  $$('a[href^="#"]').forEach((a) => {
+  $$('a[href^="#"], a[href^="/#"]').forEach((a) => {
+    const href = a.getAttribute('href');
+    if (href.startsWith('/#') && page !== 'home') return;
     a.addEventListener('click', (e) => {
-      const id = a.getAttribute('href');
+      const id = href.replace(/^\//, '');
       const target = id === '#top' ? body : $(id);
       if (!target) return;
       e.preventDefault();
@@ -46,14 +48,12 @@
     loader && loader.classList.add('is-done');
     requestAnimationFrame(finishLoading);
   } else {
-    const count = loader.querySelector('.loader__count');
     lenis && lenis.stop();
-    const dur = 1700;
+    const dur = 1300;
     const start = performance.now();
     const ease = (t) => 1 - Math.pow(1 - t, 3);
     const tick = (now) => {
       const p = ease(clamp((now - start) / dur));
-      count.textContent = String(Math.round(p * 100)).padStart(3, '0');
       loader.style.setProperty('--p', p);
       if (p < 1) requestAnimationFrame(tick);
       else setTimeout(finishLoading, 180);
@@ -198,6 +198,136 @@
       .catch(() => lc.classList.add('is-offline'));
   }
 
+  /* ---------- Theme ---------- */
+  let fgRGB = '34,30,18';
+  const readTheme = () => {
+    fgRGB = getComputedStyle(root).getPropertyValue('--fg-rgb').trim().replace(/\s+/g, '') || fgRGB;
+    const meta = $('meta[name="theme-color"]');
+    if (meta) meta.content = root.dataset.theme === 'dark' ? '#15130c' : '#ffe066';
+  };
+  readTheme();
+  $$('.theme-toggle').forEach((btn) => btn.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    const apply = () => {
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch (e) { /* storage blocked */ }
+      readTheme();
+      dispatchEvent(new CustomEvent('themechange', { detail: next }));
+    };
+    if (document.startViewTransition && !reduce) document.startViewTransition(apply);
+    else apply();
+  }));
+
+  /* ---------- Toast ---------- */
+  const toastEl = $('.toast');
+  let toastTimer;
+  function toast(msg) {
+    if (!toastEl) return;
+    toastEl.querySelector('.toast__text').textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+  }
+
+  /* ---------- Window buttons ---------- */
+  const closeLines = [
+    "Nice try. Windows here don't close.",
+    'It came back. It always comes back.',
+    "You can't get rid of me that easily.",
+  ];
+  let closes = 0;
+  document.addEventListener('click', (e) => {
+    const light = e.target.closest('.light');
+    if (!light) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const win = light.closest('.win');
+    if (light.classList.contains('light--r')) {
+      win.classList.add('is-closing');
+      setTimeout(() => { win.classList.remove('is-closing'); toast(closeLines[closes++ % closeLines.length]); }, 650);
+    } else if (light.classList.contains('light--y')) {
+      win.classList.toggle('is-shaded');
+      if (win.classList.contains('app-win')) win.classList.remove('is-zoomed');
+      layout();
+    } else if (light.classList.contains('light--g')) {
+      win.classList.toggle('is-zoomed');
+      if (win.classList.contains('app-win')) setTimeout(() => dispatchEvent(new Event('resize')), 720);
+      else win.style.maxWidth = win.classList.contains('is-zoomed') ? 'none' : '';
+    }
+  }, true);
+
+  /* ---------- Draggable desktop items (hero) ---------- */
+  if (finePointer && innerWidth > 900) {
+    let z = 10;
+    $$('[data-drag]').forEach((el) => {
+      el.classList.add('is-draggable');
+      const handle = el.querySelector('.win__bar') || el;
+      let sx = 0, sy = 0, ox = 0, oy = 0, moved = false, dragging = false;
+      handle.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0 || e.target.closest('.light')) return;
+        dragging = true; moved = false;
+        sx = e.clientX; sy = e.clientY;
+        ox = Number(el.dataset.x || 0); oy = Number(el.dataset.y || 0);
+        el.style.zIndex = ++z;
+        handle.setPointerCapture(e.pointerId);
+      });
+      handle.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - sx, dy = e.clientY - sy;
+        if (!moved && Math.hypot(dx, dy) < 4) return;
+        moved = true;
+        el.classList.add('is-dragging');
+        el.dataset.x = ox + dx; el.dataset.y = oy + dy;
+        el.style.translate = `${ox + dx}px ${oy + dy}px`;
+      });
+      const stop = () => { dragging = false; el.classList.remove('is-dragging'); };
+      handle.addEventListener('pointerup', stop);
+      handle.addEventListener('pointercancel', stop);
+      // A drag shouldn't also count as a click on links like the sticky note.
+      el.addEventListener('click', (e) => { if (moved) { e.preventDefault(); moved = false; } }, true);
+    });
+  }
+
+  /* ---------- Dock ---------- */
+  const dockEl = $('.dock');
+  if (dockEl) {
+    const items = $$('.dock__item');
+    if (finePointer && !reduce) {
+      dockEl.addEventListener('pointermove', (e) => {
+        dockEl.classList.add('is-magnifying');
+        for (const it of items) {
+          const r = it.getBoundingClientRect();
+          const d = Math.abs(e.clientX - (r.left + r.width / 2));
+          it.style.setProperty('--s', (1 + 0.55 * Math.max(0, 1 - d / 150) ** 1.6).toFixed(3));
+        }
+      });
+      dockEl.addEventListener('pointerleave', () => {
+        dockEl.classList.remove('is-magnifying');
+        items.forEach((it) => it.style.setProperty('--s', 1));
+      });
+    }
+    items.forEach((it) => it.addEventListener('click', (e) => {
+      const href = it.getAttribute('href');
+      if (it.target === '_blank' || href.startsWith('/#') && page === 'home') { it.classList.add('bounce'); setTimeout(() => it.classList.remove('bounce'), 650); return; }
+      if (reduce || e.metaKey || e.ctrlKey) return;
+      e.preventDefault();
+      it.classList.add('bounce');
+      setTimeout(() => { location.href = href; }, 380);
+    }));
+  }
+
+  /* ---------- Mail ---------- */
+  const mail = $('[data-mail]');
+  if (mail) {
+    mail.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const subject = mail.subject.value.trim() || 'Hello from your website';
+      const body = mail.body.value.trim();
+      location.href = `mailto:hello@byhamza.dev?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      toast('Opening your email app…');
+    });
+  }
+
   /* ---------- Layout measurements (home) ---------- */
   const hero = $('.hero');
   const heroInner = $('.hero__inner');
@@ -288,7 +418,7 @@
       // soft spotlight so the field fades toward the text side
       const gx = (d.x - cx) / w, gy = (d.y - cy) / h;
       a *= clamp(1.25 - Math.sqrt(gx * gx + gy * gy) * 1.6, 0.25, 1);
-      ctx.fillStyle = `rgba(237,235,230,${a.toFixed(3)})`;
+      ctx.fillStyle = `rgba(${fgRGB},${(a * 0.8).toFixed(3)})`;
       ctx.fillRect(x - 0.75, y - 0.75, 1.5, 1.5);
     }
   }
@@ -311,14 +441,13 @@
     addEventListener('pointermove', (e) => { cur.tx = e.clientX; cur.ty = e.clientY; }, { passive: true });
     document.addEventListener('pointerover', (e) => {
       const view = e.target.closest('[data-cursor]');
-      const link = e.target.closest('a, button, input, label');
       cursor.classList.toggle('is-view', !!view);
-      cursor.classList.toggle('is-link', !view && !!link);
       if (view) label.textContent = view.dataset.cursor;
     });
     document.addEventListener('pointerleave', () => { cur.tx = cur.ty = -100; });
 
     $$('[data-magnetic]').forEach((el) => {
+      if (el.hasAttribute('data-drag')) return;
       el.addEventListener('pointermove', (e) => {
         const r = el.getBoundingClientRect();
         const x = e.clientX - (r.left + r.width / 2);
@@ -335,10 +464,29 @@
 
   /* ---------- Clock ---------- */
   const clocks = $$('[data-clock]');
+  const menuClocks = $$('[data-menuclock]');
   const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' });
-  const tickClock = () => { const s = fmt.format(new Date()); clocks.forEach((c) => { c.textContent = s; }); };
+  const menuFmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  const hands = $('.analog') && { h: $('.analog .h'), m: $('.analog .m'), s: $('.analog .s') };
+  const partsFmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', hour: 'numeric', minute: 'numeric', second: 'numeric', hourCycle: 'h23' });
+  const tickClock = () => {
+    const now = new Date();
+    const s = fmt.format(now);
+    clocks.forEach((c) => { c.textContent = s; });
+    const m = menuFmt.formatToParts(now).filter((p) => p.type !== 'literal').reduce((o, p) => ((o[p.type] = p.value), o), {});
+    menuClocks.forEach((c) => {
+      c.firstElementChild.textContent = `${m.weekday} ${m.day} ${m.month.slice(0, 3)} `;
+      c.lastElementChild.textContent = `${m.hour}:${m.minute}`;
+    });
+    if (hands) {
+      const t = partsFmt.formatToParts(now).reduce((o, p) => ((o[p.type] = Number(p.value)), o), {});
+      hands.s.style.transform = `rotate(${t.second * 6}deg)`;
+      hands.m.style.transform = `rotate(${t.minute * 6 + t.second * 0.1}deg)`;
+      hands.h.style.transform = `rotate(${(t.hour % 12) * 30 + t.minute * 0.5}deg)`;
+    }
+  };
   tickClock();
-  setInterval(tickClock, 15000);
+  setInterval(tickClock, 1000);
 
   /* ---------- Frame loop ---------- */
   let lastY = scrollY();

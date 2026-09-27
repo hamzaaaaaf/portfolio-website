@@ -28,13 +28,12 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x0a0a0b, 20, 40);
 
 const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
 const CAM_OFFSET = new THREE.Vector3(8, 8, 8);
 
-scene.add(new THREE.HemisphereLight(0xfff4e6, 0x1a1a22, 1.1));
-const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+scene.add(new THREE.HemisphereLight(0xffffff, 0xb3862b, 1.25));
+const sun = new THREE.DirectionalLight(0xfff6e0, 1.5);
 sun.position.set(6, 14, 4);
 sun.castShadow = true;
 sun.shadow.mapSize.set(1024, 1024);
@@ -42,8 +41,10 @@ Object.assign(sun.shadow.camera, { left: -8, right: 8, top: 8, bottom: -8, near:
 scene.add(sun, sun.target);
 
 const boxGeo = new THREE.BoxGeometry(1, 1, 1);
-let hue = 30;
-const colorFor = (i) => new THREE.Color().setHSL(((hue + i * 4.5) % 360) / 360, 0.42, 0.62);
+// Every game starts on yellow and drifts warmer (or cooler) as the tower grows.
+let hue = 48;
+let hueDir = 1;
+const colorFor = (i) => new THREE.Color().setHSL((((hue + hueDir * i * 5) % 360) + 360) % 360 / 360, 0.95, 0.6);
 
 function makeBlock(w, d, h, color) {
   const mesh = new THREE.Mesh(boxGeo, new THREE.MeshStandardMaterial({ color, roughness: 0.55, metalness: 0.05 }));
@@ -97,10 +98,11 @@ function clearScene() {
 
 function reset() {
   clearScene();
-  hue = Math.floor(Math.random() * 360);
+  hue = 44 + Math.floor(Math.random() * 10);
+  hueDir = Math.random() < 0.5 ? 1 : -1;
   document.body.style.setProperty('--hue', hue);
   // The base is a tall pillar so the tower looks like it grows out of it.
-  const base = makeBlock(START_SIZE, START_SIZE, 12, colorFor(0).offsetHSL(0, -0.1, -0.12));
+  const base = makeBlock(START_SIZE, START_SIZE, 12, colorFor(0).offsetHSL(0, 0, -0.04));
   base.position.set(0, BLOCK_H - 6, 0);
   stack.push({ mesh: base, x: 0, z: 0, w: START_SIZE, d: START_SIZE });
   combo = 0;
@@ -198,7 +200,7 @@ function place() {
   scoreEl.classList.remove('bump');
   void scoreEl.offsetWidth;
   scoreEl.classList.add('bump');
-  document.body.style.setProperty('--hue', (hue + s * 4.5) % 360);
+  document.body.style.setProperty('--hue', (((hue + hueDir * s * 5) % 360) + 360) % 360);
   spawn();
 }
 
@@ -232,7 +234,7 @@ addEventListener('keydown', (e) => {
 
 /* ---------- Loop ---------- */
 function resize() {
-  const w = innerWidth, h = innerHeight;
+  const w = canvas.clientWidth || innerWidth, h = canvas.clientHeight || innerHeight;
   renderer.setSize(w, h, false);
   // Keep the tower a comfortable size on both wide and tall screens.
   const aspect = w / h;
@@ -244,6 +246,7 @@ function resize() {
   camera.updateProjectionMatrix();
 }
 addEventListener('resize', resize);
+if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas);
 resize();
 
 const clock = new THREE.Clock();
@@ -290,8 +293,6 @@ function tick() {
   camera.lookAt(0, camY, 0);
   sun.position.set(6, camY + 14, 4);
   sun.target.position.set(0, camY, 0);
-  scene.fog.near = 20 * zoom;
-  scene.fog.far = 40 * zoom;
 
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
