@@ -2,7 +2,9 @@
   const root = document.documentElement;
   const body = document.body;
   const page = body.dataset.page || 'home';
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let prefs = {};
+  try { prefs = JSON.parse(localStorage.getItem('prefs') || '{}'); } catch (e) { /* storage blocked */ }
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || prefs.motion === 'reduce';
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -206,6 +208,7 @@
     if (meta) meta.content = root.dataset.theme === 'dark' ? '#15130c' : '#ffe066';
   };
   readTheme();
+  addEventListener('themechange', readTheme);
   $$('.theme-toggle').forEach((btn) => btn.addEventListener('click', () => {
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     const apply = () => {
@@ -228,14 +231,24 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
   }
+  window.toast = toast;
 
   /* ---------- Window buttons ---------- */
   const closeLines = [
-    "Nice try. Windows here don't close.",
-    'It came back. It always comes back.',
-    "You can't get rid of me that easily.",
+    'This window stays open.',
+    'Still here.',
+    'Try the yellow one instead.',
   ];
   let closes = 0;
+  const zoom = (win) => {
+    win.classList.toggle('is-zoomed');
+    if (win.classList.contains('app-win')) setTimeout(() => dispatchEvent(new Event('resize')), 720);
+    else win.style.maxWidth = win.classList.contains('is-zoomed') ? 'none' : '';
+  };
+  document.addEventListener('dblclick', (e) => {
+    const barEl = e.target.closest('.win__bar');
+    if (barEl && !e.target.closest('.light, button, input')) zoom(barEl.closest('.win'));
+  });
   document.addEventListener('click', (e) => {
     const light = e.target.closest('.light');
     if (!light) return;
@@ -243,16 +256,17 @@
     e.stopPropagation();
     const win = light.closest('.win');
     if (light.classList.contains('light--r')) {
-      win.classList.add('is-closing');
-      setTimeout(() => { win.classList.remove('is-closing'); toast(closeLines[closes++ % closeLines.length]); }, 650);
+      win.classList.remove('is-shaking');
+      void win.offsetWidth;
+      win.classList.add('is-shaking');
+      win.addEventListener('animationend', () => win.classList.remove('is-shaking'), { once: true });
+      toast(closeLines[closes++ % closeLines.length]);
     } else if (light.classList.contains('light--y')) {
       win.classList.toggle('is-shaded');
       if (win.classList.contains('app-win')) win.classList.remove('is-zoomed');
       layout();
     } else if (light.classList.contains('light--g')) {
-      win.classList.toggle('is-zoomed');
-      if (win.classList.contains('app-win')) setTimeout(() => dispatchEvent(new Event('resize')), 720);
-      else win.style.maxWidth = win.classList.contains('is-zoomed') ? 'none' : '';
+      zoom(win);
     }
   }, true);
 
@@ -292,7 +306,7 @@
   const dockEl = $('.dock');
   if (dockEl) {
     const items = $$('.dock__item');
-    if (finePointer && !reduce) {
+    if (finePointer && !reduce && prefs.magnify !== false) {
       dockEl.addEventListener('pointermove', (e) => {
         dockEl.classList.add('is-magnifying');
         for (const it of items) {
@@ -314,6 +328,24 @@
       it.classList.add('bounce');
       setTimeout(() => { location.href = href; }, 380);
     }));
+  }
+
+  /* ---------- Tilt ---------- */
+  if (finePointer && !reduce) {
+    $$('[data-tilt]').forEach((el) => {
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+        el.style.transition = 'transform 0.15s ease-out';
+        el.style.setProperty('--ry', `${(x * 5).toFixed(2)}deg`);
+        el.style.setProperty('--rx', `${(-y * 5).toFixed(2)}deg`);
+      });
+      el.addEventListener('pointerleave', () => {
+        el.style.transition = 'transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)';
+        el.style.setProperty('--ry', '0deg');
+        el.style.setProperty('--rx', '0deg');
+      });
+    });
   }
 
   /* ---------- Mail ---------- */
@@ -461,32 +493,6 @@
       });
     });
   }
-
-  /* ---------- Clock ---------- */
-  const clocks = $$('[data-clock]');
-  const menuClocks = $$('[data-menuclock]');
-  const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' });
-  const menuFmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-  const hands = $('.analog') && { h: $('.analog .h'), m: $('.analog .m'), s: $('.analog .s') };
-  const partsFmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', hour: 'numeric', minute: 'numeric', second: 'numeric', hourCycle: 'h23' });
-  const tickClock = () => {
-    const now = new Date();
-    const s = fmt.format(now);
-    clocks.forEach((c) => { c.textContent = s; });
-    const m = menuFmt.formatToParts(now).filter((p) => p.type !== 'literal').reduce((o, p) => ((o[p.type] = p.value), o), {});
-    menuClocks.forEach((c) => {
-      c.firstElementChild.textContent = `${m.weekday} ${m.day} ${m.month.slice(0, 3)} `;
-      c.lastElementChild.textContent = `${m.hour}:${m.minute}`;
-    });
-    if (hands) {
-      const t = partsFmt.formatToParts(now).reduce((o, p) => ((o[p.type] = Number(p.value)), o), {});
-      hands.s.style.transform = `rotate(${t.second * 6}deg)`;
-      hands.m.style.transform = `rotate(${t.minute * 6 + t.second * 0.1}deg)`;
-      hands.h.style.transform = `rotate(${(t.hour % 12) * 30 + t.minute * 0.5}deg)`;
-    }
-  };
-  tickClock();
-  setInterval(tickClock, 1000);
 
   /* ---------- Frame loop ---------- */
   let lastY = scrollY();

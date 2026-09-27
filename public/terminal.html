@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Not found · Hamza</title>
-  <meta name="description" content="This page doesn't exist.">
+  <title>Terminal · Hamza</title>
+  <meta name="description" content="The whole site as a command line.">
   <meta name="theme-color" content="#ffe066">
-  <meta property="og:title" content="Not found · Hamza">
-  <meta property="og:description" content="This page doesn't exist.">
+  <meta property="og:title" content="Terminal · Hamza">
+  <meta property="og:description" content="The whole site as a command line.">
   <meta property="og:type" content="website">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/InterTight.woff2" as="font" type="font/woff2" crossorigin>
@@ -15,9 +15,9 @@
   <link rel="stylesheet" href="/fonts.css">
   <link rel="stylesheet" href="/styles.css">
   <script>(function(){var d=document.documentElement,p={};try{p=JSON.parse(localStorage.getItem('prefs')||'{}')}catch(e){}var t;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t;d.dataset.wall=p.wall||'butter';if(p.grain===false)d.dataset.grain='off';if(p.motion==='reduce')d.dataset.motion='reduce';if(p.dock)d.style.setProperty('--dock-size',p.dock+'px');d.classList.add('js')})();</script>
-  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/apps.css">
 </head>
-<body data-page="404">
+<body class="app" data-page="terminal">
   <div class="wallpaper" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
   <div class="cursor" aria-hidden="true"><span class="cursor__label">View</span></div>
@@ -30,7 +30,7 @@
       <a class="menubar__item" href="/#leetcode">LeetCode</a>
       <a class="menubar__item" href="/play">Play</a>
       <a class="menubar__item" href="/draw">Draw</a>
-      <a class="menubar__item" href="/terminal">Terminal</a>
+      <a class="menubar__item" href="/terminal" aria-current="page">Terminal</a>
       <a class="menubar__item" href="/#contact">Contact</a>
     </div>
     <div class="menubar__right">
@@ -40,15 +40,12 @@
       <span class="menubar__clock" data-menuclock><span class="menubar__date"></span><span></span></span>
     </div>
   </header>
-  <div class="big-404" aria-hidden="true">404</div>
 
-  <main class="alert-wrap">
-    <div class="win alert" role="alertdialog" aria-labelledby="nf-title" aria-describedby="nf-desc">
-      <svg class="alert__icon" viewBox="0 0 64 64" aria-hidden="true"><path d="M28.5 8.6a4 4 0 0 1 7 0l24 42A4 4 0 0 1 56 56.6H8a4 4 0 0 1-3.5-6l24-42Z" fill="#febc2e"/><rect x="29.5" y="22" width="5" height="19" rx="2.5" fill="#3a2c00"/><circle cx="32" cy="47.5" r="3" fill="#3a2c00"/></svg>
-      <h1 id="nf-title">This page doesn't exist.</h1>
-      <p id="nf-desc">Check the address, or head somewhere that does.</p>
-      <a class="mac-btn mac-btn--primary" href="/">Go Home</a>
-      <a class="mac-btn" href="/play">Play Stack</a>
+  <main class="win app-win term-win">
+    <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">hamza · zsh · 80×24</span></div>
+    <div class="win__body term" id="term" tabindex="0" aria-label="Terminal. Type help and press enter.">
+      <div class="term__out" id="term-out" aria-live="polite"></div>
+      <label class="term__line"><span class="term__prompt"><span class="y">hamza@byhamza</span> <span class="b" id="term-cwd">~</span> %</span><input id="term-in" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Command"></label>
     </div>
   </main>
 
@@ -58,7 +55,7 @@
     <a class="dock__item " href="/#leetcode" aria-label="LeetCode"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-lc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34322c"/><stop offset="1" stop-color="#16150f"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-lc)"/><text x="28" y="36" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="20" fill="#ffa116">{ }</text></svg></span><span class="dock__tip">LeetCode</span></a>
     <a class="dock__item " href="/play" aria-label="Stack"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-stack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1a8"/><stop offset="1" stop-color="#ffcf3a"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-stack)"/><rect x="15" y="34" width="26" height="7" rx="2" fill="#ff8a5c"/><rect x="17" y="26" width="23" height="7" rx="2" fill="#ffb347"/><rect x="19" y="18" width="19" height="7" rx="2" fill="#fff"/></svg></span><span class="dock__tip">Stack</span></a>
     <a class="dock__item " href="/draw" aria-label="Kaleidoscope"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-draw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2619"/><stop offset="1" stop-color="#100f0a"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-draw)"/><g transform="translate(28 28)" style="mix-blend-mode:screen"><ellipse rx="12" ry="4.6" cx="10" transform="rotate(0)" fill="#ffe066" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(60)" fill="#ff8a5c" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(120)" fill="#ff7aa2" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(180)" fill="#ffe066" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(240)" fill="#ff8a5c" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(300)" fill="#ff7aa2" fill-opacity=".85"/></g></svg></span><span class="dock__tip">Kaleidoscope</span></a>
-    <a class="dock__item " href="/terminal" aria-label="Terminal"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-term" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b382f"/><stop offset="1" stop-color="#12110c"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-term)"/><path d="M15 21l7 7-7 7" fill="none" stroke="#ffd84d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 36h13" stroke="#f8f1d8" stroke-width="3.4" stroke-linecap="round"/></svg></span><span class="dock__tip">Terminal</span></a>
+    <a class="dock__item " href="/terminal" aria-current="page" aria-label="Terminal"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-term" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b382f"/><stop offset="1" stop-color="#12110c"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-term)"/><path d="M15 21l7 7-7 7" fill="none" stroke="#ffd84d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 36h13" stroke="#f8f1d8" stroke-width="3.4" stroke-linecap="round"/></svg></span><span class="dock__tip">Terminal</span></a>
     <a class="dock__item " href="/#contact" aria-label="Mail"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-mail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc8ff"/><stop offset="1" stop-color="#1f7cf2"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-mail)"/><rect x="12" y="17" width="32" height="22" rx="3" fill="#fff"/><path d="m13 19 15 11 15-11" fill="none" stroke="#3d97f2" stroke-width="2.4" stroke-linejoin="round"/></svg></span><span class="dock__tip">Mail</span></a>
     <a class="dock__item dock__extra" href="/settings" aria-label="System Settings"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-set" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c7c7cc"/><stop offset="1" stop-color="#8e8e93"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-set)"/><g transform="translate(28 28)"><circle r="13.5" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="4.2 2.9"/><circle r="9.5" fill="#8e8e93"/><circle r="4.5" fill="#fff"/></g></svg></span><span class="dock__tip">System Settings</span></a>
     <span class="dock__sep dock__extra" aria-hidden="true"></span>
@@ -68,5 +65,6 @@
 
   <script src="/main.js" defer></script>
   <script src="/os.js" defer></script>
+  <script src="/terminal.js" defer></script>
 </body>
 </html>
