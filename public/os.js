@@ -35,7 +35,7 @@
     p[key] = value;
     store.set('prefs', p);
     if (key === 'wall') root.dataset.wall = value;
-    if (key === 'grain') { if (value === false) root.dataset.grain = 'off'; else delete root.dataset.grain; }
+    if (key === 'grain') { if (value === true) root.dataset.grain = 'on'; else delete root.dataset.grain; }
     if (key === 'motion') { if (value === 'reduce') root.dataset.motion = 'reduce'; else delete root.dataset.motion; }
     if (key === 'dock') root.style.setProperty('--dock-size', `${value}px`);
   }
