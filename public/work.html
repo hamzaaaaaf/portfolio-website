@@ -20,7 +20,7 @@
   <link rel="preload" href="/fonts/InstrumentSerif-Italic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/fonts.css">
   <link rel="stylesheet" href="/styles.css">
-  <script>(function(){var d=document.documentElement,p={};try{p=JSON.parse(localStorage.getItem('prefs')||'{}')}catch(e){}var t;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t;d.dataset.wall=p.wall||'butter';if(p.grain===false)d.dataset.grain='off';if(p.motion==='reduce')d.dataset.motion='reduce';if(p.dock)d.style.setProperty('--dock-size',p.dock+'px');d.classList.add('js')})();</script>
+  <script>(function(){var d=document.documentElement,p={};try{p=JSON.parse(localStorage.getItem('prefs')||'{}')}catch(e){}var t;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t;d.dataset.wall=p.wall||'butter';if(p.grain===true)d.dataset.grain='on';if(p.motion==='reduce')d.dataset.motion='reduce';if(p.dock)d.style.setProperty('--dock-size',p.dock+'px');d.classList.add('js')})();</script>
 </head>
 <body data-page="work">
   <div class="wallpaper" aria-hidden="true"></div>
@@ -89,7 +89,7 @@
         <div class="project__media"><div class="art art--site"></div><span class="project__glyph">h</span></div>
         <div class="case__body">
           <h2 class="case__title">byhamza.dev</h2>
-          <div class="case__meta mono"><span>2026</span><span>HTML, CSS, JS</span><span>Workers</span><span>D1</span></div>
+          <div class="case__meta mono"><span>2026</span><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Workers</span><span>D1</span></div>
           <p>The site you're on. A small desktop in the browser: windows, a dock, a menu bar and a handful of apps, served from Cloudflare's edge with no build step.</p>
           <h4>What it does</h4>
           <ul class="points"><li>Windows with working traffic lights, a dock, Spotlight and a right-click menu</li><li>Stack, a 3D game with a global leaderboard stored in D1</li><li>A kaleidoscope, a terminal and a settings app with five wallpapers</li><li>Live LeetCode and GitHub stats fetched and cached by a Worker</li><li>Native scrolling, with motion kept to transform and opacity so it stays smooth</li></ul>
@@ -99,7 +99,7 @@
       </div>
     </article>
     </section>
-    <section class="section section--tight cv-auto">
+    <section class="section section--tight">
       <div class="win cta reveal">
         <h2>Want the <em>numbers?</em></h2>
         <div class="cta__btns"><a class="mac-btn mac-btn--primary" href="/stats">See live stats</a><a class="mac-btn" href="/play">Play Stack</a></div>

@@ -10,7 +10,7 @@
     $$('[data-set="theme"]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.val === themeChoice())));
     $$('.wallopt').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.wall === (root.dataset.wall || 'butter'))));
     const sw = (key, on) => { const el = document.querySelector(`.switch[data-set="${key}"]`); if (el) el.setAttribute('aria-checked', String(on)); };
-    sw('grain', p.grain !== false);
+    sw('grain', p.grain === true);
     sw('magnify', p.magnify !== false);
     sw('sound', p.sound !== false);
     sw('motion', p.motion === 'reduce');

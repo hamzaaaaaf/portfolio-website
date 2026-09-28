@@ -138,7 +138,6 @@
       for (let d = first, i = 0; d <= today; d++, i++) {
         const n = byDay[d] || 0;
         const cell = document.createElement('i');
-        cell.style.setProperty('--d', Math.floor(i / 7));
         if (n) {
           cell.dataset.l = n >= 8 ? 4 : n >= 5 ? 3 : n >= 2 ? 2 : 1;
           cell.title = `${n} submission${n > 1 ? 's' : ''} on ${new Date(d * 86400000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })}`;
@@ -254,12 +253,53 @@
       win.addEventListener('animationend', () => win.classList.remove('is-shaking'), { once: true });
       toast(closeLines[closes++ % closeLines.length]);
     } else if (light.classList.contains('light--y')) {
-      win.classList.toggle('is-shaded');
-      if (win.classList.contains('app-win')) win.classList.remove('is-zoomed');
+      if (win.classList.contains('is-shaded')) nudge(win);
+      else minimise(win);
     } else if (light.classList.contains('light--g')) {
-      zoom(win);
+      if (win.classList.contains('is-shaded')) restore(win);
+      else zoom(win);
     }
   }, true);
+
+  // Yellow folds the window into its title bar; green brings it back.
+  // Height only animates for the length of the click, never while scrolling.
+  const EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';
+  function minimise(win) {
+    if (win.classList.contains('is-animating')) return;
+    const body = win.querySelector('.win__body');
+    const from = win.offsetHeight;
+    const to = win.querySelector('.win__bar').offsetHeight + 2;
+    win.classList.remove('is-zoomed');
+    win.classList.add('is-animating');
+    const dur = reduce ? 1 : 460;
+    body.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(0.94) translateY(-14px)' }], { duration: dur * 0.7, easing: EASE, fill: 'forwards' });
+    win.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: dur, easing: EASE })
+      .finished.then(() => {
+        win.classList.add('is-shaded');
+        win.classList.remove('is-animating');
+        body.getAnimations().forEach((a) => a.cancel());
+        win.animate([{ transform: 'scaleY(1.06)' }, { transform: 'none' }], { duration: reduce ? 1 : 260, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
+      });
+  }
+  function restore(win) {
+    if (win.classList.contains('is-animating')) return;
+    const body = win.querySelector('.win__body');
+    const from = win.offsetHeight;
+    win.classList.remove('is-shaded');
+    const to = win.offsetHeight;
+    win.classList.add('is-animating');
+    const dur = reduce ? 1 : 480;
+    body.animate([{ opacity: 0, transform: 'scale(0.96) translateY(-10px)' }, { opacity: 1, transform: 'none' }], { duration: dur, easing: EASE });
+    win.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: dur, easing: EASE })
+      .finished.then(() => {
+        win.classList.remove('is-animating');
+        if (win.classList.contains('app-win')) dispatchEvent(new Event('resize'));
+      });
+  }
+  function nudge(win) {
+    win.animate([{ transform: 'none' }, { transform: 'translateY(-4px)' }, { transform: 'none' }], { duration: 260, easing: 'ease-out' });
+    toast('Use the green button to restore it.');
+  }
 
   /* ---------- Draggable desktop items (hero) ---------- */
   if (finePointer && innerWidth > 900) {
@@ -324,6 +364,8 @@
   /* ---------- Tilt ---------- */
   if (finePointer && !reduce) {
     $$('[data-tilt]').forEach((el) => {
+      let off;
+      el.addEventListener('pointerenter', () => { clearTimeout(off); el.classList.add('is-tilting'); });
       el.addEventListener('pointermove', (e) => {
         const r = el.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
@@ -335,6 +377,7 @@
         el.style.transition = 'transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)';
         el.style.setProperty('--ry', '0deg');
         el.style.setProperty('--rx', '0deg');
+        off = setTimeout(() => el.classList.remove('is-tilting'), 900);
       });
     });
   }
@@ -485,7 +528,8 @@
   let scrolling = 0;
   addEventListener('scroll', () => { scrolling = performance.now(); }, { passive: true });
   function frame(t) {
-    if (canvas && heroVisible && !reduce && !document.hidden && t - scrolling > 140) drawField(t);
+    // Only animate while the hero is essentially in place at the top.
+    if (canvas && heroVisible && !reduce && !document.hidden && t - scrolling > 140 && scrollY < innerHeight * 0.2) drawField(t);
     if (cursorOn || Math.abs(cur.x - cur.tx) > 0.5) {
       cur.x = lerp(cur.x, cur.tx, 0.22);
       cur.y = lerp(cur.y, cur.ty, 0.22);
