@@ -14,6 +14,7 @@
     sw('magnify', p.magnify !== false);
     sw('sound', p.sound !== false);
     sw('motion', p.motion === 'reduce');
+    sw('live', p.live !== false);
     const dock = document.querySelector('[data-set="dock"]');
     if (dock) dock.value = p.dock || 50;
   }
@@ -29,7 +30,7 @@
     const key = b.dataset.set;
     if (key === 'motion') OS.setPref('motion', on ? 'reduce' : 'full');
     else OS.setPref(key, on);
-    if (key === 'magnify' || key === 'motion') window.toast && window.toast('Takes effect on the next page.');
+    if (key === 'magnify' || key === 'motion' || key === 'live') window.toast && window.toast('Takes effect on the next page.');
     sync();
   }));
   const dock = document.querySelector('[data-set="dock"]');

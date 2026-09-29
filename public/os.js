@@ -34,7 +34,7 @@
     }
     p[key] = value;
     store.set('prefs', p);
-    if (key === 'wall') root.dataset.wall = value;
+    if (key === 'wall') { root.dataset.wall = value; achieve('decorator'); }
     if (key === 'grain') { if (value === true) root.dataset.grain = 'on'; else delete root.dataset.grain; }
     if (key === 'motion') { if (value === 'reduce') root.dataset.motion = 'reduce'; else delete root.dataset.motion; }
     if (key === 'dock') root.style.setProperty('--dock-size', `${value}px`);
@@ -48,9 +48,115 @@
   function toggleTheme() {
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     const apply = () => setPref('theme', next);
+    if (next === 'dark') achieve('darkside');
     if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(apply);
     else apply();
   }
+
+  /* ---------- Achievements ---------- */
+  const ACHIEVEMENTS = [
+    { id: 'hello', i: '👋', t: 'Hello, world', d: 'Open byhamza.dev for the first time.' },
+    { id: 'explorer', i: '🧭', t: 'Explorer', d: 'Visit every page on the site.' },
+    { id: 'gamer', i: '🕹️', t: 'Gamer', d: 'Open the Games folder in Finder.' },
+    { id: 'spotlight', i: '🔍', t: 'Seeker', d: 'Open Spotlight.' },
+    { id: 'darkside', i: '🌙', t: 'Dark side', d: 'Switch to dark mode.' },
+    { id: 'decorator', i: '🎨', t: 'Interior designer', d: 'Change the wallpaper.' },
+    { id: 'tidy', i: '🟡', t: 'Tidy', d: 'Minimise a window.' },
+    { id: 'spark', i: '✦', t: 'Spark', d: 'Leave a spark.' },
+    { id: 'stack10', i: '🧱', t: 'Builder', d: 'Stack 10 blocks.' },
+    { id: 'stack20', i: '🏗️', t: 'Skyscraper', d: 'Stack 20 blocks.' },
+    { id: 'perfect5', i: '🎯', t: 'Precision', d: 'Land 5 perfect drops in a row.' },
+    { id: 'wpm60', i: '⌨️', t: 'Quick fingers', d: 'Type 60 wpm or faster.' },
+    { id: 'wpm100', i: '⚡', t: 'Blazing', d: 'Type 100 wpm or faster.' },
+    { id: 'artist', i: '🖌️', t: 'Artist', d: 'Save a kaleidoscope drawing.' },
+    { id: 'signer', i: '✍️', t: 'Signed', d: 'Sign the guestbook.' },
+    { id: 'hacker', i: '💻', t: 'Hacker', d: 'Run hamzafetch in the terminal.' },
+    { id: 'company', i: '👥', t: 'Company', d: 'See another visitor’s cursor.' },
+    { id: 'nightowl', i: '🦉', t: 'Night owl', d: 'Visit between midnight and 5am.' },
+    { id: 'persistent', i: '🔴', t: 'Persistent', d: 'Try to close a window three times.', secret: true },
+    { id: 'sudo', i: '🚫', t: 'Nice try', d: 'Try sudo in the terminal.', secret: true },
+    { id: 'konami', i: '🎮', t: 'Old school', d: 'Enter the Konami code.', secret: true },
+    { id: 'creeper', i: '💥', t: 'Aw man', d: 'Type the word creeper anywhere.', secret: true },
+    { id: 'clicker', i: '🌀', t: 'Spin cycle', d: 'Click the logo five times.', secret: true },
+  ];
+  const achieved = () => store.get('achievements', {});
+  const notifs = document.createElement('div');
+  notifs.className = 'notifs';
+  notifs.setAttribute('aria-live', 'polite');
+  document.body.appendChild(notifs);
+  let chime;
+  function achieve(id) {
+    const a = ACHIEVEMENTS.find((x) => x.id === id);
+    const got = achieved();
+    if (!a || got[id]) return;
+    got[id] = Date.now();
+    store.set('achievements', got);
+    const n = document.createElement('a');
+    n.className = 'notif';
+    n.href = '/finder#achievements';
+    n.innerHTML = `<span class="notif__badge">${a.i}</span><span><small>Achievement unlocked</small><b>${a.t}</b><span>${a.d}</span></span>`;
+    notifs.appendChild(n);
+    setTimeout(() => { n.classList.add('out'); setTimeout(() => n.remove(), 500); }, 4200);
+    if (prefs().sound !== false) {
+      try {
+        chime = chime || new (window.AudioContext || window.webkitAudioContext)();
+        [660, 880, 1320].forEach((f, k) => {
+          const t = chime.currentTime + k * 0.09, o = chime.createOscillator(), g = chime.createGain();
+          o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+          o.connect(g).connect(chime.destination); o.start(t); o.stop(t + 0.36);
+        });
+      } catch (e) { /* no audio */ }
+    }
+    dispatchEvent(new CustomEvent('achievement', { detail: id }));
+  }
+  // Page visits, first visit, night owl.
+  const PAGES = ['home', 'work', 'stats', 'finder', 'about', 'play', 'draw', 'type', 'terminal', 'guestbook', 'settings'];
+  const visited = store.get('visited', []);
+  if (!visited.includes(page)) { visited.push(page); store.set('visited', visited); }
+  setTimeout(() => {
+    achieve('hello');
+    if (PAGES.every((p) => visited.includes(p))) achieve('explorer');
+    const h = new Date().getHours();
+    if (h < 5) achieve('nightowl');
+  }, 1400);
+
+  /* ---------- Easter eggs ---------- */
+  // Click the logo five times quickly.
+  let logoClicks = [], typedBuf = '';
+  document.addEventListener('click', (e) => {
+    const logo = e.target.closest('.menubar__logo');
+    if (!logo) return;
+    const now = Date.now();
+    logoClicks = logoClicks.filter((t) => now - t < 1500).concat(now);
+    if (logoClicks.length >= 5) {
+      logoClicks = [];
+      logo.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(720deg)' }], { duration: 900, easing: 'cubic-bezier(0.34,1.56,0.64,1)' });
+      achieve('clicker');
+    }
+  });
+  // Typing "creeper" anywhere outside a text field.
+  function creeper() {
+    const face = document.createElement('div');
+    face.className = 'creeper';
+    face.innerHTML = '<i></i><i></i><i></i><i></i><i></i><i></i>';
+    document.body.appendChild(face);
+    setTimeout(() => {
+      document.body.animate([{ transform: 'translate(0,0)' }, { transform: 'translate(-10px,6px)' }, { transform: 'translate(9px,-7px)' }, { transform: 'translate(-6px,-4px)' }, { transform: 'translate(0,0)' }], { duration: 420 });
+      face.classList.add('boom');
+      setTimeout(() => face.remove(), 700);
+      toast('Sssss… boom.');
+      achieve('creeper');
+    }, 1500);
+  }
+  addEventListener('keydown', (e) => {
+    if (e.target.closest && e.target.closest('input, textarea, [contenteditable]')) return;
+    if (e.key.length !== 1) return;
+    typedBuf = (typedBuf + e.key.toLowerCase()).slice(-7);
+    if (typedBuf === 'creeper') { typedBuf = ''; creeper(); }
+  });
+  // A visitor on a Friday the 13th gets a whisper.
+  const today = new Date();
+  if (today.getDay() === 5 && today.getDate() === 13) setTimeout(() => toast('Ki ki ki… ma ma ma. Happy Friday the 13th.'), 2500);
 
   /* ---------- Time zones ---------- */
   const DEV_TZ = 'Europe/London';
@@ -153,6 +259,7 @@
 
   const hmenu = makeMenu('hmenu', `
     <button data-act="about">About This Hamza</button>
+    <a href="/finder#achievements">Achievements…</a>
     <hr>
     <button data-act="settings">System Settings…</button>
     <button data-act="terminal">Terminal</button>
@@ -170,6 +277,27 @@
       logoBtn.setAttribute('aria-expanded', String(isOpen(hmenu)));
     });
     hmenu.addEventListener('toggle', (e) => logoBtn.setAttribute('aria-expanded', String(e.newState === 'open')));
+  }
+
+  const appsmenu = makeMenu('appsmenu', `
+    <a href="/finder">Finder <kbd>G F</kbd></a>
+    <hr>
+    <a href="/play">Stack <kbd>G P</kbd></a>
+    <a href="/type">Typing Test <kbd>G K</kbd></a>
+    <a href="/draw">Kaleidoscope <kbd>G D</kbd></a>
+    <a href="/guestbook">Guestbook <kbd>G B</kbd></a>
+    <hr>
+    <a href="/terminal">Terminal <kbd>G T</kbd></a>
+    <a href="/settings">System Settings…</a>`);
+  const appsBtn = $('[data-menu="appsmenu"]');
+  if (appsBtn) {
+    appsBtn.addEventListener('click', () => {
+      const r = appsBtn.getBoundingClientRect();
+      if (isOpen(appsmenu)) hideMenu(appsmenu);
+      else showMenu(appsmenu, r.left, r.bottom + 4);
+      appsBtn.setAttribute('aria-expanded', String(isOpen(appsmenu)));
+    });
+    appsmenu.addEventListener('toggle', (e) => appsBtn.setAttribute('aria-expanded', String(e.newState === 'open')));
   }
 
   const ctx = makeMenu('ctxmenu', `
@@ -280,6 +408,7 @@
     }
   }
   function spark(e) {
+    achieve('spark');
     const b = e && e.currentTarget;
     const r = b ? b.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight / 2, width: 0, height: 0 };
     burst(r.left + r.width / 2, r.top + r.height / 2);
@@ -375,6 +504,7 @@
   });
   const runSel = (i) => { const e = results[i]; if (!e) return; spot.close(); setTimeout(() => e.run(), 60); };
   function openSpot() {
+    achieve('spotlight');
     if (spot.open) return;
     spotIn.value = '';
     renderSpot();
@@ -400,6 +530,8 @@
     <button data-go="spot">Spotlight <kbd>⌘K</kbd></button>
     <button data-go="/">Home <kbd>G H</kbd></button>
     <button data-go="/work">Work <kbd>G W</kbd></button>
+    <button data-go="/finder">Finder <kbd>G F</kbd></button>
+    <button data-go="/guestbook">Guestbook <kbd>G B</kbd></button>
     <button data-go="/stats">Stats <kbd>G S</kbd></button>
     <button data-go="/play">Stack <kbd>G P</kbd></button>
     <button data-go="/draw">Kaleidoscope <kbd>G D</kbd></button>
@@ -415,7 +547,7 @@
     if (g === 'spot') openSpot(); else if (g === 'theme') toggleTheme(); else go(g);
   });
   function shortcuts() { showMenu(sheet, innerWidth / 2 - 130, innerHeight / 2 - 170); }
-  const GO = { h: '/', w: '/work', s: '/stats', p: '/play', d: '/draw', k: '/type', t: '/terminal', a: '/about' };
+  const GO = { h: '/', w: '/work', s: '/stats', f: '/finder', p: '/play', d: '/draw', k: '/type', b: '/guestbook', t: '/terminal', a: '/about' };
   let gPending = 0;
   addEventListener('keydown', (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -435,7 +567,7 @@
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); spot.open ? spot.close() : openSpot(); return; }
     if (!typing && e.key === '/' && page !== 'terminal') { e.preventDefault(); openSpot(); return; }
     kpos = e.key === KONAMI[kpos] || e.key.toLowerCase() === KONAMI[kpos] ? kpos + 1 : (e.key === KONAMI[0] ? 1 : 0);
-    if (kpos === KONAMI.length) { kpos = 0; confetti(); toast('You found the secret. ✦'); }
+    if (kpos === KONAMI.length) { kpos = 0; confetti(); toast('You found the secret. ✦'); achieve('konami'); }
   });
 
   /* ---------- Confetti (yellow blocks) ---------- */
@@ -465,5 +597,77 @@
   }
   window.confetti = confetti;
 
-  window.OS = { prefs, setPref, toggleTheme, cycleWallpaper, WALLS, sleep, restart, shutdown, spark, confetti, openSpotlight: openSpot, newSticky };
+  /* ---------- Live cursors ---------- */
+  // Other visitors on the same page, relayed through a Durable Object.
+  if (prefs().live !== false && 'WebSocket' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const layer = document.createElement('div');
+    layer.className = 'cursors';
+    layer.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(layer);
+    const here = document.createElement('span');
+    here.className = 'here';
+    here.hidden = true;
+    const right = $('.menubar__right');
+    if (right) right.prepend(here);
+    const others = new Map();
+    let ws, retry = 1500, lastSend = 0, queued = null;
+    const setCount = (n) => {
+      here.hidden = !(n > 1);
+      here.innerHTML = `<i></i>${n - 1} other${n - 1 === 1 ? '' : 's'} here`;
+      here.title = 'Other people looking at this page right now';
+    };
+    const drop = (id) => { const o = others.get(id); if (o) { o.el.remove(); clearTimeout(o.timer); others.delete(id); } };
+    function show(d) {
+      let o = others.get(d.id);
+      if (!o) {
+        const el = document.createElement('div');
+        el.className = 'rcursor';
+        el.style.setProperty('--c', d.c);
+        el.innerHTML = `<svg viewBox="0 0 16 20"><path d="M1 1l13 9.5-5.6 1L11 18l-2.6 1.2L5.9 12.6 1 16z" fill="var(--c)" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg><span>${d.n}</span>`;
+        layer.appendChild(el);
+        o = { el };
+        others.set(d.id, o);
+        achieve('company');
+      }
+      o.el.style.transform = `translate(${(d.x * 100).toFixed(2)}vw, ${d.y}px)`;
+      o.el.classList.remove('idle');
+      clearTimeout(o.timer);
+      o.timer = setTimeout(() => o.el.classList.add('idle'), 8000);
+    }
+    function send(msg) { if (ws && ws.readyState === 1) ws.send(JSON.stringify(msg)); }
+    function connect() {
+      if (document.hidden) return;
+      const room = location.pathname.replace(/\.html$/, '') || '/';
+      ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/api/live?room=${encodeURIComponent(room)}`);
+      ws.onopen = () => { retry = 1500; };
+      ws.onmessage = (e) => {
+        let d; try { d = JSON.parse(e.data); } catch (err) { return; }
+        if (d.t === 'hi' || d.t === 'count') setCount(d.count);
+        else if (d.t === 'm') show(d);
+        else if (d.t === 'bye') { drop(d.id); if (d.count) setCount(d.count); }
+      };
+      ws.onclose = () => {
+        others.forEach((_, id) => drop(id));
+        setCount(0);
+        ws = null;
+        if (!document.hidden) setTimeout(connect, (retry = Math.min(retry * 2, 30000)));
+      };
+    }
+    // At most ten updates a second, and nothing while the tab is hidden.
+    addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'touch') return;
+      queued = { t: 'm', x: e.clientX / innerWidth, y: Math.round(e.clientY + scrollY) };
+      const now = performance.now();
+      if (now - lastSend > 100) { send(queued); queued = null; lastSend = now; }
+    }, { passive: true });
+    setInterval(() => { if (queued) { send(queued); queued = null; lastSend = performance.now(); } }, 120);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { send({ t: 'bye' }); if (ws) ws.close(); }
+      else if (!ws) connect();
+    });
+    addEventListener('pagehide', () => send({ t: 'bye' }));
+    setTimeout(connect, 600);
+  }
+
+  window.OS = { ACHIEVEMENTS, achieve, achieved, prefs, setPref, toggleTheme, cycleWallpaper, WALLS, sleep, restart, shutdown, spark, confetti, openSpotlight: openSpot, newSticky };
 })();

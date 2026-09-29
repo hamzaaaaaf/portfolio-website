@@ -251,6 +251,7 @@ function place() {
 
   const s = score();
   scoreEl.textContent = s;
+  if (window.OS) { if (s >= 10) window.OS.achieve('stack10'); if (s >= 20) window.OS.achieve('stack20'); if (combo >= 5) window.OS.achieve('perfect5'); }
   bestEl.textContent = Math.max(best, s);
   scoreEl.classList.remove('bump');
   void scoreEl.offsetWidth;

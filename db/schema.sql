@@ -17,3 +17,7 @@ INSERT OR IGNORE INTO counters (key, value) VALUES ('sparks', 0);
 -- Recent actions per visitor, for rate limiting. Rows older than a day are pruned.
 CREATE TABLE IF NOT EXISTS hits (who TEXT NOT NULL, action TEXT NOT NULL, ts INTEGER NOT NULL);
 CREATE INDEX IF NOT EXISTS hits_lookup ON hits (who, action, ts);
+
+-- Guestbook entries wait for approval (approved = 1) before they are shown.
+CREATE TABLE IF NOT EXISTS guestbook (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, message TEXT NOT NULL DEFAULT '', drawing TEXT NOT NULL, created INTEGER NOT NULL, who TEXT NOT NULL, approved INTEGER NOT NULL DEFAULT 0);
+CREATE INDEX IF NOT EXISTS guestbook_wall ON guestbook (approved, created DESC);

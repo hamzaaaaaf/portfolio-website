@@ -8,15 +8,20 @@ My personal site: a small desktop in the browser. Live at **[byhamza.dev](https:
 - **Kaleidoscope** (`/draw`): symmetric drawing with ink and glow brushes, PNG export.
 - **Terminal** (`/terminal`): the site as a command line. Try `help`, `hamzafetch` or `leetcode`.
 - **System Settings** (`/settings`): light, dark or auto, five wallpapers, dock size, sound and reduced motion.
-- **LeetCode**: live solved counts, a yearly heatmap and recent problems.
+- **Finder** (`/finder`): projects, favourite games and films, apps and achievements, with Quick Look.
+- **Typing Test** (`/type`): time, words and code modes with a global leaderboard.
+- **Guestbook** (`/guestbook`): draw and sign the wall. Entries are held for approval at `/review`.
+- **Live cursors**: see other visitors on the same page, relayed by a Durable Object.
+- **Achievements**: 23 of them, some secret.
+- **Stats** (`/stats`): live LeetCode and GitHub numbers.
 
 ## Stack
 
-Plain HTML, CSS and JavaScript with no build step. Three.js for the game and Lenis for smooth scrolling. Hosted on Cloudflare Workers with static assets, with D1 for the leaderboard.
+Plain HTML, CSS and JavaScript with no build step. Three.js for the game, native scrolling with CSS scroll-driven animations. Hosted on Cloudflare Workers with static assets, D1 for leaderboards and the guestbook, and a Durable Object for live cursors.
 
 ```
 public/        the site (served as static files)
-src/worker.js  /api/leetcode, /api/scores, /api/sparks
+src/worker.js  /api/leetcode, /api/github, /api/scores, /api/sparks, /api/guestbook, /api/live
 db/schema.sql  D1 tables
 ```
 
@@ -28,3 +33,7 @@ npx wrangler dev
 ```
 
 Pushing to `main` deploys automatically.
+
+## Guestbook moderation
+
+Set a secret named `ADMIN_KEY` on the Worker (Workers & Pages → portfolio-website → Settings → Variables and Secrets), then open `/review` and enter it to approve or delete entries.

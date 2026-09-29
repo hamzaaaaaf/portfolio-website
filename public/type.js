@@ -227,6 +227,7 @@
     const raw = Math.round(typed.length / 5 / (sec / 60));
     const acc = keystrokes ? Math.round((correctKeys / keystrokes) * 100) : 0;
     samples.push(wpm);
+    if (window.OS && acc >= 85) { if (wpm >= 60) window.OS.achieve('wpm60'); if (wpm >= 100) window.OS.achieve('wpm100'); }
     els.rWpm.textContent = wpm;
     els.rAcc.textContent = `${acc}%`;
     els.rRaw.textContent = raw;
