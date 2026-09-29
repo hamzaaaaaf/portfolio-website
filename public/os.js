@@ -311,6 +311,7 @@
     { g: 'Pages', t: 'About', k: 'about me info university aston now timeline', run: () => go('/about'), i: ICON('radial-gradient(circle at 30% 30%,#fffbe0,#f5b800)', '<i style="font:italic 16px Instrument Serif,serif;color:#3a2c00">h</i>') },
     { g: 'Pages', t: 'Contact', k: 'email mail hello message', run: () => go('/about#contact'), i: ICON('linear-gradient(#7cc8ff,#1f7cf2)', '✉') },
     { g: 'Apps', t: 'Stack', k: 'game play blocks leaderboard', run: () => go('/play'), i: ICON('linear-gradient(#fff1a8,#ffcf3a)', '<b style="color:#ff8a5c">≡</b>') },
+    { g: 'Apps', t: 'Typing Test', k: 'type speed wpm keyboard words code', run: () => go('/type'), i: ICON('linear-gradient(#ffe27a,#f5b800)', '<b style="color:#3a2c00">⌨</b>') },
     { g: 'Apps', t: 'Kaleidoscope', k: 'draw paint art', run: () => go('/draw'), i: ICON('#1c1a12', '<b style="color:#ffd84d">✺</b>') },
     { g: 'Apps', t: 'Terminal', k: 'shell command line zsh cli', run: () => go('/terminal'), i: ICON('#1c1a12', '<b style="color:#ffd84d;font-family:monospace">&gt;_</b>') },
     { g: 'Apps', t: 'System Settings', k: 'preferences wallpaper dock theme', run: () => go('/settings'), i: ICON('linear-gradient(#c7c7cc,#8e8e93)', '⚙') },
@@ -402,6 +403,7 @@
     <button data-go="/stats">Stats <kbd>G S</kbd></button>
     <button data-go="/play">Stack <kbd>G P</kbd></button>
     <button data-go="/draw">Kaleidoscope <kbd>G D</kbd></button>
+    <button data-go="/type">Typing Test <kbd>G K</kbd></button>
     <button data-go="/terminal">Terminal <kbd>G T</kbd></button>
     <button data-go="/about">About <kbd>G A</kbd></button>
     <button data-go="theme">Toggle dark mode <kbd>⇧D</kbd></button>`);
@@ -413,12 +415,12 @@
     if (g === 'spot') openSpot(); else if (g === 'theme') toggleTheme(); else go(g);
   });
   function shortcuts() { showMenu(sheet, innerWidth / 2 - 130, innerHeight / 2 - 170); }
-  const GO = { h: '/', w: '/work', s: '/stats', p: '/play', d: '/draw', t: '/terminal', a: '/about' };
+  const GO = { h: '/', w: '/work', s: '/stats', p: '/play', d: '/draw', k: '/type', t: '/terminal', a: '/about' };
   let gPending = 0;
   addEventListener('keydown', (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.target.closest && e.target.closest('input, textarea, [contenteditable], dialog')) return;
-    if (page === 'play' || page === 'terminal') return;
+    if (page === 'play' || page === 'terminal' || page === 'type') return;
     const k = e.key.toLowerCase();
     if (e.key === '?') { e.preventDefault(); shortcuts(); return; }
     if (e.key === 'D' && e.shiftKey) { toggleTheme(); return; }
