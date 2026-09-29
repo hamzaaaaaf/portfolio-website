@@ -2,15 +2,15 @@
 
 My personal site: a small desktop in the browser. Live at **[byhamza.dev](https://byhamza.dev)**.
 
-- **Desktop**: menu bar, dock with magnification, draggable windows with working traffic lights, sticky notes and a right-click menu.
+- **Desktop**: the home page is a Mac desktop. Widgets, icons you can select, drag and double-click, rubber-band selection, draggable windows, sticky notes and a right-click menu.
+- **Windows**: every page is a window. Red closes it back to the desktop, yellow minimises, green zooms. Anything that can't be done shakes.
 - **Spotlight** (<kbd>⌘</kbd><kbd>K</kbd>): jump anywhere, run actions, do quick maths.
-- **Stack** (`/play`): a one-button 3D stacking game with a global leaderboard.
 - **Kaleidoscope** (`/draw`): symmetric drawing with ink and glow brushes, PNG export.
 - **Terminal** (`/terminal`): the site as a command line. Try `help`, `hamzafetch` or `leetcode`.
 - **System Settings** (`/settings`): light, dark or auto, five wallpapers, dock size, sound and reduced motion.
 - **Finder** (`/finder`): projects, favourite games and films, apps and achievements, with Quick Look.
 - **Typing Test** (`/type`): time, words and code modes with a global leaderboard.
-- **Arcade** (`/arcade`): Snake and Breakout on a CRT, each with a global leaderboard.
+- **Arcade** (`/arcade`): every game in one place. Snake and Breakout on a CRT, plus Stack (a 3D stacking game), the typing test and Would You Rather, all with global leaderboards.
 - **Would You Rather** (`/wyr`): pick between two of 168 games. Every vote feeds an Elo ranking.
 - **Guestbook** (`/guestbook`): draw and sign the wall. Entries are held for approval at `/review`.
 - **Live cursors**: see other visitors on the same page, relayed by a Durable Object.

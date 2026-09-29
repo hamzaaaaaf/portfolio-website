@@ -4,57 +4,122 @@
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const set = (k, v) => $$(`[data-live="${k}"]`).forEach((el) => { el.textContent = v; });
   const getJSON = (u) => fetch(u, { signal: AbortSignal.timeout(7000) }).then((r) => (r.ok ? r.json() : Promise.reject(r.status)));
-  const facts = [];
 
-  /* ---------- Live tiles ---------- */
-  const lc = getJSON('/api/leetcode').catch(() => getJSON('/leetcode.json')).then((d) => {
-    set('lc', d.solved.All);
-    set('lcsub', `${d.solved.Easy} easy · ${d.solved.Medium} medium · ${d.solved.Hard} hard`);
-    facts.push(`${d.solved.All} LeetCode problems solved`);
-  }).catch(() => {});
-  const stack = getJSON('/api/scores?game=stack').then(({ scores }) => {
+  /* ---------- Widgets ---------- */
+  getJSON('/api/leetcode').catch(() => getJSON('/leetcode.json')).then((d) => set('lc', d.solved.All)).catch(() => {});
+  getJSON('/api/scores?game=stack').then(({ scores }) => {
     const t = scores[0];
     set('stack', t ? t.score : 0);
-    set('stackby', t ? `by ${t.name} · can you beat it?` : 'No record yet. Set one.');
-    if (t) facts.push(`Stack record: ${t.score} by ${t.name}`);
+    set('stackby', t ? `by ${t.name}` : 'Set the first one');
   }).catch(() => {});
-  const type = getJSON('/api/scores?game=type').then(({ scores }) => {
+  getJSON('/api/scores?game=type').then(({ scores }) => {
     const t = scores[0];
     set('type', t ? t.score : 0);
-    set('typeby', t ? `wpm by ${t.name}` : 'wpm · be the first');
-    if (t) facts.push(`Typing record: ${t.score} wpm by ${t.name}`);
+    set('typeby', t ? `wpm by ${t.name}` : 'wpm');
   }).catch(() => {});
-  const guest = getJSON('/api/guestbook').then(({ entries }) => {
+  getJSON('/api/guestbook').then(({ entries }) => {
     const e = entries[0];
     if (!e) return;
     $('[data-live="guest"]').innerHTML = `<img src="${e.drawing}" alt="Drawing by ${esc(e.name)}" width="300" height="300">`;
-    set('guestby', `by ${e.name}${e.message ? `: “${e.message}”` : ''}`);
-    facts.push(`${entries.length} drawing${entries.length === 1 ? '' : 's'} on the guestbook wall`);
-  }).catch(() => {});
-  const votes = getJSON('/api/wyr/top').then((d) => {
-    if (d.votes) facts.push(`${d.votes.toLocaleString('en-GB')} Would You Rather votes`);
-    if (d.top[0]) facts.push(`Most loved game right now: ${d.top[0].game.replace(/-/g, ' ')}`);
+    set('guestby', `by ${e.name}`);
   }).catch(() => {});
 
-  /* ---------- Ticker ---------- */
-  Promise.allSettled([lc, stack, type, guest, votes]).then(() => {
-    const track = $('[data-ticker]');
-    if (!track || !facts.length) return;
-    const extra = facts.map((f) => `<span>${esc(f)}</span>`).join('');
-    track.innerHTML = extra + track.innerHTML;
-    track.innerHTML += track.innerHTML;
+  /* ---------- Desktop icons ---------- */
+  // Click selects, double-click opens, drag moves. On touch a tap opens.
+  const desk = $('[data-desktop]');
+  const iconBox = $('.icons');
+  const icons = $$('.dicon');
+  const free = matchMedia('(min-width: 901px) and (min-height: 621px) and (pointer: fine)');
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem('icon-pos') || '{}'); } catch (e) { /* storage blocked */ }
+  const place = (el, x, y) => { el.dataset.x = x; el.dataset.y = y; el.style.translate = `${x}px ${y}px`; };
+  const unplace = (el) => { delete el.dataset.x; delete el.dataset.y; el.style.translate = ''; };
+  const applySaved = () => icons.forEach((el) => {
+    const p = saved[el.dataset.icon];
+    if (free.matches && p) place(el, p[0], p[1]); else unplace(el);
+  });
+  applySaved();
+  free.addEventListener('change', applySaved);
+  const select = (list) => icons.forEach((el) => el.classList.toggle('is-selected', list.includes(el)));
+
+  icons.forEach((el) => {
+    let sx, sy, ox, oy, moved = false, down = false;
+    el.addEventListener('pointerdown', (e) => {
+      if (!free.matches || e.button !== 0) return;
+      down = true; moved = false;
+      sx = e.clientX; sy = e.clientY;
+      ox = Number(el.dataset.x || 0); oy = Number(el.dataset.y || 0);
+      if (!el.classList.contains('is-selected')) select([el]);
+      el.setPointerCapture(e.pointerId);
+    });
+    el.addEventListener('pointermove', (e) => {
+      if (!down) return;
+      const dx = e.clientX - sx, dy = e.clientY - sy;
+      if (!moved && Math.hypot(dx, dy) < 4) return;
+      moved = true;
+      el.classList.add('is-dragging');
+      place(el, ox + dx, oy + dy);
+    });
+    const up = () => {
+      if (!down) return;
+      down = false;
+      el.classList.remove('is-dragging');
+      if (!moved) return;
+      // Keep icons on the desktop and clear of the Dock.
+      const r = el.getBoundingClientRect(), d = desk.getBoundingClientRect();
+      const fx = Math.min(0, d.right - r.right) + Math.max(0, d.left - r.left);
+      const fy = Math.min(0, d.bottom - 90 - r.bottom) + Math.max(0, d.top - r.top);
+      place(el, Number(el.dataset.x) + fx, Number(el.dataset.y) + fy);
+      saved[el.dataset.icon] = [Number(el.dataset.x), Number(el.dataset.y)];
+      try { localStorage.setItem('icon-pos', JSON.stringify(saved)); } catch (err) { /* storage blocked */ }
+    };
+    el.addEventListener('pointerup', up);
+    el.addEventListener('pointercancel', up);
+    el.addEventListener('click', (e) => {
+      // Keyboard activation (detail 0) and touch open straight away.
+      if (!free.matches || e.detail === 0) return;
+      e.preventDefault();
+      if (moved) { moved = false; return; }
+      if (e.detail >= 2) location.href = el.href;
+    });
   });
 
-  /* ---------- Clocks ---------- */
-  function times() {
-    const T = window.TZ;
-    if (!T) return;
-    $$('[data-tzshort]').forEach((el) => { el.textContent = T.timeIn(el.dataset.tzshort === 'dev' ? T.DEV_TZ : T.VIEWER_TZ); });
-    $$('[data-tzabbr-dev]').forEach((el) => { el.textContent = T.tzAbbr(T.DEV_TZ); });
-    $$('[data-tzabbr-viewer]').forEach((el) => { el.textContent = T.tzAbbr(T.VIEWER_TZ); });
+  // Rubber-band selection on the empty desktop.
+  if (desk) {
+    let band = null, bx = 0, by = 0;
+    desk.addEventListener('pointerdown', (e) => {
+      if (!free.matches || e.button !== 0) return;
+      if (e.target !== desk && e.target !== iconBox && !e.target.classList.contains('hero__field')) return;
+      select([]);
+      const d = desk.getBoundingClientRect();
+      bx = e.clientX - d.left; by = e.clientY - d.top;
+      band = document.createElement('div');
+      band.className = 'marquee';
+      desk.appendChild(band);
+      desk.setPointerCapture(e.pointerId);
+    });
+    desk.addEventListener('pointermove', (e) => {
+      if (!band) return;
+      const d = desk.getBoundingClientRect();
+      const x = e.clientX - d.left, y = e.clientY - d.top;
+      const l = Math.min(x, bx), t = Math.min(y, by), w = Math.abs(x - bx), h = Math.abs(y - by);
+      Object.assign(band.style, { left: `${l}px`, top: `${t}px`, width: `${w}px`, height: `${h}px` });
+      select(icons.filter((el) => {
+        const r = el.getBoundingClientRect();
+        return r.left < l + w + d.left && r.right > l + d.left && r.top < t + h + d.top && r.bottom > t + d.top;
+      }));
+    });
+    const end = () => { if (band) { band.remove(); band = null; } };
+    desk.addEventListener('pointerup', end);
+    desk.addEventListener('pointercancel', end);
   }
-  setTimeout(times, 50);
-  setInterval(times, 10000);
+  addEventListener('keydown', (e) => {
+    if (e.target.closest && e.target.closest('input, textarea, [contenteditable], dialog')) return;
+    const sel = icons.filter((el) => el.classList.contains('is-selected'));
+    if (e.key === 'Enter' && sel.length === 1) location.href = sel[0].href;
+    else if (e.key === 'Escape') select([]);
+    else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'a' && free.matches) { e.preventDefault(); select(icons); }
+  });
 
   /* ---------- Would You Rather, on the home page ---------- */
   const box = $('[data-homewyr]');

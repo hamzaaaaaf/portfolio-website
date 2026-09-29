@@ -2,7 +2,6 @@
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => [...document.querySelectorAll(s)];
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const toast = (m) => window.toast && window.toast(m);
   const stage = $('#wyr-stage');
   let GAMES = [], byId = {};
   let pair = null, busy = false, voted = false;
@@ -41,7 +40,7 @@
       counts = d.counts;
     } catch (e) {
       counts = { [pick.id]: 1, [other.id]: 0 };
-      toast('Offline, so your vote was not counted.');
+      if (window.nope) window.nope(cards[side]);
     }
     const total = counts[pair[0].id] + counts[pair[1].id] || 1;
     pair.forEach((g, i) => {

@@ -157,7 +157,7 @@ let postedScore = 0;
 submitForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const name = initialsIn.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-  if (name.length !== 3) { initialsIn.focus(); window.toast && window.toast('Three letters or numbers.'); return; }
+  if (name.length !== 3) { initialsIn.focus(); window.nope && window.nope(submitForm); return; }
   submitForm.hidden = true;
   fetch('/api/scores', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name, score: postedScore }) })
     .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
@@ -168,7 +168,7 @@ submitForm.addEventListener('submit', (e) => {
       renderBoard(d.scores);
       window.toast && window.toast(`Posted ${postedScore} as ${name}.`);
     })
-    .catch((err) => { window.toast && window.toast(err.message); });
+    .catch(() => { submitForm.hidden = false; window.nope && window.nope(submitForm); });
 });
 initialsIn.addEventListener('input', () => { initialsIn.value = initialsIn.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 3); });
 

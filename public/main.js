@@ -20,7 +20,8 @@
       const target = id === '#top' ? body : $(id);
       if (!target) return;
       e.preventDefault();
-      if (id === '#top') scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      const doc = $('.doc');
+      if (id === '#top') (doc || window).scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
       else target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
       history.replaceState(null, '', id === '#top' ? location.pathname : id);
     });
@@ -225,12 +226,27 @@
   window.toast = toast;
 
   /* ---------- Window buttons ---------- */
-  const closeLines = [
-    'This window stays open.',
-    'Still here.',
-    'Try the yellow one instead.',
-  ];
+  // Anything that can't do what was asked shakes instead of explaining.
+  // The shake is added on top of whatever translate the element already has,
+  // so a window that has been dragged stays where it was put.
+  function nope(el) {
+    if (!el || !el.animate) return;
+    el.getAnimations().forEach((a) => { if (a.id === 'nope') a.cancel(); });
+    const a = el.animate([
+      { transform: 'translateX(0)' }, { transform: 'translateX(-8px)' }, { transform: 'translateX(7px)' },
+      { transform: 'translateX(-5px)' }, { transform: 'translateX(3px)' }, { transform: 'translateX(0)' },
+    ], { duration: reduce ? 1 : 420, easing: 'ease-out', composite: 'add' });
+    a.id = 'nope';
+  }
+  window.nope = nope;
   let closes = 0;
+  // Pages that are one window close back to the desktop.
+  function closeToDesktop(win) {
+    const leave = () => { location.href = '/'; };
+    if (reduce) { leave(); return; }
+    win.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(0.92)' }], { duration: 240, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' })
+      .finished.then(leave, leave);
+  }
   const zoom = (win) => {
     win.classList.toggle('is-zoomed');
     if (win.classList.contains('app-win')) setTimeout(() => dispatchEvent(new Event('resize')), 720);
@@ -247,12 +263,9 @@
     e.stopPropagation();
     const win = light.closest('.win');
     if (light.classList.contains('light--r')) {
-      win.classList.remove('is-shaking');
-      void win.offsetWidth;
-      win.classList.add('is-shaking');
-      win.addEventListener('animationend', () => win.classList.remove('is-shaking'), { once: true });
-      toast(closeLines[closes++ % closeLines.length]);
-      if (closes >= 3 && window.OS) window.OS.achieve('persistent');
+      if (win.classList.contains('app-win') && document.body.dataset.page !== 'home') { closeToDesktop(win); return; }
+      nope(win);
+      if (++closes >= 3 && window.OS) window.OS.achieve('persistent');
     } else if (light.classList.contains('light--y')) {
       if (win.classList.contains('is-shaded')) nudge(win);
       else { minimise(win); if (window.OS) window.OS.achieve('tidy'); }
@@ -298,8 +311,7 @@
       });
   }
   function nudge(win) {
-    win.animate([{ transform: 'none' }, { transform: 'translateY(-4px)' }, { transform: 'none' }], { duration: 260, easing: 'ease-out' });
-    toast('Use the green button to restore it.');
+    nope(win);
   }
 
   /* ---------- Draggable desktop items (hero) ---------- */
@@ -309,6 +321,8 @@
       el.classList.add('is-draggable');
       const handle = el.querySelector('.win__bar') || el;
       let sx = 0, sy = 0, ox = 0, oy = 0, moved = false, dragging = false;
+      // Links start a native drag of their URL, which swallows the pointer.
+      el.addEventListener('dragstart', (e) => e.preventDefault());
       handle.addEventListener('pointerdown', (e) => {
         if (e.button !== 0 || e.target.closest('.light')) return;
         dragging = true; moved = false;

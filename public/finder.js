@@ -55,8 +55,8 @@
     $$('[data-folder]').forEach((b) => b.setAttribute('aria-current', String(!term && b.dataset.folder === folder)));
     $$('[data-view]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
     FOLDERS.forEach((f) => { const el = $(`[data-count="${f}"]`); if (el) el.textContent = f === 'achievements' ? `${achievements().filter((a) => a.got).length}/${achievements().length}` : ''; });
-    $('#fnd-back').disabled = !back.length;
-    $('#fnd-fwd').disabled = !fwd.length;
+    $('#fnd-back').setAttribute('aria-disabled', String(!back.length));
+    $('#fnd-fwd').setAttribute('aria-disabled', String(!fwd.length));
     showPeek();
   }
   const kindName = (k) => ({ game: 'Game', movie: 'Film', project: 'Project', app: 'App', ach: 'Achievement' }[k]);
@@ -113,8 +113,8 @@
     try { localStorage.setItem('finder-view', view); } catch (e) { /* storage blocked */ }
     render();
   }));
-  $('#fnd-back').addEventListener('click', () => { if (back.length) { fwd.push(folder); go(back.pop(), false); } });
-  $('#fnd-fwd').addEventListener('click', () => { if (fwd.length) { back.push(folder); go(fwd.pop(), false); } });
+  $('#fnd-back').addEventListener('click', (e) => { if (back.length) { fwd.push(folder); go(back.pop(), false); } else if (window.nope) window.nope(e.currentTarget); });
+  $('#fnd-fwd').addEventListener('click', (e) => { if (fwd.length) { back.push(folder); go(fwd.pop(), false); } else if (window.nope) window.nope(e.currentTarget); });
   q.addEventListener('input', () => { sel = -1; render(); });
   items.addEventListener('click', (e) => {
     const el = e.target.closest('.fitem');

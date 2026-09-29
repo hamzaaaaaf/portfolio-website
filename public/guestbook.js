@@ -3,6 +3,7 @@
   const $$ = (s) => [...document.querySelectorAll(s)];
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const toast = (m) => window.toast && window.toast(m);
+  const nope = (el) => window.nope && window.nope(el);
   const canvas = $('#gb-canvas');
   const ctx = canvas.getContext('2d');
   const wall = $('#gb-wall');
@@ -87,8 +88,8 @@
     e.preventDefault();
     const name = $('#gb-name').value.trim();
     const message = $('#gb-msg').value.trim();
-    if (!name) { $('#gb-name').focus(); return; }
-    if (!drawn) { toast('Draw something first.'); return; }
+    if (!name) { $('#gb-name').focus(); nope($('#gb-name')); return; }
+    if (!drawn) { nope(canvas); return; }
     const btn = $('.gb__send');
     btn.disabled = true;
     try {
@@ -103,7 +104,7 @@
       toast('Thanks! It will appear once it has been approved.');
       if (window.OS) window.OS.achieve('signer');
     } catch (err) {
-      toast(err.message);
+      nope(btn);
     } finally {
       btn.disabled = false;
     }
