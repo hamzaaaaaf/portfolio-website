@@ -73,6 +73,12 @@
     { id: 'hacker', i: '💻', t: 'Hacker', d: 'Run hamzafetch in the terminal.' },
     { id: 'company', i: '👥', t: 'Company', d: 'See another visitor’s cursor.' },
     { id: 'nightowl', i: '🦉', t: 'Night owl', d: 'Visit between midnight and 5am.' },
+    { id: 'voter', i: '🗳️', t: 'Voter', d: 'Vote in Would You Rather.' },
+    { id: 'critic', i: '🎮', t: 'Critic', d: 'Cast 25 Would You Rather votes.' },
+    { id: 'snake20', i: '🐍', t: 'Long boi', d: 'Score 20 in Snake.' },
+    { id: 'breakout', i: '🧱', t: 'Wrecking ball', d: 'Clear a level in Breakout.' },
+    { id: 'cheater', i: '🕹️', t: 'Cheater', d: 'Enter a cheat code.', secret: true },
+    { id: 'codebreaker', i: '🔓', t: 'Code breaker', d: 'Find every cheat code.', secret: true },
     { id: 'persistent', i: '🔴', t: 'Persistent', d: 'Try to close a window three times.', secret: true },
     { id: 'sudo', i: '🚫', t: 'Nice try', d: 'Try sudo in the terminal.', secret: true },
     { id: 'konami', i: '🎮', t: 'Old school', d: 'Enter the Konami code.', secret: true },
@@ -109,8 +115,11 @@
     }
     dispatchEvent(new CustomEvent('achievement', { detail: id }));
   }
+  // Any switch to dark mode counts, whichever control did it.
+  addEventListener('themechange', () => { if (root.dataset.theme === 'dark') achieve('darkside'); });
+
   // Page visits, first visit, night owl.
-  const PAGES = ['home', 'work', 'stats', 'finder', 'about', 'play', 'draw', 'type', 'terminal', 'guestbook', 'settings'];
+  const PAGES = ['home', 'work', 'stats', 'finder', 'about', 'play', 'draw', 'type', 'arcade', 'wyr', 'terminal', 'guestbook', 'settings'];
   const visited = store.get('visited', []);
   if (!visited.includes(page)) { visited.push(page); store.set('visited', visited); }
   setTimeout(() => {
@@ -151,9 +160,89 @@
   addEventListener('keydown', (e) => {
     if (e.target.closest && e.target.closest('input, textarea, [contenteditable]')) return;
     if (e.key.length !== 1) return;
-    typedBuf = (typedBuf + e.key.toLowerCase()).slice(-7);
-    if (typedBuf === 'creeper') { typedBuf = ''; creeper(); }
+    typedBuf = (typedBuf + e.key.toLowerCase()).slice(-16);
+    if (typedBuf.endsWith('creeper')) { typedBuf = ''; creeper(); return; }
+    const code = Object.keys(CHEATS).find((c) => typedBuf.endsWith(c));
+    if (code) { typedBuf = ''; runCheat(code); }
   });
+  /* ---------- Cheat codes ---------- */
+  const fx = (cls, html, ms) => {
+    const el = document.createElement('div');
+    el.className = `fx ${cls}`;
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = html;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), ms);
+    return el;
+  };
+  function rain(chars, colors, n = 80) {
+    const c = document.createElement('canvas');
+    c.className = 'confetti';
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    c.width = innerWidth * dpr; c.height = innerHeight * dpr;
+    document.body.appendChild(c);
+    const g = c.getContext('2d');
+    const drops = Array.from({ length: n }, () => ({ x: Math.random() * innerWidth, y: -Math.random() * innerHeight, v: 3 + Math.random() * 5, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.1, s: 18 + Math.random() * 18, ch: chars[(Math.random() * chars.length) | 0], c: colors[(Math.random() * colors.length) | 0] }));
+    const t0 = performance.now();
+    (function frame(t) {
+      g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, innerWidth, innerHeight);
+      for (const d of drops) { d.y += d.v; d.r += d.vr; g.save(); g.translate(d.x, d.y); g.rotate(d.r); g.fillStyle = d.c; g.font = `700 ${d.s}px Inter Tight, sans-serif`; g.fillText(d.ch, 0, 0); g.restore(); }
+      if (t - t0 < 3600) requestAnimationFrame(frame); else c.remove();
+    })(t0);
+  }
+  function matrix() {
+    const c = document.createElement('canvas');
+    c.className = 'fx fx--matrix';
+    c.width = innerWidth; c.height = innerHeight;
+    document.body.appendChild(c);
+    const g = c.getContext('2d'), cols = Math.floor(innerWidth / 16), ys = Array(cols).fill(0).map(() => Math.random() * -40);
+    const t0 = performance.now();
+    (function frame(t) {
+      g.fillStyle = 'rgba(0,0,0,0.12)'; g.fillRect(0, 0, c.width, c.height);
+      g.fillStyle = '#39ff6a'; g.font = '15px JetBrains Mono, monospace';
+      ys.forEach((y, i) => { g.fillText(String.fromCharCode(0x30a0 + Math.random() * 96), i * 16, y * 16); ys[i] = y * 16 > c.height && Math.random() > 0.97 ? 0 : y + 1; });
+      if (t - t0 < 4000) requestAnimationFrame(frame); else { c.style.opacity = '0'; setTimeout(() => c.remove(), 600); }
+    })(t0);
+  }
+  let trail = null;
+  function godMode() {
+    document.documentElement.classList.add('god');
+    const onMove = (e) => {
+      const s = document.createElement('span');
+      s.className = 'god-spark'; s.textContent = '✦';
+      s.style.left = `${e.clientX}px`; s.style.top = `${e.clientY}px`;
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 700);
+    };
+    if (!trail) addEventListener('pointermove', (trail = onMove), { passive: true });
+    setTimeout(() => { document.documentElement.classList.remove('god'); removeEventListener('pointermove', trail); trail = null; }, 12000);
+  }
+  const CHEATS = {
+    hesoyam: () => { rain(['$', '$', '💵'], ['#28c840', '#1f9d35', '#ffd84d']); toast('Health, armour and $250,000.'); },
+    wasted: () => { fx('fx--wasted', '<b>WASTED</b>', 3200); },
+    iddqd: () => { godMode(); toast('Degreelessness mode on.'); },
+    idkfa: () => { rain(['🗝️', '🔫', '★'], ['#ffd84d'], 50); toast('Very happy ammo added.'); },
+    motherlode: () => { rain(['§'], ['#28c840', '#7fd6b2'], 70); toast('+§50,000 simoleons.'); },
+    doabarrelroll: () => { document.body.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }], { duration: 1300, easing: 'cubic-bezier(0.65,0,0.35,1)' }); },
+    batman: () => { fx('fx--bat', '<svg viewBox="0 0 100 50"><path d="M50 12c-3 0-4 5-6 5s-3-6-6-6c-4 0-6 8-12 8-7 0-10-9-18-9 7 5 9 15 16 20 8 5 14 1 18 6 3 3 5 9 8 12 3-3 5-9 8-12 4-5 10-1 18-6 7-5 9-15 16-20-8 0-11 9-18 9-6 0-8-8-12-8-3 0-4 6-6 6s-3-5-6-5z" fill="#111008"/></svg>', 3200); },
+    blairwitch: () => { fx('fx--witch', '<svg viewBox="0 0 60 80"><g stroke="#111" stroke-width="3" stroke-linecap="round" fill="none"><path d="M30 5v70M12 20l36 10M10 45l40-6M18 70l24-24M42 70L18 46"/></g></svg>', 2600); },
+    matrix,
+    gravity: () => {
+      [...document.querySelectorAll('h1, .h2, .menubar__item, .dock__item')].slice(0, 30).forEach((el, i) => {
+        el.animate([{ transform: 'none' }, { transform: `translateY(${innerHeight}px) rotate(${(i % 2 ? 1 : -1) * (10 + i * 3)}deg)`, offset: 0.45 }, { transform: `translateY(${innerHeight}px) rotate(${(i % 2 ? 1 : -1) * (10 + i * 3)}deg)`, offset: 0.7 }, { transform: 'none' }],
+          { duration: 3400, easing: 'cubic-bezier(0.5,0,0.75,0)', delay: i * 40 });
+      });
+    },
+  };
+  function runCheat(code) {
+    CHEATS[code]();
+    const found = store.get('cheats', []);
+    if (!found.includes(code)) { found.push(code); store.set('cheats', found); }
+    achieve('cheater');
+    if (Object.keys(CHEATS).every((c) => found.includes(c))) achieve('codebreaker');
+  }
+  window.cheat = runCheat;
+
   // A visitor on a Friday the 13th gets a whisper.
   const today = new Date();
   if (today.getDay() === 5 && today.getDate() === 13) setTimeout(() => toast('Ki ki ki… ma ma ma. Happy Friday the 13th.'), 2500);
@@ -282,6 +371,8 @@
   const appsmenu = makeMenu('appsmenu', `
     <a href="/finder">Finder <kbd>G F</kbd></a>
     <hr>
+    <a href="/arcade">Arcade <kbd>G R</kbd></a>
+    <a href="/wyr">Would You Rather <kbd>G V</kbd></a>
     <a href="/play">Stack <kbd>G P</kbd></a>
     <a href="/type">Typing Test <kbd>G K</kbd></a>
     <a href="/draw">Kaleidoscope <kbd>G D</kbd></a>
@@ -440,6 +531,8 @@
     { g: 'Pages', t: 'About', k: 'about me info university aston now timeline', run: () => go('/about'), i: ICON('radial-gradient(circle at 30% 30%,#fffbe0,#f5b800)', '<i style="font:italic 16px Instrument Serif,serif;color:#3a2c00">h</i>') },
     { g: 'Pages', t: 'Contact', k: 'email mail hello message', run: () => go('/about#contact'), i: ICON('linear-gradient(#7cc8ff,#1f7cf2)', '✉') },
     { g: 'Apps', t: 'Stack', k: 'game play blocks leaderboard', run: () => go('/play'), i: ICON('linear-gradient(#fff1a8,#ffcf3a)', '<b style="color:#ff8a5c">≡</b>') },
+    { g: 'Apps', t: 'Arcade', k: 'snake breakout retro games', run: () => go('/arcade'), i: ICON('linear-gradient(#8f6bff,#4a2fc9)', '🕹') },
+    { g: 'Apps', t: 'Would You Rather', k: 'wyr vote games versus ranking', run: () => go('/wyr'), i: ICON('#1c1a12', '<b style="color:#ff8a5c">VS</b>') },
     { g: 'Apps', t: 'Typing Test', k: 'type speed wpm keyboard words code', run: () => go('/type'), i: ICON('linear-gradient(#ffe27a,#f5b800)', '<b style="color:#3a2c00">⌨</b>') },
     { g: 'Apps', t: 'Kaleidoscope', k: 'draw paint art', run: () => go('/draw'), i: ICON('#1c1a12', '<b style="color:#ffd84d">✺</b>') },
     { g: 'Apps', t: 'Terminal', k: 'shell command line zsh cli', run: () => go('/terminal'), i: ICON('#1c1a12', '<b style="color:#ffd84d;font-family:monospace">&gt;_</b>') },
@@ -547,12 +640,12 @@
     if (g === 'spot') openSpot(); else if (g === 'theme') toggleTheme(); else go(g);
   });
   function shortcuts() { showMenu(sheet, innerWidth / 2 - 130, innerHeight / 2 - 170); }
-  const GO = { h: '/', w: '/work', s: '/stats', f: '/finder', p: '/play', d: '/draw', k: '/type', b: '/guestbook', t: '/terminal', a: '/about' };
+  const GO = { h: '/', w: '/work', s: '/stats', f: '/finder', p: '/play', d: '/draw', k: '/type', b: '/guestbook', r: '/arcade', v: '/wyr', t: '/terminal', a: '/about' };
   let gPending = 0;
   addEventListener('keydown', (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.target.closest && e.target.closest('input, textarea, [contenteditable], dialog')) return;
-    if (page === 'play' || page === 'terminal' || page === 'type') return;
+    if (['play', 'terminal', 'type', 'arcade', 'wyr'].includes(page)) return;
     const k = e.key.toLowerCase();
     if (e.key === '?') { e.preventDefault(); shortcuts(); return; }
     if (e.key === 'D' && e.shiftKey) { toggleTheme(); return; }

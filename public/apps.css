@@ -295,3 +295,65 @@
   .fnd__items.is-grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); padding: 12px; }
   .cover { width: 76px; } .cover--proj { width: 96px; } .appicon, .badge { width: 60px; }
 }
+
+/* ---------- Would You Rather ---------- */
+.wyr { overflow: auto; touch-action: auto; padding: clamp(16px, 2.6vw, 32px); background: var(--media); display: grid; align-content: start; gap: 18px; }
+.wyr__top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.wyr__stats { display: flex; gap: 18px; color: var(--muted); font-size: 12px; }
+.wyr__stats b { color: var(--fg); font-size: 15px; }
+.wyr__play, .wyr__ranks { display: grid; gap: 18px; justify-items: center; }
+.wyr__play[hidden], .wyr__ranks[hidden] { display: none; }
+.wyr__q { font-size: clamp(2rem, 4.6vw, 3.8rem); font-weight: 500; letter-spacing: -0.045em; line-height: 1; text-align: center; }
+.wyr__stage { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: clamp(12px, 3vw, 40px); width: min(760px, 100%); }
+.wyr__card { display: grid; justify-items: center; gap: 8px; padding: 16px 14px 18px; border: 2px solid transparent; border-radius: 20px; background: var(--win); color: var(--fg); font: inherit; cursor: pointer;
+  box-shadow: var(--shadow); transition: transform 0.35s var(--spring), border-color 0.25s, opacity 0.3s; }
+.wyr__card:hover { transform: translateY(-4px) rotate(-0.5deg); }
+.wyr__card:nth-of-type(2):hover { transform: translateY(-4px) rotate(0.5deg); }
+.wyr__card:active { transform: scale(0.97); }
+.cover.cover--big { width: clamp(120px, 20vw, 190px); }
+.cover--big .cover__t { font-size: clamp(11px, 1.3vw, 15px); } .cover--big .cover__g { font-size: clamp(40px, 6vw, 64px); } .cover--big .cover__band { font-size: 8px; }
+.wyr__name { font-size: clamp(15px, 1.6vw, 19px); font-weight: 650; letter-spacing: -0.02em; text-align: center; line-height: 1.15; }
+.wyr__meta { font-size: 12.5px; color: var(--muted); }
+.wyr__meta b { color: #9a6a00; font-weight: 600; }
+:root[data-theme="dark"] .wyr__meta b { color: var(--accent); }
+.wyr__or { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: var(--fg); color: var(--bg); font: 800 15px var(--sans); letter-spacing: 0.04em; }
+.wyr__bar { position: relative; width: 100%; height: 26px; border-radius: 8px; background: rgba(var(--fg-rgb), 0.07); overflow: hidden; opacity: 0; transition: opacity 0.3s; }
+.wyr__bar i { position: absolute; inset: 0; background: rgba(var(--fg-rgb), 0.18); transform: scaleX(0); transform-origin: left; transition: transform 0.8s var(--ease); }
+.wyr__bar b { position: relative; display: grid; place-items: center; height: 100%; font: 700 13px var(--mono); }
+.is-voted .wyr__bar { opacity: 1; }
+.is-voted .wyr__card:not(.is-pick) { opacity: 0.6; }
+.wyr__card.is-pick { border-color: #0a64e8; }
+.wyr__card.is-pick .wyr__bar i { background: #ffd84d; }
+.wyr__card.is-pick .wyr__bar b { color: #111008; mix-blend-mode: normal; }
+.wyr__verdict { min-height: 1.5em; font-family: var(--serif); font-style: italic; font-size: 22px; text-align: center; }
+.linkish { border: 0; background: none; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; padding: 0; letter-spacing: inherit; text-transform: inherit; }
+.wyr__ranks > p { max-width: 56ch; text-align: center; }
+.wyr__rank { display: grid; gap: 6px; width: min(640px, 100%); counter-reset: none; }
+.wyr__rank li { display: grid; grid-template-columns: 28px 44px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 8px 12px; border-radius: 12px; background: var(--win); border: 1px solid var(--line); }
+.wyr__rank li.muted { display: block; text-align: center; }
+.wyr__rank .cover { width: 40px; } .wyr__rank .cover__t, .wyr__rank .cover__band { display: none; } .wyr__rank .cover__g { font-size: 16px; }
+.wyr__rk { font: 700 15px var(--mono); color: var(--muted); text-align: center; }
+.wyr__rank li:nth-child(1) .wyr__rk { color: #d99a00; font-size: 19px; }
+.wyr__rn { display: grid; } .wyr__rn span, .wyr__rs span { font-size: 12px; color: var(--muted); }
+.wyr__rs { display: grid; justify-items: end; } .wyr__rs b { font: 700 16px var(--mono); }
+@media (max-width: 600px) { .wyr__stage { grid-template-columns: 1fr 1fr; } .wyr__or { display: none; } .wyr__card { padding: 12px 8px; } }
+
+/* ---------- Arcade ---------- */
+.arc { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 20px; padding: clamp(14px, 2.4vw, 28px); overflow: auto; touch-action: auto;
+  background: radial-gradient(90% 80% at 50% 0%, #2c2412, #120f07 70%); color: #f8f1d8; }
+.arc .muted { color: #a89f80; }
+.arc__cab { display: grid; gap: 12px; justify-items: center; align-content: start; }
+.arc__top { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: min(720px, 100%); flex-wrap: wrap; }
+.arc .glass { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.08); }
+.arc .icon-btn { color: #f8f1d8; } .arc .icon-btn[aria-pressed="true"] { background: #ffd84d; color: #1a1406; }
+.arc__score { display: flex; gap: 18px; font-size: 12px; color: #a89f80; } .arc__score b { color: #ffd84d; font-size: 17px; }
+.arc__screen { position: relative; width: min(720px, 100%); aspect-ratio: 4 / 3; border-radius: 18px; overflow: hidden; border: 10px solid #2b2414;
+  box-shadow: 0 0 0 1px rgba(255, 216, 77, 0.2), 0 0 60px -10px rgba(255, 200, 40, 0.35), inset 0 0 40px rgba(0, 0, 0, 0.6); }
+.arc__screen canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: none; }
+.arc__scan { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 3px); mix-blend-mode: multiply;
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.55); border-radius: 8px; }
+.arc__help { font-size: 11px; color: #a89f80; }
+.arc__board { display: grid; gap: 8px; align-content: start; padding: 14px; border-radius: 14px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.07); }
+.arc .board__list li { color: #f8f1d8; } .arc .board__list li.me { color: #ffd84d; }
+.arc .submit input { background: #1b170c; color: #ffd84d; border-color: rgba(255, 216, 77, 0.3); }
+@media (max-width: 900px) { .arc { grid-template-columns: 1fr; align-content: start; } .arc__board { align-self: start; } }
