@@ -1,3 +1,5 @@
+import { DurableObject } from 'cloudflare:workers';
+
 // Serves /api/* (LeetCode and GitHub stats, Stack leaderboard, sparks); everything
 // else is a static file from public/.
 // LeetCode's API doesn't allow browser requests from other sites, so the
@@ -174,6 +176,107 @@ async function sparks(request, env) {
   return json({ count: row ? row.value : 0 });
 }
 
+/* ---------- Guestbook (D1, pre-moderated) ---------- */
+
+// Words and patterns that are rejected outright. Everything else still waits
+// for approval before anyone else can see it.
+const BAD_WORDS = ['fuck', 'shit', 'cunt', 'bitch', 'nigg', 'fag', 'retard', 'whore', 'slut', 'rape', 'nazi', 'kys', 'dick', 'pussy', 'cock', 'porn', 'sex', 'penis', 'vagina', 'hitler'];
+const clean = (s) => {
+  const t = s.toLowerCase().replace(/[^a-z]/g, '').replace(/0/g, 'o').replace(/1/g, 'i').replace(/3/g, 'e').replace(/4/g, 'a').replace(/5/g, 's');
+  if (BAD_WORDS.some((w) => t.includes(w))) return false;
+  if (/(https?:|www\.|\.com|\.net|\.org|\.gg|\.io|@\w)/i.test(s)) return false;
+  return true;
+};
+const MAX_DRAWING = 120000;
+
+async function guestbook(request, env, url) {
+  const admin = url.pathname.startsWith('/api/guestbook/review');
+  if (admin) {
+    const key = request.headers.get('x-admin-key') || '';
+    if (!env.ADMIN_KEY) return json({ error: 'Set an ADMIN_KEY secret on the Worker first.' }, 503);
+    if (key !== env.ADMIN_KEY) return json({ error: 'Wrong key.' }, 401);
+    if (request.method === 'GET') {
+      const { results } = await env.DB.prepare('SELECT id, name, message, drawing, created, approved FROM guestbook WHERE approved = 0 ORDER BY created ASC LIMIT 50').all();
+      return json({ pending: results });
+    }
+    const body = await request.json().catch(() => ({}));
+    const id = Number(body.id);
+    if (!Number.isInteger(id)) return json({ error: 'Bad id' }, 400);
+    if (body.action === 'approve') await env.DB.prepare('UPDATE guestbook SET approved = 1 WHERE id = ?1').bind(id).run();
+    else if (body.action === 'delete') await env.DB.prepare('DELETE FROM guestbook WHERE id = ?1').bind(id).run();
+    else return json({ error: 'Bad action' }, 400);
+    return json({ ok: true });
+  }
+
+  if (request.method === 'GET') {
+    const { results } = await env.DB.prepare('SELECT id, name, message, drawing, created FROM guestbook WHERE approved = 1 ORDER BY created DESC LIMIT 60').all();
+    return json({ entries: results });
+  }
+  if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+  const body = await request.json().catch(() => null);
+  if (!body) return json({ error: 'Bad JSON' }, 400);
+  const name = String(body.name || '').trim().replace(/\s+/g, ' ').slice(0, 24);
+  const message = String(body.message || '').trim().replace(/\s+/g, ' ').slice(0, 140);
+  const drawing = String(body.drawing || '');
+  if (!name) return json({ error: 'Add your name.' }, 400);
+  if (!clean(name) || !clean(message)) return json({ error: 'Keep it friendly, and no links please.' }, 400);
+  if (!drawing.startsWith('data:image/png;base64,') || drawing.length > MAX_DRAWING) return json({ error: 'That drawing could not be saved.' }, 400);
+  const who = await visitor(request);
+  if (await limited(env, who, 'guestbook', 3, 3600000)) return json({ error: 'You have signed a few times already. Try again later.' }, 429);
+  const res = await env.DB.prepare('INSERT INTO guestbook (name, message, drawing, created, who, approved) VALUES (?1, ?2, ?3, ?4, ?5, 0)')
+    .bind(name, message, drawing, Date.now(), who).run();
+  return json({ ok: true, id: res.meta.last_row_id, pending: true });
+}
+
+/* ---------- Live cursors (one Durable Object per page) ---------- */
+
+const ADJ = ['Sunny', 'Golden', 'Swift', 'Quiet', 'Brave', 'Lucky', 'Cosy', 'Bright', 'Clever', 'Mellow'];
+const ANIMAL = ['Fox', 'Otter', 'Panda', 'Owl', 'Koala', 'Lynx', 'Robin', 'Tiger', 'Whale', 'Bee'];
+const COLOURS = ['#ff5f57', '#0a64e8', '#28c840', '#ff8a5c', '#a259ff', '#e5484d', '#12a4a4', '#d99a00', '#ff7aa2', '#3d97f2'];
+
+export class Room extends DurableObject {
+  async fetch(request) {
+    if (request.headers.get('upgrade') !== 'websocket') return new Response('Expected a websocket', { status: 426 });
+    const sockets = this.ctx.getWebSockets();
+    if (sockets.length >= 40) return new Response('Room is full', { status: 429 });
+    const pick = (a) => a[Math.floor(Math.random() * a.length)];
+    const me = { id: crypto.randomUUID().slice(0, 8), c: pick(COLOURS), n: `${pick(ADJ)} ${pick(ANIMAL)}` };
+    const [client, server] = Object.values(new WebSocketPair());
+    this.ctx.acceptWebSocket(server);
+    server.serializeAttachment(me);
+    server.send(JSON.stringify({ t: 'hi', ...me, count: sockets.length + 1 }));
+    this.broadcast({ t: 'count', count: sockets.length + 1 }, server);
+    return new Response(null, { status: 101, webSocket: client });
+  }
+
+  broadcast(msg, except) {
+    const out = JSON.stringify(msg);
+    for (const ws of this.ctx.getWebSockets()) if (ws !== except) { try { ws.send(out); } catch (e) { /* closed */ } }
+  }
+
+  webSocketMessage(ws, raw) {
+    if (typeof raw !== 'string' || raw.length > 200) return;
+    let d;
+    try { d = JSON.parse(raw); } catch { return; }
+    const me = ws.deserializeAttachment();
+    if (d.t === 'm') {
+      const x = Math.max(0, Math.min(1, Number(d.x) || 0));
+      const y = Math.max(0, Math.min(100000, Math.round(Number(d.y) || 0)));
+      this.broadcast({ t: 'm', id: me.id, c: me.c, n: me.n, x, y }, ws);
+    } else if (d.t === 'bye') {
+      this.broadcast({ t: 'bye', id: me.id }, ws);
+    }
+  }
+
+  webSocketClose(ws) {
+    const me = ws.deserializeAttachment();
+    const count = this.ctx.getWebSockets().filter((w) => w !== ws).length;
+    this.broadcast({ t: 'bye', id: me.id, count }, ws);
+  }
+
+  webSocketError(ws) { this.webSocketClose(ws); }
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -182,6 +285,11 @@ export default {
       if (url.pathname === '/api/github') return await github(ctx);
       if (url.pathname === '/api/scores') return await scores(request, env);
       if (url.pathname === '/api/sparks') return await sparks(request, env);
+      if (url.pathname.startsWith('/api/guestbook')) return await guestbook(request, env, url);
+      if (url.pathname === '/api/live') {
+        const room = (url.searchParams.get('room') || '/').replace(/[^a-z/]/g, '').slice(0, 20) || '/';
+        return env.ROOMS.get(env.ROOMS.idFromName(room)).fetch(request);
+      }
     } catch (err) {
       return json({ error: String(err.message || err) }, 502);
     }

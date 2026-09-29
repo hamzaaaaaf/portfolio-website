@@ -225,6 +225,7 @@
 
   /* ---------- Save ---------- */
   function save() {
+    if (window.OS) window.OS.achieve('artist');
     const out = document.createElement('canvas');
     out.width = paper.width; out.height = paper.height;
     const o = out.getContext('2d');

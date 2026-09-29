@@ -48,7 +48,7 @@
   const OPEN = {
     github: 'https://github.com/hamzaaaaaf', linkedin: 'https://www.linkedin.com/in/hamza-faisal-125833263/',
     leetcode: 'https://leetcode.com/u/hamza57/', type: '/type', typing: '/type', stack: '/play', play: '/play', draw: '/draw', kaleidoscope: '/draw',
-    settings: '/settings', home: '/', work: '/work', stats: '/stats', about: '/about', email: 'mailto:hello@byhamza.dev', source: 'https://github.com/hamzaaaaaf/portfolio-website',
+    settings: '/settings', home: '/', finder: '/finder', guestbook: '/guestbook', work: '/work', stats: '/stats', about: '/about', email: 'mailto:hello@byhamza.dev', source: 'https://github.com/hamzaaaaaf/portfolio-website',
   };
 
   const bar = (n, max, width = 24) => {
@@ -134,6 +134,7 @@
     } },
     spark: { d: 'leave a spark ✦', run: () => { OS().spark && OS().spark(); print('<span class="y">✦</span> thanks. it counts.'); } },
     hamzafetch: { d: 'system info', run: () => {
+      OS().achieve && OS().achieve('hacker');
       const t = TZ();
       const days = Math.max(1, Math.floor((Date.now() - Date.UTC(2026, 8, 23)) / 86400000));
       const logo = ['   ██         ', '   ██         ', '   ██ ████    ', '   ███   ██   ', '   ██    ██   ', '   ██    ██   ', '   ██    ██   '];
@@ -154,12 +155,40 @@
     } },
     neofetch: { d: '', hidden: true, run: () => COMMANDS.hamzafetch.run() },
     echo: { d: 'print text', hidden: true, run: (args) => print(esc(args.join(' '))) },
+    games: { d: 'games I love', run: () => {
+      print('<span class="m">~/Games</span>');
+      [['Minecraft', 'where it all started'], ['Batman: Arkham series', 'all four'], ['Uncharted 4', 'why I bought a PS4'], ['GTA V Online', 'heists. best time of my life'],
+        ['Fortnite', 'since Season 1, Season 4 was peak'], ['Warzone', 'the original Verdansk'], ['Rocket League', 'with friends'], ['Friday the 13th', 'short but loved'],
+        ['Crash of the Titans', 'on the PSP'], ['Spider-Man 3, TASM 1 & 2', 'web-slinging']].forEach(([g, n]) => print(`  <span class="y">${g.padEnd(26)}</span><span class="m">${n}</span>`));
+      print(`<span class="m">browse them properly: </span><a href="/finder#games">open finder</a>`);
+    } },
+    movies: { d: 'films I love', run: () => {
+      print('  <span class="y">As Above, So Below</span>        <span class="m">2014</span>');
+      print('  <span class="y">The Blair Witch Project</span>   <span class="m">1999</span>');
+      print('<span class="m">found footage, mostly.</span>');
+    } },
+    achievements: { d: 'your achievements', run: () => {
+      const all = OS().ACHIEVEMENTS || [], got = OS().achieved ? OS().achieved() : {};
+      print(`<span class="y">${Object.keys(got).length}/${all.length}</span> unlocked`);
+      all.forEach((a) => print(got[a.id] ? `  <span class="g">✓</span> ${esc(a.t)}` : `  <span class="m">○ ${a.secret ? '???' : esc(a.t)}</span>`));
+    } },
+    minecraft: { d: '', hidden: true, run: () => {
+      const G = '<span style="color:#5fbf3a">█</span>', D = '<span style="color:#2e6b1c">█</span>', K = '<span style="color:#111">█</span>';
+      [[G, G, D, G, G, D, G, G], [G, K, K, G, G, K, K, D], [D, K, K, G, D, K, K, G], [G, G, D, K, K, G, G, G], [G, D, K, K, K, K, D, G], [G, G, K, D, G, K, G, D], [D, G, G, G, D, G, G, G]]
+        .forEach((row) => print(`  ${row.map((c) => c + c).join('')}`));
+      print('<span class="m">sssss…</span>');
+    } },
+    batman: { d: '', hidden: true, run: () => {
+      ['       _,    _   _    ,_', '  .o888P     Y8o8Y     Y888o.', ' d88888      88888      88888b', 'd888888b_  _d88888b_  _d888888b', '8888888888888888888888888888888', 'Y888888888P"Y8888P"Y888888888P', ' Y888888P"   Y88P   "Y888888P', "   'Y888P      V      Y888P'"]
+        .forEach((l) => print(`<span class="y">${esc(l)}</span>`));
+      print('<span class="m">I\'m not saying I played all four Arkham games in a row. I\'m saying it.</span>');
+    } },
     history: { d: 'past commands', run: () => history.slice(-20).forEach((h, i) => print(`<span class="m">${String(i + 1).padStart(4)}</span>  ${esc(h)}`)) },
     clear: { d: 'clear the screen', run: () => { out.innerHTML = ''; } },
     sleep: { d: 'put the site to sleep', hidden: true, run: () => OS().sleep() },
     restart: { d: '', hidden: true, run: () => OS().restart() },
     shutdown: { d: '', hidden: true, run: () => OS().shutdown() },
-    sudo: { d: '', hidden: true, run: () => print('<span class="r">hamza is not in the sudoers file. This incident will be reported.</span>') },
+    sudo: { d: '', hidden: true, run: () => (OS().achieve && OS().achieve('sudo'), print('<span class="r">hamza is not in the sudoers file. This incident will be reported.</span>')) },
     rm: { d: '', hidden: true, run: (args) => print(args.join(' ').includes('-rf') ? '<span class="r">nice try.</span>' : '<span class="r">rm: permission denied</span>') },
     exit: { d: '', hidden: true, run: () => print('<span class="m">there is no exit. try the dock.</span>') },
     vim: { d: '', hidden: true, run: () => print('<span class="m">you are now stuck in vim. just kidding. type :q anyway.</span>') },

@@ -252,9 +252,10 @@
       win.classList.add('is-shaking');
       win.addEventListener('animationend', () => win.classList.remove('is-shaking'), { once: true });
       toast(closeLines[closes++ % closeLines.length]);
+      if (closes >= 3 && window.OS) window.OS.achieve('persistent');
     } else if (light.classList.contains('light--y')) {
       if (win.classList.contains('is-shaded')) nudge(win);
-      else minimise(win);
+      else { minimise(win); if (window.OS) window.OS.achieve('tidy'); }
     } else if (light.classList.contains('light--g')) {
       if (win.classList.contains('is-shaded')) restore(win);
       else zoom(win);
