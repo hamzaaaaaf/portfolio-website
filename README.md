@@ -10,18 +10,21 @@ My personal site: a small desktop in the browser. Live at **[byhamza.dev](https:
 - **System Settings** (`/settings`): light, dark or auto, five wallpapers, dock size, sound and reduced motion.
 - **Finder** (`/finder`): projects, favourite games and films, apps and achievements, with Quick Look.
 - **Typing Test** (`/type`): time, words and code modes with a global leaderboard.
+- **Arcade** (`/arcade`): Snake and Breakout on a CRT, each with a global leaderboard.
+- **Would You Rather** (`/wyr`): pick between two of 168 games. Every vote feeds an Elo ranking.
 - **Guestbook** (`/guestbook`): draw and sign the wall. Entries are held for approval at `/review`.
 - **Live cursors**: see other visitors on the same page, relayed by a Durable Object.
-- **Achievements**: 23 of them, some secret.
+- **Achievements**: 29 of them, some secret.
+- **Cheat codes**: type them anywhere. The terminal has a hint if you're stuck.
 - **Stats** (`/stats`): live LeetCode and GitHub numbers.
 
 ## Stack
 
-Plain HTML, CSS and JavaScript with no build step. Three.js for the game, native scrolling with CSS scroll-driven animations. Hosted on Cloudflare Workers with static assets, D1 for leaderboards and the guestbook, and a Durable Object for live cursors.
+Plain HTML, CSS and JavaScript with no build step. Three.js for the game, native scrolling with CSS scroll-driven animations. Hosted on Cloudflare Workers with static assets, D1 for leaderboards, votes and the guestbook, and a Durable Object for live cursors.
 
 ```
 public/        the site (served as static files)
-src/worker.js  /api/leetcode, /api/github, /api/scores, /api/sparks, /api/guestbook, /api/live
+src/worker.js  /api/leetcode, /api/github, /api/scores, /api/sparks, /api/guestbook, /api/wyr, /api/live
 db/schema.sql  D1 tables
 ```
 

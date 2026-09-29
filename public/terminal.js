@@ -47,7 +47,7 @@
 
   const OPEN = {
     github: 'https://github.com/hamzaaaaaf', linkedin: 'https://www.linkedin.com/in/hamza-faisal-125833263/',
-    leetcode: 'https://leetcode.com/u/hamza57/', type: '/type', typing: '/type', stack: '/play', play: '/play', draw: '/draw', kaleidoscope: '/draw',
+    leetcode: 'https://leetcode.com/u/hamza57/', arcade: '/arcade', wyr: '/wyr', type: '/type', typing: '/type', stack: '/play', play: '/play', draw: '/draw', kaleidoscope: '/draw',
     settings: '/settings', home: '/', finder: '/finder', guestbook: '/guestbook', work: '/work', stats: '/stats', about: '/about', email: 'mailto:hello@byhamza.dev', source: 'https://github.com/hamzaaaaaf/portfolio-website',
   };
 
@@ -172,7 +172,13 @@
       print(`<span class="y">${Object.keys(got).length}/${all.length}</span> unlocked`);
       all.forEach((a) => print(got[a.id] ? `  <span class="g">✓</span> ${esc(a.t)}` : `  <span class="m">○ ${a.secret ? '???' : esc(a.t)}</span>`));
     } },
-    minecraft: { d: '', hidden: true, run: () => {
+    cheats: { d: '', hidden: true, run: () => {
+      const found = (() => { try { return JSON.parse(localStorage.getItem('cheats') || '[]'); } catch (e) { return []; } })();
+      print(`<span class="y">${found.length}/10</span> cheat codes found. Type them anywhere outside a text box.`);
+      ['Health, armour and money in San Andreas.', 'What the screen says when it all goes wrong in Los Santos.', 'Doom, god mode.', 'Doom, all keys and weapons.', 'The Sims money cheat.',
+        'Peppy Hare\'s advice, as one word.', 'Who you call when Gotham needs help.', 'A 1999 found-footage film, as one word.', 'Red pill or blue pill?', 'What goes up…'].forEach((h) => print(`  <span class="m">·</span> ${h}`));
+    } },
+        minecraft: { d: '', hidden: true, run: () => {
       const G = '<span style="color:#5fbf3a">█</span>', D = '<span style="color:#2e6b1c">█</span>', K = '<span style="color:#111">█</span>';
       [[G, G, D, G, G, D, G, G], [G, K, K, G, G, K, K, D], [D, K, K, G, D, K, K, G], [G, G, D, K, K, G, G, G], [G, D, K, K, K, K, D, G], [G, G, K, D, G, K, G, D], [D, G, G, G, D, G, G, G]]
         .forEach((row) => print(`  ${row.map((c) => c + c).join('')}`));

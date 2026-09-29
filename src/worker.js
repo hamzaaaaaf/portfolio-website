@@ -1,4 +1,5 @@
 import { DurableObject } from 'cloudflare:workers';
+import GAME_LIST from '../public/games.json';
 
 // Serves /api/* (LeetCode and GitHub stats, Stack leaderboard, sparks); everything
 // else is a static file from public/.
@@ -133,7 +134,7 @@ async function limited(env, who, action, max, windowMs) {
 const BLOCKED = new Set(['ASS', 'FUK', 'FUC', 'FCK', 'SEX', 'CUM', 'DIK', 'DIC', 'KKK', 'NIG', 'FAG', 'TIT', 'POO', 'WTF', 'GAY', 'JEW', 'NAZ', 'HOE', 'CNT', 'KYS']);
 
 // Each game has its own board and its own sane score range.
-const GAMES = { stack: { max: 400 }, type: { max: 250 } };
+const GAMES = { stack: { max: 400 }, type: { max: 250 }, snake: { max: 900 }, breakout: { max: 99999 } };
 
 async function topScores(env, game) {
   const { results } = await env.DB.prepare(
@@ -228,6 +229,54 @@ async function guestbook(request, env, url) {
   return json({ ok: true, id: res.meta.last_row_id, pending: true });
 }
 
+/* ---------- Would You Rather (games) ---------- */
+
+const GAME_IDS = new Set(GAME_LIST.map((g) => g.id));
+const K = 24;
+
+async function pairCounts(env, a, b) {
+  const [x, y] = a < b ? [a, b] : [b, a];
+  const row = await env.DB.prepare('SELECT a_votes, b_votes FROM wyr_pairs WHERE a = ?1 AND b = ?2').bind(x, y).first();
+  const votes = { [x]: row ? row.a_votes : 0, [y]: row ? row.b_votes : 0 };
+  return { [a]: votes[a], [b]: votes[b] };
+}
+
+async function wyr(request, env, url) {
+  if (url.pathname === '/api/wyr/top') {
+    const { results } = await env.DB.prepare('SELECT game, rating, wins, losses FROM wyr_elo ORDER BY rating DESC LIMIT 25').all();
+    const total = await env.DB.prepare('SELECT COALESCE(SUM(a_votes + b_votes), 0) AS n FROM wyr_pairs').first();
+    return json({ top: results, votes: total.n });
+  }
+  if (request.method === 'GET') {
+    const a = url.searchParams.get('a'), b = url.searchParams.get('b');
+    if (!GAME_IDS.has(a) || !GAME_IDS.has(b)) return json({ error: 'Unknown game' }, 400);
+    return json({ counts: await pairCounts(env, a, b) });
+  }
+  if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+  const body = await request.json().catch(() => ({}));
+  const { a, b, pick } = body;
+  if (!GAME_IDS.has(a) || !GAME_IDS.has(b) || a === b || (pick !== a && pick !== b)) return json({ error: 'Bad vote' }, 400);
+  const who = await visitor(request);
+  if (await limited(env, who, 'wyr', 500, 86400000)) return json({ error: 'That is a lot of votes for one day.' }, 429);
+  const [x, y] = a < b ? [a, b] : [b, a];
+  const loser = pick === a ? b : a;
+  // Elo: the upset win moves ratings more than the expected one.
+  const r = await env.DB.prepare('SELECT game, rating FROM wyr_elo WHERE game IN (?1, ?2)').bind(pick, loser).all();
+  const rating = Object.fromEntries(r.results.map((row) => [row.game, row.rating]));
+  const rw = rating[pick] ?? 1000, rl = rating[loser] ?? 1000;
+  const expected = 1 / (1 + 10 ** ((rl - rw) / 400));
+  const delta = K * (1 - expected);
+  await env.DB.batch([
+    env.DB.prepare(`INSERT INTO wyr_pairs (a, b, a_votes, b_votes) VALUES (?1, ?2, ?3, ?4)
+      ON CONFLICT (a, b) DO UPDATE SET a_votes = a_votes + ?3, b_votes = b_votes + ?4`).bind(x, y, pick === x ? 1 : 0, pick === y ? 1 : 0),
+    env.DB.prepare(`INSERT INTO wyr_elo (game, rating, wins, losses) VALUES (?1, ?2, 1, 0)
+      ON CONFLICT (game) DO UPDATE SET rating = rating + ?3, wins = wins + 1`).bind(pick, 1000 + delta, delta),
+    env.DB.prepare(`INSERT INTO wyr_elo (game, rating, wins, losses) VALUES (?1, ?2, 0, 1)
+      ON CONFLICT (game) DO UPDATE SET rating = rating - ?3, losses = losses + 1`).bind(loser, 1000 - delta, delta),
+  ]);
+  return json({ ok: true, counts: await pairCounts(env, a, b) });
+}
+
 /* ---------- Live cursors (one Durable Object per page) ---------- */
 
 const ADJ = ['Sunny', 'Golden', 'Swift', 'Quiet', 'Brave', 'Lucky', 'Cosy', 'Bright', 'Clever', 'Mellow'];
@@ -286,6 +335,7 @@ export default {
       if (url.pathname === '/api/scores') return await scores(request, env);
       if (url.pathname === '/api/sparks') return await sparks(request, env);
       if (url.pathname.startsWith('/api/guestbook')) return await guestbook(request, env, url);
+      if (url.pathname.startsWith('/api/wyr')) return await wyr(request, env, url);
       if (url.pathname === '/api/live') {
         const room = (url.searchParams.get('room') || '/').replace(/[^a-z/]/g, '').slice(0, 20) || '/';
         return env.ROOMS.get(env.ROOMS.idFromName(room)).fetch(request);
