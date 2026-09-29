@@ -130,15 +130,20 @@ async function limited(env, who, action, max, windowMs) {
 
 const BLOCKED = new Set(['ASS', 'FUK', 'FUC', 'FCK', 'SEX', 'CUM', 'DIK', 'DIC', 'KKK', 'NIG', 'FAG', 'TIT', 'POO', 'WTF', 'GAY', 'JEW', 'NAZ', 'HOE', 'CNT', 'KYS']);
 
-async function topScores(env) {
+// Each game has its own board and its own sane score range.
+const GAMES = { stack: { max: 400 }, type: { max: 250 } };
+
+async function topScores(env, game) {
   const { results } = await env.DB.prepare(
-    'SELECT name, MAX(score) AS score, MIN(created) AS created FROM scores GROUP BY name ORDER BY score DESC, created ASC LIMIT 10',
-  ).all();
+    'SELECT name, MAX(score) AS score, MIN(created) AS created FROM scores WHERE game = ?1 GROUP BY name ORDER BY score DESC, created ASC LIMIT 10',
+  ).bind(game).all();
   return results;
 }
 
 async function scores(request, env) {
-  if (request.method === 'GET') return json({ scores: await topScores(env) });
+  const game = new URL(request.url).searchParams.get('game') || 'stack';
+  if (!GAMES[game]) return json({ error: 'Unknown game' }, 400);
+  if (request.method === 'GET') return json({ scores: await topScores(env, game) });
   if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
 
   let body;
@@ -147,13 +152,13 @@ async function scores(request, env) {
   const score = Number(body.score);
   if (name.length !== 3) return json({ error: 'Use three letters or numbers.' }, 400);
   if (BLOCKED.has(name)) return json({ error: 'Pick different initials.' }, 400);
-  if (!Number.isInteger(score) || score < 1 || score > 400) return json({ error: 'That score looks off.' }, 400);
+  if (!Number.isInteger(score) || score < 1 || score > GAMES[game].max) return json({ error: 'That score looks off.' }, 400);
 
   const who = await visitor(request);
   if (await limited(env, who, 'score', 5, 60000)) return json({ error: 'Slow down a little.' }, 429);
-  await env.DB.prepare('INSERT INTO scores (name, score, created, who) VALUES (?1, ?2, ?3, ?4)')
-    .bind(name, score, Date.now(), who).run();
-  return json({ ok: true, scores: await topScores(env) });
+  await env.DB.prepare('INSERT INTO scores (name, score, created, who, game) VALUES (?1, ?2, ?3, ?4, ?5)')
+    .bind(name, score, Date.now(), who, game).run();
+  return json({ ok: true, scores: await topScores(env, game) });
 }
 
 async function sparks(request, env) {

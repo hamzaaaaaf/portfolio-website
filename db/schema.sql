@@ -5,9 +5,11 @@ CREATE TABLE IF NOT EXISTS scores (
   name TEXT NOT NULL,
   score INTEGER NOT NULL,
   created INTEGER NOT NULL,
-  who TEXT NOT NULL
+  who TEXT NOT NULL,
+  game TEXT NOT NULL DEFAULT 'stack'
 );
 CREATE INDEX IF NOT EXISTS scores_rank ON scores (score DESC, created ASC);
+CREATE INDEX IF NOT EXISTS scores_game_rank ON scores (game, score DESC, created ASC);
 
 CREATE TABLE IF NOT EXISTS counters (key TEXT PRIMARY KEY, value INTEGER NOT NULL DEFAULT 0);
 INSERT OR IGNORE INTO counters (key, value) VALUES ('sparks', 0);

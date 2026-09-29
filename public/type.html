@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Work · Hamza</title>
-  <meta name="description" content="Case studies: Panic Pack!, Instagram Unliker and this website.">
+  <title>Typing Test · Hamza</title>
+  <meta name="description" content="How fast can you type? Timed, word and code modes, with a global leaderboard.">
   <meta name="theme-color" content="#ffe066">
-  <link rel="canonical" href="https://byhamza.dev/work">
-  <meta property="og:title" content="Work · Hamza">
-  <meta property="og:description" content="Case studies: Panic Pack!, Instagram Unliker and this website.">
+  <link rel="canonical" href="https://byhamza.dev/type">
+  <meta property="og:title" content="Typing Test · Hamza">
+  <meta property="og:description" content="How fast can you type? Timed, word and code modes, with a global leaderboard.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://byhamza.dev/work">
+  <meta property="og:url" content="https://byhamza.dev/type">
   <meta property="og:image" content="https://byhamza.dev/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -21,8 +21,9 @@
   <link rel="stylesheet" href="/fonts.css">
   <link rel="stylesheet" href="/styles.css">
   <script>(function(){var d=document.documentElement,p={};try{p=JSON.parse(localStorage.getItem('prefs')||'{}')}catch(e){}var t;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t;d.dataset.wall=p.wall||'butter';if(p.grain===true)d.dataset.grain='on';if(p.motion==='reduce')d.dataset.motion='reduce';if(p.dock)d.style.setProperty('--dock-size',p.dock+'px');d.classList.add('js')})();</script>
+  <link rel="stylesheet" href="/apps.css">
 </head>
-<body data-page="work">
+<body class="app" data-page="type">
   <div class="wallpaper" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
   <div class="cursor" aria-hidden="true"><span class="cursor__label">View</span></div>
@@ -31,11 +32,11 @@
     <div class="menubar__left">
       <button class="menubar__logo" type="button" data-menu="hmenu" aria-haspopup="menu" aria-label="Menu"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="currentColor"/><text x="16" y="22.5" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="21" fill="var(--bg)">h</text></svg></button>
       <a class="menubar__name" href="/">Hamza</a>
-      <a class="menubar__item" href="/work" aria-current="page">Work</a>
+      <a class="menubar__item" href="/work">Work</a>
       <a class="menubar__item" href="/stats">Stats</a>
       <a class="menubar__item" href="/play">Play</a>
       <a class="menubar__item" href="/draw">Draw</a>
-      <a class="menubar__item" href="/type">Type</a>
+      <a class="menubar__item" href="/type" aria-current="page">Type</a>
       <a class="menubar__item" href="/terminal">Terminal</a>
       <a class="menubar__item" href="/about">About</a>
     </div>
@@ -47,82 +48,57 @@
     </div>
   </header>
 
-  <main>
-    <header class="page-head" id="top">
-      <span class="label mono">Work</span>
-      <h1 class="h1">Selected <em>work.</em></h1>
-      <p class="lede">Small projects, finished and shipped. What each one does and how it's put together.</p>
-    </header>
-    <section class="section section--tight" style="padding-top:0">
-    <article class="win case reveal" id="panic-pack">
-      <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">panic-pack · Godot 4</span></div>
-      <div class="win__body">
-        <div class="project__media"><div class="art art--panic"></div><span class="project__glyph">!</span></div>
-        <div class="case__body">
-          <h2 class="case__title">Panic Pack!</h2>
-          <div class="case__meta mono"><span>2026</span><span>Godot 4</span><span>GDScript</span><span>Windows</span></div>
-          <p>A first-person beat-the-clock game. Your taxi is coming. Search the house, grab everything on your packing list before time runs out, then get out the front door.</p>
-          <h4>What it does</h4>
-          <ul class="points"><li>A new randomised packing list every run, pulled up with <kbd>Tab</kbd></li><li>A flight countdown, then the taxi arrives and you sprint for the door</li><li>Pick up, carry and drop physics objects around the house</li><li>Doors that open, a radio that plays, footsteps as you move</li><li>A furnished low-poly house built from food, furniture and building asset packs</li></ul>
-          <h4>Controls</h4><dl class="keys"><dt><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></dt><dd>Move</dd><dt>Mouse</dt><dd>Look</dd><dt><kbd>E</kbd></dt><dd>Interact, pick up, drop</dd><dt><kbd>Tab</kbd></dt><dd>Hold to view the packing list</dd><dt><kbd>Space</kbd></dt><dd>Jump</dd></dl>
-          <div class="case__links"><a class="mac-btn mac-btn--primary" href="https://github.com/hamzaaaaaf/panic-pack-/releases/tag/v0.1.0" target="_blank" rel="noopener">Download for Windows</a><a class="mac-btn" href="https://github.com/hamzaaaaaf/panic-pack-" target="_blank" rel="noopener">View source ↗</a></div>
-        </div>
+  <main class="win app-win type-win">
+    <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">Typing Test</span></div>
+    <div class="win__body tt">
+      <div class="tt__bar">
+        <div class="tt__group glass"><button class="icon-btn" type="button" data-kind="time">Time</button><button class="icon-btn" type="button" data-kind="words">Words</button><button class="icon-btn" type="button" data-kind="code">Code</button></div>
+        <div class="tt__group glass"><button class="icon-btn" type="button" data-for="time" data-val="15">15</button><button class="icon-btn" type="button" data-for="time" data-val="30">30</button><button class="icon-btn" type="button" data-for="time" data-val="60">60</button><button class="icon-btn" type="button" data-for="words" data-val="10">10</button><button class="icon-btn" type="button" data-for="words" data-val="25">25</button><button class="icon-btn" type="button" data-for="words" data-val="50">50</button><button class="icon-btn" type="button" data-for="code" data-val="python">Python</button><button class="icon-btn" type="button" data-for="code" data-val="java">Java</button></div>
+        <div class="tt__group glass"><button class="icon-btn" type="button" id="tt-clicks" title="Key sounds">Clicks</button><button class="icon-btn" type="button" data-restart title="Restart (Tab)">Restart</button></div>
       </div>
-    </article>
-    <article class="win case reveal" id="instagram-unliker">
-      <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">instagram-post-unliker · JavaScript</span></div>
-      <div class="win__body">
-        <div class="project__media"><div class="art art--heart"></div><span class="project__glyph">♡</span></div>
-        <div class="case__body">
-          <h2 class="case__title">Instagram Unliker</h2>
-          <div class="case__meta mono"><span>2026</span><span>JavaScript</span><span>Browser console</span></div>
-          <p>Instagram makes you unlike old posts one at a time. This script does it in bulk from your own browser, with no password, cookie or API key involved.</p>
-          <h4>What it does</h4>
-          <ul class="points"><li>Enters Instagram's Select mode on the Likes page by itself</li><li>Selects every loaded post, unlikes them and confirms the dialog</li><li>Waits between batches so Instagram can catch up, then keeps going</li><li>Stops cleanly with a console message if the page changes underneath it</li><li>Logs each batch to the console so you can watch it work</li></ul>
-          <h4>How to use it</h4><ol class="points"><li>Open Your Activity, then Interactions, then Likes</li><li>Open the browser console</li><li>Paste the script and press Enter</li></ol>
-          <div class="case__links"><a class="mac-btn mac-btn--primary" href="https://github.com/hamzaaaaaf/instagram-post-unliker" target="_blank" rel="noopener">View source ↗</a></div>
-        </div>
-      </div>
-    </article>
-    <article class="win case reveal" id="this-site">
-      <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">portfolio-website · Cloudflare</span></div>
-      <div class="win__body">
-        <div class="project__media"><div class="art art--site"></div><span class="project__glyph">h</span></div>
-        <div class="case__body">
-          <h2 class="case__title">byhamza.dev</h2>
-          <div class="case__meta mono"><span>2026</span><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Workers</span><span>D1</span></div>
-          <p>The site you're on. A small desktop in the browser: windows, a dock, a menu bar and a handful of apps, served from Cloudflare's edge with no build step.</p>
-          <h4>What it does</h4>
-          <ul class="points"><li>Windows with working traffic lights, a dock, Spotlight and a right-click menu</li><li>Stack, a 3D game with a global leaderboard stored in D1</li><li>A kaleidoscope, a terminal and a settings app with five wallpapers</li><li>Live LeetCode and GitHub stats fetched and cached by a Worker</li><li>Native scrolling, with motion kept to transform and opacity so it stays smooth</li></ul>
-          
-          <div class="case__links"><a class="mac-btn mac-btn--primary" href="https://github.com/hamzaaaaaf/portfolio-website" target="_blank" rel="noopener">View source ↗</a><a class="mac-btn" href="/terminal">Open the terminal</a></div>
-        </div>
-      </div>
-    </article>
-    </section>
-    <section class="section section--tight">
-      <div class="win cta reveal">
-        <h2>Want the <em>numbers?</em></h2>
-        <div class="cta__btns"><a class="mac-btn mac-btn--primary" href="/stats">See live stats</a><a class="mac-btn" href="/play">Play Stack</a></div>
-      </div>
-    </section>
-  </main>
 
-  <footer class="footer footer--slim">
-    <div class="footer__bar mono">
-      <span>© 2026 Hamza</span>
-      <button class="footer__spark" type="button" data-spark><span aria-hidden="true">✦</span> <span data-sparks>·</span> sparks</button>
-      <a href="#top">Back to top ↑</a>
+      <section class="tt__test" id="tt-test">
+        <div class="tt__live mono"><span class="tt__timer" id="tt-timer">30</span><span><b id="tt-wpm">0</b> wpm</span><span><b id="tt-acc">100%</b> acc</span></div>
+        <div class="tt__viewport" id="tt-viewport">
+          <div class="tt__words" id="tt-words" aria-hidden="true"></div>
+          <div class="tt__caret" id="tt-caret"></div>
+          <div class="tt__focus" id="tt-focus">Click here or press any key to focus</div>
+        </div>
+        <input class="tt__input" id="tt-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type the words shown">
+        <p class="tt__hint mono"><kbd>Tab</kbd> restart · <kbd>Esc</kbd> new text · <kbd>⌥</kbd><kbd>⌫</kbd> delete word</p>
+      </section>
+
+      <section class="tt__results" id="tt-results" hidden>
+        <div class="tt__big">
+          <div><span class="mono muted">wpm</span><b id="tt-r-wpm">0</b></div>
+          <div><span class="mono muted">accuracy</span><b id="tt-r-acc">0%</b></div>
+          <span class="tt__pb" id="tt-r-pb" hidden>New personal best</span>
+        </div>
+        <svg class="tt__graph" id="tt-graph" viewBox="0 0 600 120" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <dl class="tt__meta">
+          <div><dt class="mono muted">test</dt><dd id="tt-r-mode">·</dd></div>
+          <div><dt class="mono muted">raw</dt><dd id="tt-r-raw">·</dd></div>
+          <div><dt class="mono muted">correct/wrong</dt><dd id="tt-r-chars">·</dd></div>
+          <div><dt class="mono muted">time</dt><dd id="tt-r-time">·</dd></div>
+        </dl>
+        <form class="submit glass tt__submit" id="tt-submit" hidden>
+          <span class="mono">Post to the 30s leaderboard</span>
+          <input id="tt-initials" maxlength="3" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="AAA" aria-label="Your initials">
+          <button class="mac-btn mac-btn--primary" type="submit">Post</button>
+        </form>
+        <div class="tt__board" id="tt-boardwrap"><span class="mono muted">Global top 10 · 30 seconds</span><ol class="board__list" id="tt-board"><li class="muted">Loading…</li></ol></div>
+        <button class="mac-btn mac-btn--primary tt__again" type="button" data-restart>Next test <kbd>Enter</kbd></button>
+      </section>
     </div>
-  </footer>
+  </main>
 
   <nav class="dock" aria-label="Dock">
     <a class="dock__item " href="/" aria-label="Home"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-home" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3a6"/><stop offset="1" stop-color="#f5b800"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-home)"/><text x="28" y="40" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="38" fill="#2b2100">h</text></svg></span><span class="dock__tip">Home</span></a>
-    <a class="dock__item " href="/work" aria-current="page" aria-label="Work"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-work" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0ff"/><stop offset="1" stop-color="#3d97f2"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-work)"/><path d="M11 19a3 3 0 0 1 3-3h9l3 3h16a3 3 0 0 1 3 3v17a3 3 0 0 1-3 3H14a3 3 0 0 1-3-3Z" fill="#fff" fill-opacity=".92"/><path d="M11 24h34" stroke="#4aa3f5" stroke-opacity=".35" stroke-width="2"/></svg></span><span class="dock__tip">Work</span></a>
+    <a class="dock__item " href="/work" aria-label="Work"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-work" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0ff"/><stop offset="1" stop-color="#3d97f2"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-work)"/><path d="M11 19a3 3 0 0 1 3-3h9l3 3h16a3 3 0 0 1 3 3v17a3 3 0 0 1-3 3H14a3 3 0 0 1-3-3Z" fill="#fff" fill-opacity=".92"/><path d="M11 24h34" stroke="#4aa3f5" stroke-opacity=".35" stroke-width="2"/></svg></span><span class="dock__tip">Work</span></a>
     <a class="dock__item " href="/stats" aria-label="Stats"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-lc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34322c"/><stop offset="1" stop-color="#16150f"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-lc)"/><text x="28" y="36" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="20" fill="#ffa116">{ }</text></svg></span><span class="dock__tip">Stats</span></a>
     <a class="dock__item " href="/play" aria-label="Stack"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-stack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1a8"/><stop offset="1" stop-color="#ffcf3a"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-stack)"/><rect x="15" y="34" width="26" height="7" rx="2" fill="#ff8a5c"/><rect x="17" y="26" width="23" height="7" rx="2" fill="#ffb347"/><rect x="19" y="18" width="19" height="7" rx="2" fill="#fff"/></svg></span><span class="dock__tip">Stack</span></a>
     <a class="dock__item " href="/draw" aria-label="Kaleidoscope"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-draw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2619"/><stop offset="1" stop-color="#100f0a"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-draw)"/><g transform="translate(28 28)" style="mix-blend-mode:screen"><ellipse rx="12" ry="4.6" cx="10" transform="rotate(0)" fill="#ffe066" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(60)" fill="#ff8a5c" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(120)" fill="#ff7aa2" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(180)" fill="#ffe066" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(240)" fill="#ff8a5c" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(300)" fill="#ff7aa2" fill-opacity=".85"/></g></svg></span><span class="dock__tip">Kaleidoscope</span></a>
-    <a class="dock__item " href="/type" aria-label="Typing Test"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-type" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe27a"/><stop offset="1" stop-color="#f5b800"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-type)"/><rect x="9" y="17" width="38" height="24" rx="5" fill="#fff" fill-opacity=".95"/><rect x="13" y="21" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="19" y="21" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="25" y="21" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="31" y="21" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="37" y="21" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="43" y="21" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="15" y="27.5" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="21" y="27.5" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="27" y="27.5" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="33" y="27.5" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="39" y="27.5" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="18" y="34" width="20" height="4" rx="1.4" fill="#ffb800"/></svg></span><span class="dock__tip">Typing Test</span></a>
+    <a class="dock__item " href="/type" aria-current="page" aria-label="Typing Test"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-type" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe27a"/><stop offset="1" stop-color="#f5b800"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-type)"/><rect x="9" y="17" width="38" height="24" rx="5" fill="#fff" fill-opacity=".95"/><rect x="13" y="21" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="19" y="21" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="25" y="21" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="31" y="21" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="37" y="21" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="43" y="21" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="15" y="27.5" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="21" y="27.5" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="27" y="27.5" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="33" y="27.5" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="39" y="27.5" width="4.4" height="4.4" rx="1.2" fill="#8e8e93"/><rect x="18" y="34" width="20" height="4" rx="1.4" fill="#ffb800"/></svg></span><span class="dock__tip">Typing Test</span></a>
     <a class="dock__item dock__extra" href="/terminal" aria-label="Terminal"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-term" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b382f"/><stop offset="1" stop-color="#12110c"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-term)"/><path d="M15 21l7 7-7 7" fill="none" stroke="#ffd84d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 36h13" stroke="#f8f1d8" stroke-width="3.4" stroke-linecap="round"/></svg></span><span class="dock__tip">Terminal</span></a>
     <a class="dock__item " href="/about#contact" aria-label="Mail"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-mail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc8ff"/><stop offset="1" stop-color="#1f7cf2"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-mail)"/><rect x="12" y="17" width="32" height="22" rx="3" fill="#fff"/><path d="m13 19 15 11 15-11" fill="none" stroke="#3d97f2" stroke-width="2.4" stroke-linejoin="round"/></svg></span><span class="dock__tip">Mail</span></a>
     <a class="dock__item dock__extra" href="/settings" aria-label="System Settings"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-set" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c7c7cc"/><stop offset="1" stop-color="#8e8e93"/></linearGradient></defs><rect width="56" height="56" rx="13" fill="url(#g-set)"/><g transform="translate(28 28)"><circle r="13.5" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="4.2 2.9"/><circle r="9.5" fill="#8e8e93"/><circle r="4.5" fill="#fff"/></g></svg></span><span class="dock__tip">System Settings</span></a>
@@ -133,5 +109,6 @@
 
   <script src="/main.js" defer></script>
   <script src="/os.js" defer></script>
+  <script src="/type.js" defer></script>
 </body>
 </html>

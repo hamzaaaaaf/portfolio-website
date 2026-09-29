@@ -47,7 +47,7 @@
 
   const OPEN = {
     github: 'https://github.com/hamzaaaaaf', linkedin: 'https://www.linkedin.com/in/hamza-faisal-125833263/',
-    leetcode: 'https://leetcode.com/u/hamza57/', stack: '/play', play: '/play', draw: '/draw', kaleidoscope: '/draw',
+    leetcode: 'https://leetcode.com/u/hamza57/', type: '/type', typing: '/type', stack: '/play', play: '/play', draw: '/draw', kaleidoscope: '/draw',
     settings: '/settings', home: '/', work: '/work', stats: '/stats', about: '/about', email: 'mailto:hello@byhamza.dev', source: 'https://github.com/hamzaaaaaf/portfolio-website',
   };
 

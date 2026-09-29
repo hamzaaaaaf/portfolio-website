@@ -437,7 +437,14 @@
       const top = scores[0];
       site.querySelector('[data-site="top"]').textContent = top ? `${top.score}` : '0';
       site.querySelector('[data-site="topname"]').textContent = top ? `by ${top.name}` : 'be first';
-      site.querySelector('[data-site="players"]').textContent = scores.length;
+    }).catch(() => {});
+  }
+
+  if (site) {
+    fetch('/api/scores?game=type').then((r) => r.json()).then(({ scores }) => {
+      const top = scores[0];
+      site.querySelector('[data-site="type"]').textContent = top ? `${top.score}` : '0';
+      site.querySelector('[data-site="typename"]').textContent = top ? `wpm by ${top.name}` : 'be first';
     }).catch(() => {});
   }
 

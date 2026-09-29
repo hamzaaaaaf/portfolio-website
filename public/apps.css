@@ -156,3 +156,50 @@
   .seg__prev { width: 50px; height: 34px; }
   .slider { width: 120px; }
 }
+
+/* ---------- Typing Test ---------- */
+.tt { display: flex; flex-direction: column; align-items: center; gap: clamp(20px, 4vh, 40px); padding: clamp(18px, 3vw, 40px); overflow: auto; touch-action: auto; background: var(--media); }
+.tt__bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.tt__group { display: flex; gap: 2px; padding: 4px; }
+.tt__group .icon-btn[hidden] { display: none; }
+.tt__test, .tt__results { width: min(980px, 100%); display: grid; gap: 18px; }
+.tt__test[hidden], .tt__results[hidden] { display: none; }
+.tt__live { display: flex; gap: 28px; align-items: baseline; color: var(--muted); font-size: 14px; transition: opacity 0.3s; }
+.tt__live b { color: var(--fg); font-weight: 600; font-size: 18px; }
+.tt__timer { font-size: 30px; color: #9a6a00; font-weight: 600; min-width: 2.4ch; }
+:root[data-theme="dark"] .tt__timer { color: var(--accent); }
+.tt__viewport { position: relative; height: calc(3 * 1.6em); overflow: hidden; font: 400 clamp(20px, 2.4vw, 28px)/1.6 var(--mono); letter-spacing: 0.01em; cursor: text; -webkit-mask-image: linear-gradient(#000 70%, transparent); mask-image: linear-gradient(#000 70%, transparent); }
+.tt__words { position: relative; white-space: pre-wrap; word-break: normal; color: rgba(var(--fg-rgb), 0.38); transition: transform 0.18s var(--ease); }
+.tt__words.is-code { font-size: 0.8em; line-height: 2em; }
+.tt__viewport:has(.is-code) { height: calc(3 * 1.6em); }
+.tt__words .ch { transition: color 0.08s; }
+.tt__words .ok { color: var(--fg); }
+.tt__words .bad { color: #e5484d; background: rgba(229, 72, 77, 0.12); border-radius: 3px; }
+.tt__words .nl { color: rgba(var(--fg-rgb), 0.25); font-size: 0.8em; }
+.tt__words .nl.ok { color: rgba(var(--fg-rgb), 0.45); }
+.tt__caret { position: absolute; left: 0; top: 0; width: 2.5px; border-radius: 2px; background: #e0a500; transition: transform 0.09s linear; animation: blink 1s steps(1) infinite; }
+.tt-running .tt__caret { animation: none; }
+.tt__focus { position: absolute; inset: 0; display: grid; place-items: center; background: color-mix(in srgb, var(--media) 82%, transparent); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); font: 500 15px var(--sans); color: var(--fg); opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+.tt__focus.show { opacity: 1; }
+.tt__input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.tt__hint { color: var(--muted); font-size: 11px; text-align: center; transition: opacity 0.3s; }
+.tt-running .tt__hint, .tt-running .tt__bar { opacity: 0.25; }
+.tt__bar { transition: opacity 0.3s; }
+.tt__big { display: flex; flex-wrap: wrap; align-items: end; gap: clamp(24px, 5vw, 64px); }
+.tt__big div { display: grid; }
+.tt__big b { font-size: clamp(4rem, 10vw, 7.5rem); line-height: 0.9; font-weight: 300; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
+.tt__pb { align-self: center; padding: 6px 12px; border-radius: 999px; background: #ffd84d; color: #3a2c00; font-size: 13px; font-weight: 600; animation: pop-in 0.5s var(--spring); }
+.tt__pb[hidden] { display: none; }
+.tt__graph { width: 100%; height: 120px; overflow: visible; }
+.tt__graph .stroke { fill: none; stroke: #e0a500; stroke-width: 2.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.tt__graph .area { fill: rgba(255, 200, 40, 0.18); }
+.tt__graph circle { fill: #e0a500; }
+.tt__meta { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 0; }
+.tt__meta div { padding: 12px 14px; border-radius: 12px; background: var(--win-2); border: 1px solid var(--line); }
+.tt__meta dd { margin: 4px 0 0; font-size: 20px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.tt__submit { position: static; translate: none; justify-self: start; }
+.tt__board { display: grid; gap: 8px; max-width: 360px; }
+.tt__board[hidden] { display: none; }
+.tt__again { justify-self: start; margin: 0; padding: 9px 18px; }
+.tt__again kbd { background: rgba(255, 255, 255, 0.2); border: 0; box-shadow: none; color: #fff; margin-left: 6px; }
+@media (max-width: 700px) { .tt__meta { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tt__live { gap: 16px; } }
