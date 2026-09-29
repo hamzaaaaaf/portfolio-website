@@ -258,5 +258,6 @@
   print('Welcome to <span class="y">byhamza.dev</span>. Type <span class="y">help</span> to see what you can do.');
   if (t) print(`<span class="m">It's ${t.timeIn(t.DEV_TZ)} ${esc(t.tzAbbr(t.DEV_TZ))} here, ${t.timeIn(t.VIEWER_TZ)} ${esc(t.tzAbbr(t.VIEWER_TZ))} for you.</span>`);
   print('');
+  if (location.hash === '#cheats') exec('cheats');
   input.focus();
 })();

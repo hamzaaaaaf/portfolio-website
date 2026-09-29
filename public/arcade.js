@@ -2,6 +2,7 @@
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => [...document.querySelectorAll(s)];
   const toast = (m) => window.toast && window.toast(m);
+  const nope = (el) => window.nope && window.nope(el);
   const canvas = $('#arc-canvas');
   const ctx = canvas.getContext('2d');
   const W = 480, H = 360;
@@ -239,7 +240,7 @@
   $('#arc-submit').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = $('#arc-initials').value;
-    if (name.length !== 3) { toast('Three letters or numbers.'); return; }
+    if (name.length !== 3) { $('#arc-initials').focus(); nope($('#arc-submit')); return; }
     $('#arc-submit').hidden = true;
     try {
       const r = await fetch(`/api/scores?game=${game}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name, score }) });
@@ -249,7 +250,7 @@
       try { localStorage.setItem('stack-initials', name); } catch (err) { /* storage blocked */ }
       toast(`Posted ${score} as ${name}.`);
       loadBoard();
-    } catch (err) { toast(err.message || 'Could not post.'); }
+    } catch (err) { $('#arc-submit').hidden = false; nope($('#arc-submit')); }
   });
 
   choose(game);
