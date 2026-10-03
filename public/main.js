@@ -216,7 +216,19 @@
   /* ---------- Toast ---------- */
   const toastEl = $('.toast');
   let toastTimer;
+  // Inside the dashboard, messages go to it so they look like the rest of it.
+  const EMBED = window.top !== window.self;
+  const tellShell = (msg) => { try { parent.postMessage({ x360: true, ...msg }, location.origin); } catch (e) { /* cross-origin parent */ } };
+  if (EMBED) {
+    addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || e.defaultPrevented) return;
+      if (e.target.closest && e.target.closest('input, textarea, [contenteditable]')) return;
+      if (document.querySelector('dialog[open], :popover-open')) return;
+      tellShell({ t: 'close' });
+    });
+  }
   function toast(msg) {
+    if (EMBED) { tellShell({ t: 'toast', m: msg }); return; }
     if (!toastEl) return;
     toastEl.querySelector('.toast__text').textContent = msg;
     toastEl.classList.add('show');

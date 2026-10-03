@@ -1,125 +1,260 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en-GB">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Hamza · Computer Science</title>
-  <meta name="description" content="Hamza studies Computer Science at Aston University. Projects, live stats, an arcade, a kaleidoscope and a terminal.">
-  <meta name="theme-color" content="#ffe066">
+  <meta name="description" content="Hamza studies Computer Science at Aston University. Projects, live stats, an arcade, a terminal and achievements, on a dashboard you can drive with a controller.">
+  <meta name="theme-color" content="#e6e6e6">
   <link rel="canonical" href="https://byhamza.dev/">
   <meta property="og:title" content="Hamza · Computer Science">
-  <meta property="og:description" content="Hamza studies Computer Science at Aston University. Projects, live stats, an arcade, a kaleidoscope and a terminal.">
-  <meta property="og:type" content="website">
+  <meta property="og:description" content="Projects, live stats, an arcade, a terminal and achievements.">
   <meta property="og:url" content="https://byhamza.dev/">
+  <meta property="og:type" content="website">
   <meta property="og:image" content="https://byhamza.dev/og.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="/fonts/InterTight.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/InstrumentSerif-Italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/fonts.css">
-  <link rel="stylesheet" href="/styles.css">
-  <script>(function(){var d=document.documentElement,p={};try{p=JSON.parse(localStorage.getItem('prefs')||'{}')}catch(e){}var t;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t;d.dataset.wall=p.wall||'butter';if(p.grain===true)d.dataset.grain='on';if(p.motion==='reduce')d.dataset.motion='reduce';if(p.dock)d.style.setProperty('--dock-size',p.dock+'px');d.classList.add('js')})();</script>
+  <script>(function(){var d=document.documentElement,p={};try{p=JSON.parse(localStorage.getItem('prefs')||'{}')}catch(e){}var t;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t;d.dataset.skin=p.skin==='yellow'?'yellow':'green';if(p.motion==='reduce')d.dataset.motion='reduce';if(window.top!==window.self)d.classList.add('nested');d.classList.add('js')})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
+  <link rel="stylesheet" href="/x360.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","mainEntity":{"@type":"Person","name":"Hamza","url":"https://byhamza.dev","jobTitle":"Computer Science student","affiliation":{"@type":"CollegeOrUniversity","name":"Aston University"},"address":{"@type":"PostalAddress","addressLocality":"Birmingham","addressCountry":"GB"},"sameAs":["https://github.com/hamzaaaaaf","https://www.linkedin.com/in/hamza-faisal-125833263/","https://leetcode.com/u/hamza57/"]}}</script>
 </head>
-<body class="is-loading desktop-home" data-page="home">
-  <a class="skip" href="/work">Skip to work</a>
+<body data-shell="x360" data-page="home">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-user" viewBox="0 0 48 48"><circle cx="24" cy="17" r="8" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M9 41c1.5-8 7.5-12 15-12s13.5 4 15 12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+      <symbol id="i-folder" viewBox="0 0 48 48"><path d="M6 13h13l4 4h19v21H6Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></symbol>
+      <symbol id="i-pad" viewBox="0 0 48 48"><path d="M14 15h20c6 0 9 8 10 17 .6 5-4 7-7 3l-4-5H15l-4 5c-3 4-7.6 2-7-3 1-9 4-17 10-17Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M15 20v7M11.5 23.5h7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="21" r="1.8" fill="currentColor"/><circle cx="36" cy="25" r="1.8" fill="currentColor"/></symbol>
+      <symbol id="i-trophy" viewBox="0 0 48 48"><path d="M15 8h18v10a9 9 0 0 1-18 0Z M15 11H8c0 7 3 10 8 10 M33 11h7c0 7-3 10-8 10 M24 27v8 M16 40h16 M19 35h10" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+      <symbol id="i-code" viewBox="0 0 48 48"><path d="M17 13 7 24l10 11M31 13l10 11-10 11M27 9l-6 30" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-keys" viewBox="0 0 48 48"><rect x="5" y="13" width="38" height="23" rx="3" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M11 20h2M17 20h2M23 20h2M29 20h2M35 20h2M14 26h2M20 26h2M26 26h2M32 26h2M16 31h16" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+      <symbol id="i-ie" viewBox="0 0 48 48"><path d="M37 27H14c0 6 4 10 10 10 4 0 7-2 8.5-5 M14 22h18c0-5-3.5-9-9-9-6 0-10 5-10 12s4 13 11 13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><path d="M8 34c-6 9 3 10 16 2s23-21 16-25c-3-2-9 0-14 3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+      <symbol id="i-term" viewBox="0 0 48 48"><rect x="5" y="9" width="38" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="m13 19 6 5-6 5M23 30h11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-kaleido" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.4"><ellipse cx="24" cy="14" rx="5" ry="10"/><ellipse cx="24" cy="34" rx="5" ry="10"/><ellipse cx="14" cy="24" rx="10" ry="5"/><ellipse cx="34" cy="24" rx="10" ry="5"/></g></symbol>
+      <symbol id="i-book" viewBox="0 0 48 48"><path d="M9 9h22l8 8v22H9Z M15 19h14M15 25h18M15 31h10" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+      <symbol id="i-in" viewBox="0 0 48 48"><path d="M13 20v16M13 12v.5M21 36V20M21 27c0-4 3-7 6.5-7S34 22 34 27v9" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></symbol>
+      <symbol id="i-git" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="16" cy="11" r="4"/><circle cx="16" cy="37" r="4"/><circle cx="33" cy="18" r="4"/><path d="M16 15v18M33 22c0 7-17 5-17 11"/></g></symbol>
+      <symbol id="i-mail" viewBox="0 0 48 48"><rect x="6" y="12" width="36" height="25" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="m7 14 17 13 17-13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></symbol>
+      <symbol id="i-spark" viewBox="0 0 48 48"><path d="M24 5c1.6 10.4 4.6 13.4 15 15-10.4 1.6-13.4 4.6-15 15-1.6-10.4-4.6-13.4-15-15 10.4-1.6 13.4-4.6 15-15Z" fill="currentColor"/></symbol>
+      <symbol id="i-gear" viewBox="0 0 48 48"><circle cx="24" cy="24" r="6" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M24 6v6M24 36v6M6 24h6M36 24h6M11 11l4.3 4.3M32.7 32.7 37 37M11 37l4.3-4.3M32.7 15.3 37 11" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 48 48"><path d="M38 29A15 15 0 1 1 19 10a12 12 0 0 0 19 19Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></symbol>
+      <symbol id="i-sound" viewBox="0 0 48 48"><path d="M8 19h7l9-8v26l-9-8H8Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M31 17c3 4 3 10 0 14M36 12c6 7 6 17 0 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+      <symbol id="i-power" viewBox="0 0 48 48"><path d="M24 7v15M14 13a14 14 0 1 0 20 0" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></symbol>
+      <symbol id="i-people" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="18" cy="17" r="6"/><path d="M6 38c1-7 6-10 12-10s11 3 12 10"/><circle cx="33" cy="16" r="5"/><path d="M33 26c5 0 9 3 10 9"/></g></symbol>
+      <symbol id="i-palette" viewBox="0 0 48 48"><path d="M24 7C14 7 6 14 6 23c0 8 6 13 12 13 3 0 3-3 2-5s0-5 3-5h6c7 0 13-4 13-10C42 12 34 7 24 7Z" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="16" cy="19" r="2.2" fill="currentColor"/><circle cx="24" cy="14" r="2.2" fill="currentColor"/><circle cx="32" cy="18" r="2.2" fill="currentColor"/></symbol>
+      <symbol id="i-motion" viewBox="0 0 48 48"><path d="M8 24h8l4-10 8 20 4-10h8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-info" viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M24 22v11M24 15v.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 48 48"><path d="M8 40h32M13 34V22M21 34V12M29 34V18M37 34V26" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></symbol>
+      <symbol id="i-vs" viewBox="0 0 48 48"><rect x="5" y="10" width="15" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="28" y="14" width="15" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M22 22h4M22 26h4" stroke="currentColor" stroke-width="2.6"/></symbol>
+      <symbol id="i-snake" viewBox="0 0 48 48"><path d="M9 36h12V22h16V12" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="37" cy="36" r="3" fill="currentColor"/></symbol>
+      <symbol id="i-bricks" viewBox="0 0 48 48"><g fill="currentColor"><rect x="6" y="8" width="10" height="5" rx="1"/><rect x="19" y="8" width="10" height="5" rx="1"/><rect x="32" y="8" width="10" height="5" rx="1"/><rect x="6" y="16" width="10" height="5" rx="1"/><rect x="32" y="16" width="10" height="5" rx="1"/><circle cx="24" cy="30" r="2.6"/><rect x="16" y="37" width="16" height="3.5" rx="1.7"/></g></symbol>
+      <symbol id="i-stack" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"><path d="M10 34h28v6H10Z"/><path d="M13 26h22v8H13Z"/><path d="M16 18h16v8H16Z"/><path d="M19 10h12v8H19Z" fill="currentColor"/></g></symbol>
+      <symbol id="i-back" viewBox="0 0 48 48"><path d="M28 12 16 24l12 12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-games" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.6"><rect x="7" y="8" width="14" height="20" rx="1.5"/><rect x="27" y="8" width="14" height="20" rx="1.5"/><rect x="17" y="22" width="14" height="20" rx="1.5" fill="var(--tile-bg, transparent)"/></g></symbol>
+    </defs>
+  </svg>
 
-  <div class="loader" aria-hidden="true">
-    <svg class="loader__logo" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="currentColor"/><text x="16" y="22.5" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="21" fill="var(--boot-bg)">h</text></svg>
-    <div class="loader__bar"><span></span></div>
+  <div class="power" hidden>
+    <button class="power__btn" type="button" aria-label="Turn on"><svg><use href="#i-power"/></svg></button>
+    <p class="power__hint">Press any key to turn on</p>
+  </div>
+  <div class="boot" aria-hidden="true" hidden>
+    <div class="boot__glow"></div>
+    <div class="boot__rings"><i></i><i></i><i></i><i></i></div>
+    <div class="boot__mark"><b>HAMZA</b><span>360</span></div>
   </div>
 
-  <div class="wallpaper" aria-hidden="true"></div>
-  <div class="grain" aria-hidden="true"></div>
-  <div class="cursor" aria-hidden="true"><span class="cursor__label">View</span></div>
-  <div class="toast" role="status" aria-live="polite"><svg class="toast__icon" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#ffd84d"/><text x="16" y="22.5" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="21" fill="#2b2100">h</text></svg><span class="toast__text"></span></div>
-  <header class="menubar">
-    <div class="menubar__left">
-      <button class="menubar__logo" type="button" data-menu="hmenu" aria-haspopup="menu" aria-label="Menu"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="currentColor"/><text x="16" y="22.5" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="21" fill="var(--bg)">h</text></svg></button>
-      <a class="menubar__name" href="/finder">Finder</a>
-      <a class="menubar__item" href="/work">Work</a>
-      <a class="menubar__item" href="/stats">Stats</a>
-      <a class="menubar__item" href="/about">About</a>
-      <button class="menubar__item" type="button" data-menu="appsmenu" aria-haspopup="menu">Apps</button>
-    </div>
-    <div class="menubar__right">
-      <button class="sparks" type="button" data-spark title="Leave a spark" aria-label="Leave a spark"><span class="sparks__icon" aria-hidden="true">✦</span><span class="sparks__n" data-sparks>·</span></button>
-      <button class="menubar__icon" type="button" data-spotlight aria-label="Search (Ctrl K)" title="Search  ⌘K"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg></button>
-      <button class="theme-toggle menubar__icon" type="button" aria-label="Switch between light and dark mode" title="Light / dark"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1Z"/></svg></button>
-      <span class="menubar__clock" data-menuclock><span class="menubar__date"></span><span></span></span>
+  <header class="xbar">
+    <nav class="pivots" aria-label="Dashboard" role="tablist">
+      <button class="pivot" type="button" role="tab" data-tab="home">home</button>
+      <button class="pivot" type="button" role="tab" data-tab="projects">projects</button>
+      <button class="pivot" type="button" role="tab" data-tab="games">games</button>
+      <button class="pivot" type="button" role="tab" data-tab="social">social</button>
+      <button class="pivot" type="button" role="tab" data-tab="apps">apps</button>
+      <button class="pivot" type="button" role="tab" data-tab="settings">settings</button>
+    </nav>
+    <div class="me">
+      <span class="me__live" data-online hidden></span>
+      <button class="me__card" type="button" data-guide aria-label="Open the Guide">
+        <span class="me__text"><b>Hamza</b><span class="gs"><i>G</i><span data-gs>0</span></span></span>
+        <span class="pic" data-logo aria-hidden="true"><i>h</i></span>
+      </button>
+      <time class="me__time" data-clock></time>
     </div>
   </header>
 
-  <main class="desktop" id="top" data-desktop>
-    <canvas class="hero__field" aria-hidden="true"></canvas>
-
-    <div class="desk-title fade" style="--i:1">
-      <div class="hero__meta">
-        <span class="chip"><span class="dot"></span>Birmingham, UK</span>
-        <span class="chip">Computer Science · Aston University</span>
+  <main class="panes" id="panes">
+    <!-- home -->
+    <section class="pane" data-pane="home" aria-label="home">
+      <div class="tiles">
+        <button class="tile t-w2 t-h2 tile--card" type="button" data-open="about">
+          <span class="card">
+            <span class="pic pic--big" aria-hidden="true"><i>h</i></span>
+            <span class="card__body">
+              <b class="card__tag">Hamza</b>
+              <span class="card__motto">Turning curious ideas into real software.</span>
+              <span class="card__meta">Computer Science · Aston University<br>Birmingham, UK</span>
+              <span class="gs gs--lg"><i>G</i><span data-gs>0</span></span>
+            </span>
+          </span>
+          <span class="tile__label">view profile</span>
+        </button>
+        <button class="tile t-w2 tile--projects" type="button" data-open="work">
+          <span class="tile__art"><svg><use href="#i-folder"/></svg></span>
+          <span class="tile__big">Projects</span>
+          <span class="tile__label">Panic Pack!, Instagram Unliker and this site</span>
+        </button>
+        <button class="tile tile--lc" type="button" data-open="stats"><b class="tile__n" data-live="lc">·</b><span class="tile__label">LeetCode solved</span></button>
+        <button class="tile tile--stack" type="button" data-open="play"><b class="tile__n" data-live="stack">·</b><span class="tile__label">Stack record <span data-live="stackby"></span></span></button>
+        <button class="tile tile--type" type="button" data-open="type"><b class="tile__n" data-live="type">·</b><span class="tile__label">wpm typing record</span></button>
+        <button class="tile t-w2 t-h2 tile--wyr" type="button" data-open="wyr">
+          <span class="wyr-mini"><b data-live="wyr-a">·</b><em>or</em><b data-live="wyr-b">·</b></span>
+          <span class="tile__label">Would You Rather · vote now</span>
+        </button>
+        <button class="tile tile--guest" type="button" data-open="guestbook"><span class="tile__img" data-live="guest"><svg class="tile__glyph"><use href="#i-book"/></svg></span><span class="tile__label">Guestbook</span></button>
+        <button class="tile tile--ach" type="button" data-open="achievements"><span class="tile__art"><svg><use href="#i-trophy"/></svg></span><span class="tile__label"><span data-achcount>0</span> achievements</span></button>
       </div>
-      <h1 class="hero__title">Turning <em>curious</em> ideas into real software.</h1>
-    </div>
-
-    <section class="widgets" aria-label="Widgets">
-      <div class="wdg wdg--clock" data-tzclock="dev"><div class="analog"><b style="transform: rotate(0deg) translateY(-44px)"></b><b style="transform: rotate(30deg) translateY(-44px)"></b><b style="transform: rotate(60deg) translateY(-44px)"></b><b style="transform: rotate(90deg) translateY(-44px)"></b><b style="transform: rotate(120deg) translateY(-44px)"></b><b style="transform: rotate(150deg) translateY(-44px)"></b><b style="transform: rotate(180deg) translateY(-44px)"></b><b style="transform: rotate(210deg) translateY(-44px)"></b><b style="transform: rotate(240deg) translateY(-44px)"></b><b style="transform: rotate(270deg) translateY(-44px)"></b><b style="transform: rotate(300deg) translateY(-44px)"></b><b style="transform: rotate(330deg) translateY(-44px)"></b><i class="h"></i><i class="m"></i><i class="s"></i></div><span class="wdg__cap"><b>Hamza</b> <span data-tzabbr>···</span></span></div>
-      <div class="wdg wdg--clock" data-tzclock="viewer"><div class="analog"><b style="transform: rotate(0deg) translateY(-44px)"></b><b style="transform: rotate(30deg) translateY(-44px)"></b><b style="transform: rotate(60deg) translateY(-44px)"></b><b style="transform: rotate(90deg) translateY(-44px)"></b><b style="transform: rotate(120deg) translateY(-44px)"></b><b style="transform: rotate(150deg) translateY(-44px)"></b><b style="transform: rotate(180deg) translateY(-44px)"></b><b style="transform: rotate(210deg) translateY(-44px)"></b><b style="transform: rotate(240deg) translateY(-44px)"></b><b style="transform: rotate(270deg) translateY(-44px)"></b><b style="transform: rotate(300deg) translateY(-44px)"></b><b style="transform: rotate(330deg) translateY(-44px)"></b><i class="h"></i><i class="m"></i><i class="s"></i></div><span class="wdg__cap"><b>You</b> <span data-tzabbr>···</span></span></div>
-      <a class="wdg wdg--lc" href="/stats"><span class="wdg__k">LeetCode</span><b class="wdg__n" data-live="lc">·</b><span class="wdg__s">problems solved</span></a>
-      <a class="wdg wdg--stack" href="/play"><span class="wdg__k">Stack</span><b class="wdg__n" data-live="stack">·</b><span class="wdg__s" data-live="stackby">·</span></a>
-      <div class="wdg wdg--vs" data-homewyr>
-        <span class="wdg__k">Would you rather play</span>
-        <div class="hv"><button class="hv__opt" type="button" data-side="0"><b>·</b><span class="hv__bar"><i></i><em></em></span></button><span class="hv__or">or</span><button class="hv__opt" type="button" data-side="1"><b>·</b><span class="hv__bar"><i></i><em></em></span></button></div>
-        <div class="wdg__foot"><button type="button" data-hvnext>Another pair ↻</button><a href="/wyr">Rankings ↗</a></div>
-      </div>
-      <a class="wdg wdg--type" href="/type"><span class="wdg__k">Typing</span><b class="wdg__n" data-live="type">·</b><span class="wdg__s" data-live="typeby">wpm</span></a>
-      <a class="wdg wdg--guest" href="/guestbook"><span class="wdg__k">Guestbook</span><span class="wdg__art" data-live="guest"></span><span class="wdg__s" data-live="guestby">Sign the wall</span></a>
     </section>
 
-    <div class="win note fade" style="--i:3" data-drag>
-      <div class="win__bar"><span class="lights"><button class="light light--r" type="button" aria-label="Close"><svg viewBox="0 0 8 8"><path d="M1.5 1.5l5 5M6.5 1.5l-5 5" stroke="#4d0000" stroke-width="1.3"/></svg></button><button class="light light--y" type="button" aria-label="Minimise"><svg viewBox="0 0 8 8"><path d="M1 4h6" stroke="#5c3b00" stroke-width="1.3"/></svg></button><button class="light light--g" type="button" aria-label="Zoom"><svg viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="#004d0a" stroke-width="1.3"/></svg></button></span><span class="win__title">hello.txt</span></div>
-      <div class="win__body">
-        <p class="note__hi">Hi, I'm Hamza.</p>
-        <p>I study Computer Science at Aston University and build small, careful things for the web.</p>
-        <p>Open anything on the desktop. Double-click icons, drag windows, right-click for more.</p>
-        <div class="note__btns"><a class="mac-btn mac-btn--primary" href="/work">See my work</a><a class="mac-btn" href="/about">About me</a><button class="mac-btn" type="button" data-copy-email>Copy email</button></div>
+    <!-- projects -->
+    <section class="pane" data-pane="projects" aria-label="projects">
+      <div class="tiles">
+        <button class="tile t-w2 t-h2 tile--panic" type="button" data-open="work/panic-pack">
+          <span class="tile__hero">!</span>
+          <span class="tile__big">Panic Pack!</span>
+          <span class="tile__label">Godot 4 · a first-person race to pack before the taxi comes</span>
+        </button>
+        <button class="tile t-w2 tile--heart" type="button" data-open="work/instagram-unliker">
+          <span class="tile__hero tile__hero--sm">♡</span>
+          <span class="tile__big">Instagram Unliker</span>
+          <span class="tile__label">JavaScript · bulk-unlike years of posts</span>
+        </button>
+        <button class="tile t-w2 t-h2 tile--site" type="button" data-open="work/this-site">
+          <span class="tile__hero">h</span>
+          <span class="tile__big">byhamza.dev</span>
+          <span class="tile__label">Cloudflare Workers, D1 and Durable Objects</span>
+        </button>
+        <button class="tile tile--green" type="button" data-open="work"><span class="tile__art"><svg><use href="#i-folder"/></svg></span><span class="tile__label">All case studies</span></button>
+        <button class="tile tile--dark" type="button" data-open="stats"><span class="tile__art"><svg><use href="#i-chart"/></svg></span><span class="tile__label">Live stats</span></button>
+        <a class="tile tile--github" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener"><span class="tile__art"><svg><use href="#i-git"/></svg></span><span class="tile__label">GitHub</span></a>
+        <button class="tile tile--green2" type="button" data-open="about"><span class="tile__art"><svg><use href="#i-user"/></svg></span><span class="tile__label">About me</span></button>
       </div>
-    </div>
+    </section>
 
-    <a class="sticky fade" style="--i:5" href="/play" data-drag draggable="false">Bet you can't stack 20 blocks.<small>Play Stack ↗</small></a>
+    <!-- games -->
+    <section class="pane" data-pane="games" aria-label="games">
+      <div class="tiles">
+        <button class="tile t-w2 t-h2 tile--arcade" type="button" data-open="arcade">
+          <span class="arcade-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><b></b></span>
+          <span class="tile__big">Arcade</span>
+          <span class="tile__label">Snake and Breakout with global leaderboards</span>
+        </button>
+        <button class="tile tile--stack" type="button" data-open="play"><span class="tile__art"><svg><use href="#i-stack"/></svg></span><span class="tile__label">Stack</span></button>
+        <button class="tile tile--snake" type="button" data-open="snake"><span class="tile__art"><svg><use href="#i-snake"/></svg></span><span class="tile__label">Snake</span></button>
+        <button class="tile tile--breakout" type="button" data-open="breakout"><span class="tile__art"><svg><use href="#i-bricks"/></svg></span><span class="tile__label">Breakout</span></button>
+        <button class="tile t-w2 tile--wyr2" type="button" data-open="wyr"><span class="tile__art"><svg><use href="#i-vs"/></svg></span><span class="tile__big">Would You Rather</span><span class="tile__label">168 games, ranked by your votes</span></button>
+        <button class="tile tile--type" type="button" data-open="type"><span class="tile__art"><svg><use href="#i-keys"/></svg></span><span class="tile__label">Typing Test</span></button>
+        <button class="tile tile--ach" type="button" data-open="achievements"><span class="tile__art"><svg><use href="#i-trophy"/></svg></span><span class="tile__label">Achievements</span></button>
+        <button class="tile t-w2 t-h2 tile--library" type="button" data-open="library">
+          <span class="lib-fan" data-libfan aria-hidden="true"></span>
+          <span class="tile__big">Hamza's games</span>
+          <span class="tile__label">What I've played, from Crash to Arkham</span>
+        </button>
+      </div>
+    </section>
 
-    <nav class="icons" aria-label="Desktop">
-        <a class="dicon" href="/finder" data-icon="hd" draggable="false"><span class="dicon__img"><svg viewBox="0 0 64 52" aria-hidden="true"><defs><linearGradient id="g-hd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f4f6"/><stop offset="1" stop-color="#b9b9c0"/></linearGradient></defs><rect x="4" y="14" width="56" height="26" rx="5" fill="url(#g-hd)" stroke="#8e8e93" stroke-width=".8"/><rect x="4" y="34" width="56" height="6" rx="3" fill="#8e8e93" fill-opacity=".35"/><circle cx="52" cy="27" r="2" fill="#28c840"/><path d="M12 27h18" stroke="#8e8e93" stroke-width="2" stroke-linecap="round"/></svg></span><span class="dicon__label">Macintosh HD</span></a>
-        <a class="dicon" href="/work" data-icon="work" draggable="false"><span class="dicon__img"><svg viewBox="0 0 64 52" aria-hidden="true"><defs><linearGradient id="g-f1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0ff"/><stop offset="1" stop-color="#3d97f2"/></linearGradient></defs><path d="M3 8a5 5 0 0 1 5-5h15l5 5h28a5 5 0 0 1 5 5v4H3Z" fill="#2f86e0"/><rect x="3" y="13" width="58" height="36" rx="5" fill="url(#g-f1)"/><path d="M3 18h58" stroke="#fff" stroke-opacity=".35"/><path d="M24 25h16v14H24Z M28 25v-3h8v3" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg></span><span class="dicon__label">Work</span></a>
-        <a class="dicon" href="/about" data-icon="about" draggable="false"><span class="dicon__img"><svg viewBox="0 0 64 52" aria-hidden="true"><rect x="6" y="6" width="52" height="40" rx="5" fill="#fffdf3" stroke="#d9cfa8"/><circle cx="21" cy="22" r="7" fill="#ffd84d"/><path d="M11 38c1-6 6-9 10-9s9 3 10 9Z" fill="#ffd84d"/><path d="M36 18h15M36 25h15M36 32h10" stroke="#c9b27a" stroke-width="2.4" stroke-linecap="round"/></svg></span><span class="dicon__label">About Me.vcf</span></a>
-        <a class="dicon" href="/stats" data-icon="stats" draggable="false"><span class="dicon__img"><svg viewBox="-4 -1 64 58" aria-hidden="true"><defs><linearGradient id="g-lc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34322c"/><stop offset="1" stop-color="#16150f"/></linearGradient><clipPath id="c-g-lc"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-lc)"><rect width="56" height="56" fill="url(#g-lc)"/><text x="28" y="36" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="20" fill="#ffa116">{ }</text></g></svg></span><span class="dicon__label">Stats</span></a>
-        <a class="dicon" href="/arcade" data-icon="arcade" draggable="false"><span class="dicon__img"><svg viewBox="-4 -1 64 58" aria-hidden="true"><defs><linearGradient id="g-arc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8f6bff"/><stop offset="1" stop-color="#4a2fc9"/></linearGradient><clipPath id="c-g-arc"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-arc)"><rect width="56" height="56" fill="url(#g-arc)"/><rect x="10" y="20" width="36" height="20" rx="10" fill="#fff" fill-opacity=".95"/><circle cx="20" cy="30" r="4" fill="#3a2c00"/><circle cx="36" cy="27" r="3" fill="#ff5f57"/><circle cx="41" cy="32" r="3" fill="#28c840"/><rect x="18.5" y="11" width="3" height="11" rx="1.5" fill="#fff"/><circle cx="20" cy="11" r="4" fill="#ff5f57"/></g></svg></span><span class="dicon__label">Arcade</span></a>
-        <a class="dicon" href="/finder#games" data-icon="games" draggable="false"><span class="dicon__img"><svg viewBox="0 0 64 52" aria-hidden="true"><defs><linearGradient id="g-f2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0ff"/><stop offset="1" stop-color="#3d97f2"/></linearGradient></defs><path d="M3 8a5 5 0 0 1 5-5h15l5 5h28a5 5 0 0 1 5 5v4H3Z" fill="#2f86e0"/><rect x="3" y="13" width="58" height="36" rx="5" fill="url(#g-f2)"/><path d="M3 18h58" stroke="#fff" stroke-opacity=".35"/><rect x="23" y="26" width="18" height="11" rx="5.5" fill="#fff"/><circle cx="28" cy="31.5" r="2" fill="#3d97f2"/><circle cx="36" cy="30" r="1.5" fill="#ff5f57"/><circle cx="38" cy="33" r="1.5" fill="#28c840"/></svg></span><span class="dicon__label">Games I Love</span></a>
-        <a class="dicon" href="/draw" data-icon="draw" draggable="false"><span class="dicon__img"><svg viewBox="-4 -1 64 58" aria-hidden="true"><defs><linearGradient id="g-draw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2619"/><stop offset="1" stop-color="#100f0a"/></linearGradient><clipPath id="c-g-draw"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-draw)"><rect width="56" height="56" fill="url(#g-draw)"/><g transform="translate(28 28)" style="mix-blend-mode:screen"><ellipse rx="12" ry="4.6" cx="10" transform="rotate(0)" fill="#ffe066" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(60)" fill="#ff8a5c" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(120)" fill="#ff7aa2" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(180)" fill="#ffe066" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(240)" fill="#ff8a5c" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(300)" fill="#ff7aa2" fill-opacity=".85"/></g></g></svg></span><span class="dicon__label">Kaleidoscope</span></a>
-        <a class="dicon" href="/terminal" data-icon="terminal" draggable="false"><span class="dicon__img"><svg viewBox="-4 -1 64 58" aria-hidden="true"><defs><linearGradient id="g-term" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b382f"/><stop offset="1" stop-color="#12110c"/></linearGradient><clipPath id="c-g-term"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-term)"><rect width="56" height="56" fill="url(#g-term)"/><path d="M15 21l7 7-7 7" fill="none" stroke="#ffd84d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 36h13" stroke="#f8f1d8" stroke-width="3.4" stroke-linecap="round"/></g></svg></span><span class="dicon__label">Terminal</span></a>
-        <a class="dicon" href="/guestbook" data-icon="guestbook" draggable="false"><span class="dicon__img"><svg viewBox="-4 -1 64 58" aria-hidden="true"><defs><linearGradient id="g-guest" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9f6b"/><stop offset="1" stop-color="#e8623a"/></linearGradient><clipPath id="c-g-guest"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-guest)"><rect width="56" height="56" fill="url(#g-guest)"/><rect x="13" y="12" width="30" height="34" rx="3" fill="#fffdf3"/><path d="M18 22h20M18 28h20M18 34h12" stroke="#c9b27a" stroke-width="2" stroke-linecap="round"/><path d="M34 40l9-9 3 3-9 9h-3z" fill="#ff8a5c"/></g></svg></span><span class="dicon__label">Guestbook</span></a>
-        <a class="dicon" href="/terminal#cheats" data-icon="readme" draggable="false"><span class="dicon__img"><svg viewBox="0 0 64 52" aria-hidden="true"><path d="M16 2h24l10 10v38H16Z" fill="#fff" stroke="#c9c9cf"/><path d="M40 2v10h10" fill="#ececf0" stroke="#c9c9cf"/><path d="M22 20h22M22 26h22M22 32h22M22 38h14" stroke="#9a9aa2" stroke-width="1.6"/></svg></span><span class="dicon__label">Cheats.txt</span></a>
-    </nav>
+    <!-- social -->
+    <section class="pane" data-pane="social" aria-label="social">
+      <div class="tiles">
+        <button class="tile t-w2 t-h2 tile--guestbig" type="button" data-open="guestbook">
+          <span class="tile__img tile__img--big" data-live="guest2"><svg class="tile__glyph"><use href="#i-book"/></svg></span>
+          <span class="tile__label" data-live="guestby">Guestbook · draw something</span>
+        </button>
+        <div class="tile tile--online" tabindex="0" role="note"><span class="tile__art"><svg><use href="#i-people"/></svg></span><b class="tile__n" data-online-n>1</b><span class="tile__label">online now</span></div>
+        <button class="tile tile--spark" type="button" data-spark><span class="tile__art"><svg><use href="#i-spark"/></svg></span><b class="tile__n" data-sparks>·</b><span class="tile__label">sparks · leave one</span></button>
+        <a class="tile tile--linkedin" href="https://www.linkedin.com/in/hamza-faisal-125833263/" target="_blank" rel="noopener"><span class="tile__art"><svg><use href="#i-in"/></svg></span><span class="tile__label">LinkedIn</span></a>
+        <a class="tile tile--github" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener"><span class="tile__art"><svg><use href="#i-git"/></svg></span><span class="tile__label">GitHub</span></a>
+        <a class="tile tile--mail" href="mailto:hello@byhamza.dev"><span class="tile__art"><svg><use href="#i-mail"/></svg></span><span class="tile__label">hello@byhamza.dev</span></a>
+        <a class="tile tile--lc2" href="https://leetcode.com/u/hamza57/" target="_blank" rel="noopener"><span class="tile__art"><svg><use href="#i-code"/></svg></span><span class="tile__label">LeetCode</span></a>
+      </div>
+    </section>
+
+    <!-- apps -->
+    <section class="pane" data-pane="apps" aria-label="apps">
+      <div class="tiles">
+        <button class="tile t-w2 t-h2 tile--ie" type="button" data-open="ie">
+          <span class="tile__hero tile__hero--svg"><svg><use href="#i-ie"/></svg></span>
+          <span class="tile__big">Internet Explorer</span>
+          <span class="tile__label">Browse byhamza.dev. On byhamza.dev.</span>
+        </button>
+        <button class="tile tile--dark" type="button" data-open="terminal"><span class="tile__art"><svg><use href="#i-term"/></svg></span><span class="tile__label">Terminal</span></button>
+        <button class="tile tile--kaleido" type="button" data-open="draw"><span class="tile__art"><svg><use href="#i-kaleido"/></svg></span><span class="tile__label">Kaleidoscope</span></button>
+        <button class="tile tile--green" type="button" data-open="stats"><span class="tile__art"><svg><use href="#i-chart"/></svg></span><span class="tile__label">Stats</span></button>
+        <button class="tile tile--guest" type="button" data-open="guestbook"><span class="tile__art"><svg><use href="#i-book"/></svg></span><span class="tile__label">Guestbook</span></button>
+        <button class="tile tile--green2" type="button" data-open="about"><span class="tile__art"><svg><use href="#i-user"/></svg></span><span class="tile__label">About</span></button>
+        <button class="tile tile--sys" type="button" data-open="system"><span class="tile__art"><svg><use href="#i-info"/></svg></span><span class="tile__label">System info</span></button>
+      </div>
+    </section>
+
+    <!-- settings -->
+    <section class="pane" data-pane="settings" aria-label="settings">
+      <div class="tiles">
+        <button class="tile t-w2 t-h2 tile--profile" type="button" data-open="achievements">
+          <span class="card">
+            <span class="pic pic--big" aria-hidden="true"><i>h</i></span>
+            <span class="card__body"><b class="card__tag">Profile</b><span class="card__meta"><span data-achcount>0</span> of <span data-achtotal>29</span> achievements<br><span data-gs>0</span> of 1000 gamerscore</span></span>
+          </span>
+          <span class="tile__label">achievements</span>
+        </button>
+        <button class="tile tile--set" type="button" data-set="theme"><span class="tile__art"><svg><use href="#i-moon"/></svg></span><span class="tile__label">Theme: <b data-setval="theme"></b></span></button>
+        <button class="tile tile--set" type="button" data-set="skin"><span class="tile__art"><svg><use href="#i-palette"/></svg></span><span class="tile__label">Colour: <b data-setval="skin"></b></span></button>
+        <button class="tile tile--set" type="button" data-set="sound"><span class="tile__art"><svg><use href="#i-sound"/></svg></span><span class="tile__label">Sound: <b data-setval="sound"></b></span></button>
+        <button class="tile tile--set" type="button" data-set="motion"><span class="tile__art"><svg><use href="#i-motion"/></svg></span><span class="tile__label">Motion: <b data-setval="motion"></b></span></button>
+        <button class="tile tile--set" type="button" data-set="live"><span class="tile__art"><svg><use href="#i-people"/></svg></span><span class="tile__label">Online presence: <b data-setval="live"></b></span></button>
+        <button class="tile tile--sys" type="button" data-open="system"><span class="tile__art"><svg><use href="#i-info"/></svg></span><span class="tile__label">System info</span></button>
+        <button class="tile tile--off" type="button" data-poweroff><span class="tile__art"><svg><use href="#i-power"/></svg></span><span class="tile__label">Turn off console</span></button>
+      </div>
+    </section>
   </main>
 
-  <nav class="dock" aria-label="Dock">
-    <a class="dock__item " href="/" aria-current="page" aria-label="Home"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-home" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3a6"/><stop offset="1" stop-color="#f5b800"/></linearGradient><clipPath id="c-g-home"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-home)"><rect width="56" height="56" fill="url(#g-home)"/><text x="28" y="40" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="38" fill="#2b2100">h</text></g></svg></span><span class="dock__tip">Home</span></a>
-    <a class="dock__item " href="/finder" aria-label="Finder"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-finder" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fb4ff"/><stop offset="1" stop-color="#2a8cf0"/></linearGradient><clipPath id="c-g-finder"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-finder)"><rect width="56" height="56" fill="url(#g-finder)"/><rect x="0" y="0" width="28" height="56" fill="#5fb4ff"/><rect x="28" y="0" width="28" height="56" fill="#e8f3ff"/><path d="M28 6c-4 10-5 22-2 30h5" fill="none" stroke="#1b3a5c" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><rect x="15" y="18" width="3.2" height="8" rx="1.6" fill="#1b3a5c"/><rect x="37" y="18" width="3.2" height="8" rx="1.6" fill="#1b3a5c"/><path d="M14 39c8 6 20 6 28 0" fill="none" stroke="#1b3a5c" stroke-width="2.4" stroke-linecap="round"/></g></svg></span><span class="dock__tip">Finder</span></a>
-    <a class="dock__item " href="/stats" aria-label="Stats"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-lc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34322c"/><stop offset="1" stop-color="#16150f"/></linearGradient><clipPath id="c-g-lc"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-lc)"><rect width="56" height="56" fill="url(#g-lc)"/><text x="28" y="36" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="20" fill="#ffa116">{ }</text></g></svg></span><span class="dock__tip">Stats</span></a>
-    <a class="dock__item " href="/arcade" aria-label="Arcade"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-arc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8f6bff"/><stop offset="1" stop-color="#4a2fc9"/></linearGradient><clipPath id="c-g-arc"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-arc)"><rect width="56" height="56" fill="url(#g-arc)"/><rect x="10" y="20" width="36" height="20" rx="10" fill="#fff" fill-opacity=".95"/><circle cx="20" cy="30" r="4" fill="#3a2c00"/><circle cx="36" cy="27" r="3" fill="#ff5f57"/><circle cx="41" cy="32" r="3" fill="#28c840"/><rect x="18.5" y="11" width="3" height="11" rx="1.5" fill="#fff"/><circle cx="20" cy="11" r="4" fill="#ff5f57"/></g></svg></span><span class="dock__tip">Arcade</span></a>
-    <a class="dock__item " href="/draw" aria-label="Kaleidoscope"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-draw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2619"/><stop offset="1" stop-color="#100f0a"/></linearGradient><clipPath id="c-g-draw"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-draw)"><rect width="56" height="56" fill="url(#g-draw)"/><g transform="translate(28 28)" style="mix-blend-mode:screen"><ellipse rx="12" ry="4.6" cx="10" transform="rotate(0)" fill="#ffe066" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(60)" fill="#ff8a5c" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(120)" fill="#ff7aa2" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(180)" fill="#ffe066" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(240)" fill="#ff8a5c" fill-opacity=".85"/><ellipse rx="12" ry="4.6" cx="10" transform="rotate(300)" fill="#ff7aa2" fill-opacity=".85"/></g></g></svg></span><span class="dock__tip">Kaleidoscope</span></a>
-    <a class="dock__item " href="/guestbook" aria-label="Guestbook"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-guest" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9f6b"/><stop offset="1" stop-color="#e8623a"/></linearGradient><clipPath id="c-g-guest"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-guest)"><rect width="56" height="56" fill="url(#g-guest)"/><rect x="13" y="12" width="30" height="34" rx="3" fill="#fffdf3"/><path d="M18 22h20M18 28h20M18 34h12" stroke="#c9b27a" stroke-width="2" stroke-linecap="round"/><path d="M34 40l9-9 3 3-9 9h-3z" fill="#ff8a5c"/></g></svg></span><span class="dock__tip">Guestbook</span></a>
-    <a class="dock__item dock__extra" href="/terminal" aria-label="Terminal"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-term" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b382f"/><stop offset="1" stop-color="#12110c"/></linearGradient><clipPath id="c-g-term"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-term)"><rect width="56" height="56" fill="url(#g-term)"/><path d="M15 21l7 7-7 7" fill="none" stroke="#ffd84d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 36h13" stroke="#f8f1d8" stroke-width="3.4" stroke-linecap="round"/></g></svg></span><span class="dock__tip">Terminal</span></a>
-    <a class="dock__item " href="/about#contact" aria-label="Mail"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-mail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc8ff"/><stop offset="1" stop-color="#1f7cf2"/></linearGradient><clipPath id="c-g-mail"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-mail)"><rect width="56" height="56" fill="url(#g-mail)"/><rect x="12" y="17" width="32" height="22" rx="3" fill="#fff"/><path d="m13 19 15 11 15-11" fill="none" stroke="#3d97f2" stroke-width="2.4" stroke-linejoin="round"/></g></svg></span><span class="dock__tip">Mail</span></a>
-    <a class="dock__item dock__extra" href="/settings" aria-label="System Settings"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-set" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c7c7cc"/><stop offset="1" stop-color="#8e8e93"/></linearGradient><clipPath id="c-g-set"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-set)"><rect width="56" height="56" fill="url(#g-set)"/><g transform="translate(28 28)"><circle r="13.5" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="4.2 2.9"/><circle r="9.5" fill="#8e8e93"/><circle r="4.5" fill="#fff"/></g></g></svg></span><span class="dock__tip">System Settings</span></a>
-    <span class="dock__sep dock__extra" aria-hidden="true"></span>
-    <a class="dock__item dock__extra" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener" aria-label="GitHub"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-gh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4048"/><stop offset="1" stop-color="#1b1f24"/></linearGradient><clipPath id="c-g-gh"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-gh)"><rect width="56" height="56" fill="url(#g-gh)"/><circle cx="21" cy="17" r="3.6" fill="none" stroke="#fff" stroke-width="2.6"/><circle cx="21" cy="39" r="3.6" fill="none" stroke="#fff" stroke-width="2.6"/><circle cx="35" cy="23" r="3.6" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M21 20.6v14.8M35 26.6c0 6-14 5-14 9" fill="none" stroke="#fff" stroke-width="2.6"/></g></svg></span><span class="dock__tip">GitHub</span></a>
-    <a class="dock__item dock__extra" href="https://www.linkedin.com/in/hamza-faisal-125833263/" target="_blank" rel="noopener" aria-label="LinkedIn"><span class="dock__icon"><svg viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="g-li" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d8ae6"/><stop offset="1" stop-color="#0a66c2"/></linearGradient><clipPath id="c-g-li"><rect width="56" height="56" rx="13"/></clipPath></defs><g clip-path="url(#c-g-li)"><rect width="56" height="56" fill="url(#g-li)"/><text x="28" y="38" text-anchor="middle" font-family="Inter Tight, Arial, sans-serif" font-weight="700" font-size="24" fill="#fff">in</text></g></svg></span><span class="dock__tip">LinkedIn</span></a>
-  </nav>
+  <p class="hints" aria-hidden="true"><span><i class="btn btn--a">A</i> select</span><span><i class="btn btn--b">B</i> back</span><span><i class="btn btn--lb">LB</i><i class="btn btn--lb">RB</i> tabs</span><span><i class="btn btn--x">⊗</i> guide</span></p>
 
-  <script src="/main.js" defer></script>
+  <div class="app" hidden>
+    <div class="app__bar">
+      <button class="app__back" type="button" data-back aria-label="Back"><i class="btn btn--b">B</i><span>back</span></button>
+      <h1 class="app__title"></h1>
+      <span class="gs"><i>G</i><span data-gs>0</span></span>
+    </div>
+    <div class="app__body">
+      <div class="app__load" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+  </div>
+
+  <div class="guide" hidden>
+    <div class="guide__panel" role="dialog" aria-label="Guide">
+      <div class="guide__head">
+        <span class="pic" aria-hidden="true"><i>h</i></span>
+        <span><b>Hamza</b><span class="gs"><i>G</i><span data-gs>0</span></span></span>
+      </div>
+      <div class="guide__list">
+        <button type="button" data-go="home">Dashboard home</button>
+        <button type="button" data-open="achievements">Achievements</button>
+        <button type="button" data-go="projects">Projects</button>
+        <button type="button" data-go="games">Games</button>
+        <button type="button" data-open="arcade">Arcade</button>
+        <button type="button" data-go="social">Social</button>
+        <button type="button" data-go="settings">System settings</button>
+        <button type="button" data-poweroff>Turn off console</button>
+      </div>
+      <div class="guide__foot"><time data-clock></time><span><i class="btn btn--b">B</i> back</span></div>
+    </div>
+  </div>
+
+  <div class="toaster" aria-live="polite"></div>
+
   <script src="/os.js" defer></script>
-  <script src="/home.js" defer></script>
+  <script src="/x360.js" defer></script>
 </body>
 </html>
