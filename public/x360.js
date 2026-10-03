@@ -83,7 +83,11 @@
     tab = i;
     panes.style.setProperty('--i', i);
     $$('.pivot').forEach((b, k) => b.setAttribute('aria-selected', String(k === i)));
-    $$('.pane').forEach((p, k) => { p.classList.toggle('is-active', k === i); p.inert = k !== i; });
+    $$('.pane').forEach((p, k) => {
+      p.classList.toggle('is-active', k === i);
+      p.setAttribute('aria-hidden', String(k !== i));
+      $$('button, a, input', p).forEach((el) => { el.tabIndex = k === i ? 0 : -1; });
+    });
     if (changed && sound) sfx.tab();
     if (focus === 'pivot') $$('.pivot')[i].focus({ preventScroll: true });
     else if (focus === 'tile') { const t = $('.pane.is-active .tile'); if (t) focusEl(t); }
@@ -92,11 +96,22 @@
   }
   $$('.pivot').forEach((b, k) => b.addEventListener('click', () => setTab(k)));
 
-  // Wheel scrolls a tab sideways, like flicking the stick.
-  $$('.pane').forEach((p) => p.addEventListener('wheel', (e) => {
-    if (innerWidth <= 700 || p.scrollWidth <= p.clientWidth || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-    p.scrollLeft += e.deltaY; e.preventDefault();
-  }, { passive: false }));
+  // A sideways scroll flicks between hubs.
+  let wheelAt = 0;
+  panes.addEventListener('wheel', (e) => {
+    if (innerWidth <= 700 || Math.abs(e.deltaX) < Math.abs(e.deltaY) || Math.abs(e.deltaX) < 30) return;
+    e.preventDefault();
+    if (performance.now() - wheelAt < 450) return;
+    wheelAt = performance.now();
+    setTab(tab + (e.deltaX > 0 ? 1 : -1));
+  }, { passive: false });
+  // Neighbouring hubs peek in at the edges; clicking one switches to it.
+  panes.addEventListener('click', (e) => {
+    const p = e.target.closest('.pane');
+    if (!p || p.classList.contains('is-active')) return;
+    e.preventDefault(); e.stopPropagation();
+    setTab($$('.pane').indexOf(p));
+  }, true);
   // Swipe between tabs on touch screens.
   let sx = 0, sy = 0;
   panes.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
@@ -139,7 +154,9 @@
     }
     const a = cur.getBoundingClientRect(), ax = a.left + a.width / 2, ay = a.top + a.height / 2;
     let best = null, score = Infinity;
-    for (const el of list) {
+    // From a tile, only up can leave the grid (to the tabs).
+    const pool = !guideOpen() && !app.open && cur.closest('.pane') && dir !== 'up' ? list.filter((el) => el.closest('.pane')) : list;
+    for (const el of pool) {
       if (el === cur) continue;
       const b = el.getBoundingClientRect();
       if (!b.width) continue;
@@ -153,6 +170,21 @@
       if (s < score) { score = s; best = el; }
     }
     if (!best && dir === 'up' && !guideOpen() && !app.open) best = $$('.pivot')[tab];
+    // Past the last column, carry on into the next hub, like the real dashboard.
+    if (!best && !guideOpen() && !app.open && (dir === 'left' || dir === 'right') && cur.closest('.pane')) {
+      const next = tab + (dir === 'right' ? 1 : -1);
+      if (next >= 0 && next < TABS.length) {
+        setTab(next);
+        const tiles = $$('.tile', $$('.pane')[next]);
+        const pick = tiles.reduce((acc, el) => {
+          const r = el.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - ay);
+          const edge = dir === 'right' ? r.left : -r.right;
+          return !acc || edge < acc.edge - 4 || (Math.abs(edge - acc.edge) <= 4 && d < acc.d) ? { el, edge, d } : acc;
+        }, null);
+        if (pick) setTimeout(() => focusEl(pick.el, true), 20);
+        return;
+      }
+    }
     if (best) focusEl(best, true); else nope(cur);
   }
 
@@ -368,6 +400,8 @@
   function refreshScore() {
     const got = OS.achieved();
     const list = OS.ACHIEVEMENTS;
+    const recent = $('[data-recent]');
+    if (recent) recent.innerHTML = list.filter((a) => got[a.id]).sort((a, b) => got[b.id] - got[a.id]).slice(0, 9).map((a) => `<span title="${esc(a.t)}">${a.i}</span>`).join('');
     const g = list.reduce((s, a) => s + (got[a.id] ? a.g : 0), 0);
     $$('[data-gs]').forEach((el) => { el.textContent = g.toLocaleString('en-GB'); });
     $$('[data-achcount]').forEach((el) => { el.textContent = list.filter((a) => got[a.id]).length; });
@@ -413,6 +447,61 @@
     box.innerHTML = `<h2 class="native-title">System info</h2><dl class="sys">${rows.map(([k, v]) => `<div tabindex="0"><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
   }
 
+  /* ---------- bing: search everything ---------- */
+  const SEARCH = [
+    ['Panic Pack!', 'project godot game taxi packing', 'work/panic-pack', 'folder'],
+    ['Instagram Unliker', 'project javascript script likes', 'work/instagram-unliker', 'folder'],
+    ['byhamza.dev', 'project this site website workers cloudflare', 'work/this-site', 'folder'],
+    ['All projects', 'work case studies portfolio', 'work', 'folder'],
+    ['About Hamza', 'about me aston university birmingham contact', 'about', 'user'],
+    ['Stats', 'leetcode github numbers', 'stats', 'chart'],
+    ['Stack', 'game blocks 3d leaderboard play', 'play', 'stack'],
+    ['Snake', 'game arcade retro', 'snake', 'snake'],
+    ['Breakout', 'game arcade bricks', 'breakout', 'bricks'],
+    ['Arcade', 'games snake breakout', 'arcade', 'pad'],
+    ['Typing Test', 'wpm keyboard speed', 'type', 'keys'],
+    ['Would You Rather', 'vote games wyr ranking', 'wyr', 'vs'],
+    ['Kaleidoscope', 'draw art paint', 'draw', 'kaleido'],
+    ['Terminal', 'shell command line cheats', 'terminal', 'term'],
+    ['Guestbook', 'sign draw wall message', 'guestbook', 'book'],
+    ['Internet Explorer', 'browser web loop ie', 'ie', 'ie'],
+    ['Achievements', 'gamerscore trophies', 'achievements', 'trophy'],
+    ["Hamza's games", 'library played favourites', 'library', 'games'],
+    ['System info', 'about this console tech stack', 'system', 'info'],
+    ['GitHub', 'code source repositories', 'https://github.com/hamzaaaaaf', 'git'],
+    ['LinkedIn', 'cv career contact', 'https://www.linkedin.com/in/hamza-faisal-125833263/', 'in'],
+    ['Email Hamza', 'mail contact hello', 'mailto:hello@byhamza.dev', 'mail'],
+    ['Settings', 'theme sound colour dark', '#settings', 'gear'],
+  ];
+  const searchIn = $('[data-search]'), results = $('[data-results]');
+  function renderSearch() {
+    const q = searchIn.value.trim().toLowerCase();
+    let hits = SEARCH.filter(([t, k]) => !q || `${t} ${k}`.toLowerCase().includes(q)).map(([t, , o, i]) => ({ t, o, i }));
+    if (q && GAMES) GAMES.filter((g) => g.h && g.t.toLowerCase().includes(q)).forEach((g) => hits.push({ t: `${g.t} · Hamza's games`, o: 'library', i: 'games' }));
+    hits = hits.slice(0, q ? 7 : 6);
+    results.innerHTML = hits.length ? hits.map((h) => {
+      const ext = /^(https?:|mailto:)/.test(h.o), tabLink = h.o.startsWith('#');
+      const attrs = ext ? `href="${h.o}"${h.o.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}` : tabLink ? `type="button" data-go="${h.o.slice(1)}"` : `type="button" data-open="${h.o}"`;
+      const tag = ext ? 'a' : 'button';
+      return `<${tag} class="tile tile--sys" ${attrs}><svg class="tile__ico"><use href="#i-${h.i}"/></svg><span class="tile__label">${esc(h.t)}</span></${tag}>`;
+    }).join('') : `<p class="results__none">Nothing on byhamza.dev matches “${esc(searchIn.value)}”.</p>`;
+  }
+  function openSearch() {
+    if (app.open) return;
+    setTab(TABS.indexOf('bing'));
+    setTimeout(() => searchIn.focus({ preventScroll: true }), 60);
+  }
+  searchIn.addEventListener('input', renderSearch);
+  searchIn.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || (e.key === 'Enter' && !e.isComposing)) {
+      const first = $('.tile', results);
+      if (first) { e.preventDefault(); inputMode = 'key'; if (e.key === 'Enter') first.click(); else focusEl(first, true); }
+    } else if (e.key === 'Escape') { searchIn.blur(); }
+  });
+  document.addEventListener('click', (e) => { if (e.target.closest('[data-focus-search]')) openSearch(); });
+  games().then(() => renderSearch()).catch(() => {});
+  renderSearch();
+
   /* ---------- Settings ---------- */
   function settingLabels() {
     const p = prefs();
@@ -453,10 +542,7 @@
   games().then((list) => {
     const a = list[(Math.random() * list.length) | 0];
     let b = a; while (b.id === a.id) b = list[(Math.random() * list.length) | 0];
-    const [ea, eb] = [$('[data-live="wyr-a"]'), $('[data-live="wyr-b"]')];
-    [[ea, a], [eb, b]].forEach(([el, g]) => { if (el) { el.textContent = g.t; el.style.setProperty('--c1', g.c[0]); el.style.setProperty('--c2', g.c[1]); } });
-    const fan = $('[data-libfan]');
-    if (fan) fan.innerHTML = list.filter((g) => g.h).slice(0, 5).map((g, k) => cover(g).replace('class="cover cover--game"', `class="cover cover--game" style="--k:${k}"`).replace('" style="--c1', ';--c1')).join('');
+    [['wyr-a', a], ['wyr-b', b]].forEach(([k, g]) => $$(`[data-live="${k}"]`).forEach((el) => { el.textContent = g.t; el.style.setProperty('--c1', g.c[0]); el.style.setProperty('--c2', g.c[1]); }));
   }).catch(() => {});
   addEventListener('presence', (e) => {
     const n = e.detail || 1;
@@ -482,6 +568,7 @@
       if (app.open && !app.native) return;
       e.preventDefault(); inputMode = 'key'; move(dirs[e.key]); return;
     }
+    if (e.key === '/' && !app.open && !guideOpen()) { e.preventDefault(); openSearch(); return; }
     if (e.key === 'Escape') { e.preventDefault(); inputMode = 'key'; if (guideOpen() || app.open) back(); else openGuide(); return; }
     if (e.key === 'Backspace' && !app.open && !guideOpen()) { e.preventDefault(); backOnDashboard(); return; }
     if ((e.key === '[' || e.key === 'PageUp') && !app.open && !guideOpen()) { e.preventDefault(); setTab(tab - 1, { focus: inputMode === 'pointer' ? false : 'tile' }); }
@@ -498,7 +585,8 @@
     if (!padUsed) { padUsed = true; OS.achieve('tidy'); }
     if (!powerEl.hidden) { powerOn(); return; }
     if (!bootEl.hidden) { skipBoot(); return; }
-    if (b === 16 || b === 9 || b === 8) { toggleGuide(); return; }
+    if (b === 16 || b === 9 || b === 8 || b === 2) { toggleGuide(); return; }
+    if (b === 3 && !app.open) { closeGuide(true); openSearch(); return; }
     if (b === 1) { back(); return; }
     if (app.open && !app.native) return;
     if (DIR[b]) { move(DIR[b]); return; }
@@ -557,7 +645,7 @@
 
   /* ---------- Start ---------- */
   refreshScore();
-  setTab(0, { sound: false, url: false });
+  setTab(TABS.indexOf('home'), { sound: false, url: false });
   route(true);
   let seen = false;
   try { seen = sessionStorage.getItem('x360-on') === '1'; } catch (e) { /* storage blocked */ }
