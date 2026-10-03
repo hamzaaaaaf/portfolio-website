@@ -10,6 +10,7 @@
   let dpr = 1;
   let game = 'snake';
   try { game = localStorage.getItem('arcade-game') || 'snake'; } catch (e) { /* storage blocked */ }
+  if (location.hash === '#snake' || location.hash === '#breakout') game = location.hash.slice(1);
 
   function fit() {
     dpr = Math.min(2, devicePixelRatio || 1);

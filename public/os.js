@@ -9,10 +9,18 @@
     get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage blocked */ } },
   };
-  const toast = (m) => (window.toast ? window.toast(m) : null);
+  // SHELL: the Xbox-style dashboard at /. EMBED: an app opened inside it.
+  const SHELL = document.body.dataset.shell === 'x360';
+  const EMBED = window.top !== window.self;
+  const tell = (msg) => { try { parent.postMessage({ x360: true, ...msg }, location.origin); } catch (e) { /* cross-origin parent */ } };
+  const toast = (m) => (EMBED ? tell({ t: 'toast', m }) : window.toast ? window.toast(m) : null);
   const page = document.body.dataset.page || 'home';
   const onHome = page === 'home';
-  const go = (href) => { location.href = href; };
+  const go = (href) => {
+    if (SHELL && window.X360) window.X360.go(href);
+    else if (EMBED) tell({ t: 'go', href });
+    else location.href = href;
+  };
   const copyEmail = () => navigator.clipboard.writeText('hello@byhamza.dev').then(() => toast('Copied hello@byhamza.dev'), () => toast('hello@byhamza.dev'));
   document.addEventListener('click', (e) => { if (e.target.closest('[data-copy-email]')) copyEmail(); });
 
@@ -55,37 +63,36 @@
 
   /* ---------- Achievements ---------- */
   const ACHIEVEMENTS = [
-    { id: 'hello', i: '👋', t: 'Hello, world', d: 'Open byhamza.dev for the first time.' },
-    { id: 'explorer', i: '🧭', t: 'Explorer', d: 'Visit every page on the site.' },
-    { id: 'gamer', i: '🕹️', t: 'Gamer', d: 'Open the Games folder in Finder.' },
-    { id: 'spotlight', i: '🔍', t: 'Seeker', d: 'Open Spotlight.' },
-    { id: 'darkside', i: '🌙', t: 'Dark side', d: 'Switch to dark mode.' },
-    { id: 'decorator', i: '🎨', t: 'Interior designer', d: 'Change the wallpaper.' },
-    { id: 'tidy', i: '🟡', t: 'Tidy', d: 'Minimise a window.' },
-    { id: 'spark', i: '✦', t: 'Spark', d: 'Leave a spark.' },
-    { id: 'stack10', i: '🧱', t: 'Builder', d: 'Stack 10 blocks.' },
-    { id: 'stack20', i: '🏗️', t: 'Skyscraper', d: 'Stack 20 blocks.' },
-    { id: 'perfect5', i: '🎯', t: 'Precision', d: 'Land 5 perfect drops in a row.' },
-    { id: 'wpm60', i: '⌨️', t: 'Quick fingers', d: 'Type 60 wpm or faster.' },
-    { id: 'wpm100', i: '⚡', t: 'Blazing', d: 'Type 100 wpm or faster.' },
-    { id: 'artist', i: '🖌️', t: 'Artist', d: 'Save a kaleidoscope drawing.' },
-    { id: 'signer', i: '✍️', t: 'Signed', d: 'Sign the guestbook.' },
-    { id: 'hacker', i: '💻', t: 'Hacker', d: 'Run hamzafetch in the terminal.' },
-    { id: 'company', i: '👥', t: 'Company', d: 'See another visitor’s cursor.' },
-    { id: 'nightowl', i: '🦉', t: 'Night owl', d: 'Visit between midnight and 5am.' },
-    { id: 'voter', i: '🗳️', t: 'Voter', d: 'Vote in Would You Rather.' },
-    { id: 'critic', i: '🎮', t: 'Critic', d: 'Cast 25 Would You Rather votes.' },
-    { id: 'snake20', i: '🐍', t: 'Long boi', d: 'Score 20 in Snake.' },
-    { id: 'breakout', i: '🧱', t: 'Wrecking ball', d: 'Clear a level in Breakout.' },
-    { id: 'cheater', i: '🕹️', t: 'Cheater', d: 'Enter a cheat code.', secret: true },
-    { id: 'codebreaker', i: '🔓', t: 'Code breaker', d: 'Find every cheat code.', secret: true },
-    { id: 'persistent', i: '🔴', t: 'Persistent', d: 'Try to close a window three times.', secret: true },
-    { id: 'sudo', i: '🚫', t: 'Nice try', d: 'Try sudo in the terminal.', secret: true },
-    { id: 'konami', i: '🎮', t: 'Old school', d: 'Enter the Konami code.', secret: true },
-    { id: 'creeper', i: '💥', t: 'Aw man', d: 'Type the word creeper anywhere.', secret: true },
-    { id: 'clicker', i: '🌀', t: 'Spin cycle', d: 'Click the logo five times.', secret: true },
-  ];
-  const achieved = () => store.get('achievements', {});
+    { id: 'hello', i: '👋', g: 5, t: 'Hello, world', d: 'Sign in to byhamza.dev for the first time.' },
+    { id: 'explorer', i: '🧭', g: 50, t: 'Explorer', d: 'Open every app on the dashboard.' },
+    { id: 'gamer', i: '🕹️', g: 10, t: 'Gamer', d: 'Open the games tab.' },
+    { id: 'spotlight', i: '🧿', g: 10, t: 'Guide', d: 'Open the Guide.' },
+    { id: 'darkside', i: '🌙', g: 10, t: 'Dark side', d: 'Switch to the dark theme.' },
+    { id: 'decorator', i: '🎨', g: 10, t: 'Interior designer', d: 'Change the theme.' },
+    { id: 'tidy', i: '🎮', g: 30, t: 'Plug and play', d: 'Navigate with a controller.' },
+    { id: 'spark', i: '✦', g: 10, t: 'Spark', d: 'Leave a spark.' },
+    { id: 'stack10', i: '🧱', g: 20, t: 'Builder', d: 'Stack 10 blocks.' },
+    { id: 'stack20', i: '🏗️', g: 50, t: 'Skyscraper', d: 'Stack 20 blocks.' },
+    { id: 'perfect5', i: '🎯', g: 40, t: 'Precision', d: 'Land 5 perfect drops in a row.' },
+    { id: 'wpm60', i: '⌨️', g: 30, t: 'Quick fingers', d: 'Type 60 wpm or faster.' },
+    { id: 'wpm100', i: '⚡', g: 70, t: 'Blazing', d: 'Type 100 wpm or faster.' },
+    { id: 'artist', i: '🖌️', g: 20, t: 'Artist', d: 'Save a kaleidoscope drawing.' },
+    { id: 'signer', i: '✍️', g: 30, t: 'Signed', d: 'Sign the guestbook.' },
+    { id: 'hacker', i: '💻', g: 20, t: 'Hacker', d: 'Run hamzafetch in the terminal.' },
+    { id: 'company', i: '👥', g: 30, t: 'Party up', d: 'See another visitor online.' },
+    { id: 'nightowl', i: '🦉', g: 20, t: 'Night owl', d: 'Visit between midnight and 5am.' },
+    { id: 'voter', i: '🗳️', g: 10, t: 'Voter', d: 'Vote in Would You Rather.' },
+    { id: 'critic', i: '🏆', g: 30, t: 'Critic', d: 'Cast 25 Would You Rather votes.' },
+    { id: 'snake20', i: '🐍', g: 40, t: 'Long boi', d: 'Score 20 in Snake.' },
+    { id: 'breakout', i: '🧱', g: 40, t: 'Wrecking ball', d: 'Clear a level in Breakout.' },
+    { id: 'cheater', i: '🕹️', g: 20, t: 'Cheater', d: 'Enter a cheat code.', secret: true },
+    { id: 'codebreaker', i: '🔓', g: 275, t: 'Code breaker', d: 'Find every cheat code.', secret: true },
+    { id: 'persistent', i: '🅱️', g: 15, t: 'Persistent', d: 'Press B on the dashboard three times.', secret: true },
+    { id: 'sudo', i: '🚫', g: 15, t: 'Nice try', d: 'Try sudo in the terminal.', secret: true },
+    { id: 'konami', i: '🎮', g: 50, t: 'Old school', d: 'Enter the Konami code.', secret: true },
+    { id: 'creeper', i: '💥', g: 25, t: 'Aw man', d: 'Type the word creeper anywhere.', secret: true },
+    { id: 'clicker', i: '🌀', g: 15, t: 'Spin cycle', d: 'Click your gamerpic five times.', secret: true },
+  ];  const achieved = () => store.get('achievements', {});
   const notifs = document.createElement('div');
   notifs.className = 'notifs';
   notifs.setAttribute('aria-live', 'polite');
@@ -97,6 +104,9 @@
     if (!a || got[id]) return;
     got[id] = Date.now();
     store.set('achievements', got);
+    dispatchEvent(new CustomEvent('achievement', { detail: id }));
+    if (EMBED) { tell({ t: 'ach', id }); return; }
+    if (SHELL) return;
     const n = document.createElement('a');
     n.className = 'notif';
     n.href = '/finder#achievements';
@@ -113,17 +123,16 @@
         });
       } catch (e) { /* no audio */ }
     }
-    dispatchEvent(new CustomEvent('achievement', { detail: id }));
   }
   // Any switch to dark mode counts, whichever control did it.
   addEventListener('themechange', () => { if (root.dataset.theme === 'dark') achieve('darkside'); });
 
   // Page visits, first visit, night owl.
-  const PAGES = ['home', 'work', 'stats', 'finder', 'about', 'play', 'draw', 'type', 'arcade', 'wyr', 'terminal', 'guestbook', 'settings'];
+  const PAGES = ['home', 'work', 'stats', 'about', 'play', 'draw', 'type', 'arcade', 'wyr', 'terminal', 'guestbook'];
   const visited = store.get('visited', []);
   if (!visited.includes(page)) { visited.push(page); store.set('visited', visited); }
   setTimeout(() => {
-    achieve('hello');
+    if (!EMBED) achieve('hello');
     if (PAGES.every((p) => visited.includes(p))) achieve('explorer');
     const h = new Date().getHours();
     if (h < 5) achieve('nightowl');
@@ -133,7 +142,7 @@
   // Click the logo five times quickly.
   let logoClicks = [], typedBuf = '';
   document.addEventListener('click', (e) => {
-    const logo = e.target.closest('.menubar__logo');
+    const logo = e.target.closest('.menubar__logo, [data-logo]');
     if (!logo) return;
     const now = Date.now();
     logoClicks = logoClicks.filter((t) => now - t < 1500).concat(now);
@@ -402,7 +411,7 @@
     <button data-act="source">View Source</button>`);
   let ctxPoint = null;
   document.addEventListener('contextmenu', (e) => {
-    if (e.shiftKey) return;
+    if (e.shiftKey || SHELL || EMBED) return;
     if (e.target.closest('a, button, input, textarea, .app-canvas, .win__body, .menubar, .dock, .menu, [contenteditable], .term')) return;
     e.preventDefault();
     ctxPoint = { x: e.clientX, y: e.clientY, target: e.target };
@@ -645,7 +654,7 @@
   addEventListener('keydown', (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.target.closest && e.target.closest('input, textarea, [contenteditable], dialog')) return;
-    if (['play', 'terminal', 'type', 'arcade', 'wyr'].includes(page)) return;
+    if (EMBED || ['play', 'terminal', 'type', 'arcade', 'wyr'].includes(page)) return;
     const k = e.key.toLowerCase();
     if (e.key === '?') { e.preventDefault(); shortcuts(); return; }
     if (e.key === 'D' && e.shiftKey) { toggleTheme(); return; }
@@ -657,8 +666,8 @@
   let kpos = 0;
   addEventListener('keydown', (e) => {
     const typing = e.target.closest && e.target.closest('input, textarea, [contenteditable]');
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); spot.open ? spot.close() : openSpot(); return; }
-    if (!typing && e.key === '/' && page !== 'terminal') { e.preventDefault(); openSpot(); return; }
+    if (!SHELL && !EMBED && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); spot.open ? spot.close() : openSpot(); return; }
+    if (!SHELL && !EMBED && !typing && e.key === '/' && page !== 'terminal') { e.preventDefault(); openSpot(); return; }
     kpos = e.key === KONAMI[kpos] || e.key.toLowerCase() === KONAMI[kpos] ? kpos + 1 : (e.key === KONAMI[0] ? 1 : 0);
     if (kpos === KONAMI.length) { kpos = 0; confetti(); toast('You found the secret. ✦'); achieve('konami'); }
   });
@@ -692,7 +701,7 @@
 
   /* ---------- Live cursors ---------- */
   // Other visitors on the same page, relayed through a Durable Object.
-  if (prefs().live !== false && 'WebSocket' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (!EMBED && prefs().live !== false && 'WebSocket' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const layer = document.createElement('div');
     layer.className = 'cursors';
     layer.setAttribute('aria-hidden', 'true');
@@ -705,6 +714,7 @@
     const others = new Map();
     let ws, retry = 1500, lastSend = 0, queued = null;
     const setCount = (n) => {
+      dispatchEvent(new CustomEvent('presence', { detail: n }));
       here.hidden = !(n > 1);
       here.innerHTML = `<i></i>${n - 1} other${n - 1 === 1 ? '' : 's'} here`;
       here.title = 'Other people looking at this page right now';
