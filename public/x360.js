@@ -97,7 +97,7 @@
     }
     if (el.classList.contains('tile') && el.closest('.pane')) setAnchorFrom(el);
     if (el.dataset.ach !== undefined || el.classList.contains('ach')) showAchDetail(el);
-    if (sound) sfx('nav');
+    if (sound) sfx(el.closest('.guide, .dialog') ? 'gnav' : 'nav');
   }
   // The focused tile is scaled up, so read its layout box without the transform.
   function rectOf(el) {
@@ -1151,11 +1151,15 @@
     if (window.XSound) window.XSound.init();
     sfx('power');
     powerEl.classList.add('is-on');
-    setTimeout(() => {
-      powerEl.hidden = true; powerEl.classList.remove('is-on');
-      if (reduce()) { enter(); return; }
+    if (!reduce()) {
+      bootEl.classList.add('is-waiting');
       bootEl.hidden = false;
+    }
+    setTimeout(() => {
+      if (reduce()) { powerEl.hidden = true; powerEl.classList.remove('is-on'); enter(); return; }
       $$('*', bootEl).forEach((el) => { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; });
+      bootEl.classList.remove('is-waiting');
+      powerEl.hidden = true; powerEl.classList.remove('is-on');
       sfx('boot');
       bootTimer = setTimeout(enter, 6300);
     }, 1050);

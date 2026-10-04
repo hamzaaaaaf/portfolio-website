@@ -417,7 +417,9 @@ body.is-screen .panes, body.is-screen .pivots, body.is-screen [data-hints] { opa
 .power__disc svg { width: 22%; height: 22%; color: rgba(40, 42, 44, 0.55); filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.6)); }
 .power.is-on .power__disc svg { color: #5dc21e; filter: drop-shadow(0 0 6px rgba(93, 194, 30, 0.8)); }
 .power__hint { margin: 0; font-size: calc(2.2 * var(--k)); letter-spacing: 0.03em; }
-.power.is-on { animation: power-out 0.5s 0.55s both; }
+.power.is-on .power__btn, .power.is-on .power__hint { animation: power-out 0.45s 0.6s both; }
+.boot.is-waiting, .boot.is-waiting * { animation-play-state: paused !important; }
+.boot.is-waiting > * { visibility: hidden; }
 @keyframes power-out { to { opacity: 0; } }
 
 /* ---------- Startup, after the 2011 boot: dark sphere, light burst, orb, ring, logo ---------- */

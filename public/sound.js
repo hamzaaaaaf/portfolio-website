@@ -89,37 +89,41 @@
   const jitter = (f) => f * (1 + (Math.random() - 0.5) * 0.03);
 
   const SOUNDS = {
-    // Moving between tiles: a short, soft, slightly woody tick.
+    // Moving between tiles: a very quiet, low, woody thud (~320 Hz).
     nav() {
-      voice({ type: 'triangle', f: jitter(1180), f2: jitter(1050), bend: 0.03, a: 0.002, d: 0.045, gain: 0.07, send: 0.08 });
-      noise({ dur: 0.025, from: 5200, to: 3800, q: 2.5, gain: 0.025, a: 0.1, send: 0 });
+      voice({ type: 'sine', f: jitter(324), a: 0.003, d: 0.05, r: 0.02, gain: 0.07, send: 0.05 });
+      voice({ type: 'sine', f: jitter(216), a: 0.003, d: 0.04, r: 0.02, gain: 0.03, send: 0 });
+      noise({ dur: 0.04, from: 900, to: 500, q: 0.8, type: 'lowpass', gain: 0.025, a: 0.15, send: 0 });
     },
-    // A: a rounded rising bloop.
+    // Moving in the Guide and dialogs: a short sine blip (344 Hz).
+    gnav() {
+      voice({ type: 'sine', f: 344, a: 0.003, d: 0.06, r: 0.02, gain: 0.08, send: 0.05 });
+      voice({ type: 'sine', f: 253, a: 0.003, d: 0.05, r: 0.02, gain: 0.012, send: 0 });
+    },
+    // A: two soft sines a fourth apart (G4 + C5) that swell in and fade.
     select() {
-      voice({ type: 'sine', f: 480, f2: 960, bend: 0.06, a: 0.004, d: 0.16, gain: 0.12, send: 0.22 });
-      voice({ type: 'triangle', f: 960, f2: 1920, bend: 0.06, a: 0.004, d: 0.1, gain: 0.025, send: 0.2 });
-      noise({ dur: 0.03, from: 3000, to: 5000, q: 1.5, gain: 0.02, a: 0.1, send: 0 });
+      voice({ type: 'sine', f: 392, a: 0.11, d: 0.34, r: 0.12, gain: 0.07, send: 0.25 });
+      voice({ type: 'sine', f: 523.25, a: 0.11, d: 0.34, r: 0.12, gain: 0.066, send: 0.25 });
     },
-    // B: the same bloop, falling.
+    // B: the same swell a fifth lower (C4 + G4).
     back() {
-      voice({ type: 'sine', f: 900, f2: 430, bend: 0.07, a: 0.004, d: 0.15, gain: 0.11, send: 0.2 });
-      voice({ type: 'triangle', f: 1800, f2: 860, bend: 0.07, a: 0.004, d: 0.08, gain: 0.02, send: 0.15 });
+      voice({ type: 'sine', f: 261.6, a: 0.13, d: 0.3, r: 0.12, gain: 0.08, send: 0.22 });
+      voice({ type: 'sine', f: 392, a: 0.13, d: 0.3, r: 0.12, gain: 0.05, send: 0.22 });
     },
-    // LB / RB between hubs: an airy swish with a tick on the end.
+    // LB / RB between hubs: a bright, airy swish.
     pivot() {
-      noise({ dur: 0.2, from: 500, to: 4200, q: 0.9, gain: 0.07, a: 0.55, send: 0.3 });
-      voice({ type: 'triangle', f: 1400, f2: 1250, bend: 0.03, at: 0.11, a: 0.002, d: 0.05, gain: 0.04, send: 0.1 });
+      noise({ dur: 0.27, from: 3600, to: 6200, q: 0.7, gain: 0.075, a: 0.42, send: 0.15 });
     },
-    // Guide: a rising whoosh that blooms into two bell notes.
+    // Guide: C5 over G4, a slower swell with a long tail.
     guide() {
-      noise({ dur: 0.28, from: 260, to: 5200, q: 0.8, gain: 0.08, a: 0.7, send: 0.35 });
-      voice({ type: 'sine', f: 784, at: 0.12, a: 0.006, d: 0.5, gain: 0.07, send: 0.45 });
-      voice({ type: 'sine', f: 1175, at: 0.18, a: 0.006, d: 0.6, gain: 0.06, send: 0.5 });
-      voice({ type: 'sine', f: 2350, at: 0.18, a: 0.004, d: 0.3, gain: 0.015, send: 0.5 });
+      voice({ type: 'sine', f: 523.25, a: 0.19, d: 0.55, r: 0.15, gain: 0.08, send: 0.3 });
+      voice({ type: 'sine', f: 392, a: 0.19, d: 0.5, r: 0.15, gain: 0.024, send: 0.3 });
+      voice({ type: 'sine', f: 784, a: 0.19, d: 0.4, r: 0.1, gain: 0.005, send: 0.3 });
     },
     guideClose() {
-      noise({ dur: 0.2, from: 4800, to: 300, q: 0.8, gain: 0.06, a: 0.3, send: 0.25 });
-      voice({ type: 'sine', f: 1175, f2: 784, bend: 0.1, a: 0.004, d: 0.18, gain: 0.05, send: 0.3 });
+      voice({ type: 'sine', f: 466, a: 0.14, d: 0.28, r: 0.1, gain: 0.08, send: 0.25 });
+      voice({ type: 'sine', f: 349, a: 0.14, d: 0.26, r: 0.1, gain: 0.022, send: 0.25 });
+      voice({ type: 'sine', f: 699, a: 0.14, d: 0.2, r: 0.08, gain: 0.005, send: 0.25 });
     },
     // Can't do that: a dull, low thunk.
     nope() {
@@ -136,10 +140,12 @@
       voice({ type: 'sine', f: 1865, at: 0.13, a: 0.004, d: 0.8, gain: 0.018, send: 0.6, pan: 0.3 });
       voice({ type: 'sine', f: 2489, at: 0.16, a: 0.004, d: 0.7, gain: 0.012, send: 0.6, pan: -0.3 });
     },
-    // Any other notification: a soft two-note "doo-dip".
+    // Notifications: a short low note, then a bright chorused one an octave up.
     notify() {
-      voice({ type: 'sine', f: 660, a: 0.004, d: 0.14, gain: 0.07, send: 0.3 });
-      voice({ type: 'sine', f: 990, at: 0.08, a: 0.004, d: 0.24, gain: 0.07, send: 0.35 });
+      voice({ type: 'sine', f: 576, a: 0.005, d: 0.06, r: 0.02, gain: 0.05, send: 0.2 });
+      voice({ type: 'sine', f: 1141, at: 0.06, a: 0.01, d: 0.16, r: 0.06, gain: 0.06, send: 0.3 });
+      voice({ type: 'sine', f: 1114, at: 0.06, a: 0.01, d: 0.14, r: 0.06, gain: 0.035, send: 0.3, pan: -0.3 });
+      voice({ type: 'sine', f: 1168, at: 0.06, a: 0.01, d: 0.14, r: 0.06, gain: 0.025, send: 0.3, pan: 0.3 });
     },
     // The 360 S touch power button: a quick, bright electronic beep.
     power() {
