@@ -67,17 +67,17 @@
   // Everything in My Games and My Apps. "kind" decides what Launch does.
   const LIBRARY = [
     {
-      id: 'doom', type: 'game', title: 'DOOM', sub: 'id Software', cover: `${A}covers/doom.webp`, wide: `${A}covers/doom-wide.webp`,
-      launch: { kind: 'web', url: '/doom/', label: 'Launch' },
-      second: null,
-      meta: ['Shareware episode: Knee-Deep in the Dead', 'Runs in your browser', 'Single player', 'Controller, keyboard and mouse, or touch'],
-      rating: ['M', 'Mature 17+. Blood and Gore, Intense Violence'],
-      source: 'Shareware v1.9 on Chocolate Doom', genre: 'Shooter',
-      developer: 'id Software', publisher: 'id Software',
-      local: 'Single player\nController, keyboard and mouse, or touch', online: 'None',
-      note: 'The 1993 shareware episode, running on Cloudflare’s WebAssembly build of Chocolate Doom. Left stick moves, right stick turns, RT fires, A uses, LB and RB change weapon.',
-      extras: [['Chocolate Doom for WebAssembly', 'https://github.com/cloudflare/doom-wasm', 'GPL-2.0'], ['How to play', '#details', 'Controls']],
-      gallery: [`${A}covers/doom-wide.webp`, `${A}covers/doom-help.webp`, `${A}covers/doom-credit.webp`],
+      id: 'capital-city', type: 'game', title: 'Capital City', sub: 'Python · Playable here', cover: `${A}covers/capital-city.webp`, wide: `${A}tiles/capital-city.webp`,
+      launch: { kind: 'play', label: 'Launch' },
+      second: { label: 'View Source', url: 'https://github.com/hamzaaaaaf/CapitalCityGame' },
+      meta: ['Guess the capital, one letter at a time', 'Python, ported to the console', 'Single player', 'Controller, keyboard, mouse or touch'],
+      rating: ['E', 'Everyone'],
+      source: 'GitHub', genre: 'Trivia',
+      developer: 'Hamza', publisher: 'Hamza',
+      local: 'Single player\nController, keyboard, mouse or touch', online: 'None',
+      note: 'My first game, a Python guessing game from 2024. You get a country and the length of its capital; every wrong guess reveals another letter. On the console it’s four answers to choose from.',
+      extras: [['Source code', 'https://github.com/hamzaaaaaf/CapitalCityGame', 'GitHub'], ['How to play', '#details', 'Rules']],
+      gallery: [`${A}tiles/capital-city.webp`, `${A}covers/capital-city.webp`],
     },
     {
       id: 'panic-pack', type: 'game', title: 'Panic Pack!', sub: 'Godot 4 · Windows', cover: `${A}covers/panic-pack.webp`, wide: `${A}tiles/panic-pack.webp`,
@@ -106,7 +106,7 @@
       gallery: [`${A}tiles/instagram-unliker.webp`, `${A}covers/instagram-unliker.webp`],
     },
     {
-      id: 'byhamza', type: 'app', title: 'byhamza.dev', sub: 'This site', cover: ME.pic, wide: ME.pic, icon: ME.pic,
+      id: 'byhamza', type: 'app', title: 'byhamza.dev', sub: 'This site', cover: '/favicon.svg', wide: '/favicon.svg', icon: '/favicon.svg',
       launch: { kind: 'link', url: LINKS.source, label: 'View Source' },
       second: { label: 'DashX360', url: LINKS.dashx360 },
       meta: ['A web port of DashX360', 'HTML, CSS and JavaScript', 'No framework, no build step', 'Cloudflare Workers'],
@@ -116,11 +116,13 @@
       local: 'Controller, keyboard, mouse or touch', online: 'Live LeetCode and GitHub stats',
       note: 'The site you’re on: DashX360’s Xbox 360 Metro dashboard ported to the web, with the same layouts, animations, sounds and Guide, served from Cloudflare’s edge.',
       extras: [['Source code', LINKS.source, 'GitHub'], ['DashX360 by ZivvoZ', LINKS.dashx360, 'Original']],
-      gallery: [ME.pic],
+      gallery: ['/favicon.svg'],
     },
   ];
   const byId = (id) => LIBRARY.find((g) => g.id === id);
   const GAMES = () => LIBRARY.filter((g) => g.type === 'game').sort((a, b) => a.title.localeCompare(b.title));
+  // The game in the disc tray (DashX360's TrayGame); S is read when the tray is used.
+  const trayGame = () => byId(S.tray) || byId('capital-city');
 
   const THEMES = [
     { id: 'default', name: 'Default' },
@@ -138,9 +140,14 @@
     ['library', 'Collector', 'Open My Games.', 10],
     ['apps', 'App happy', 'Open My Apps.', 10],
     ['reader', 'Case study', 'Open the details of every game and app Hamza made.', 80],
-    ['doom', 'Rip and tear', 'Launch DOOM.', 50],
-    ['doom10', 'Knee-deep', 'Play DOOM for five minutes.', 100],
+    ['capital', 'Geography class', 'Play Capital City.', 20],
+    ['capital5', 'Capital idea', 'Get five capitals right in a row.', 50],
     ['ragequit', 'Any unsaved progress will be lost', 'Quit a game from the Guide.', 30],
+    ['friends', 'Friends list', 'Open Friends in the Xbox Guide.', 40],
+    ['colour', 'Paint job', 'Change the tile color.', 30],
+    ['lookback', 'Look back', 'Open Recent.', 20],
+    ['sysset', 'Under the hood', 'Open System Settings.', 20],
+    ['region', 'Region locked', 'Try to open something this console can’t play.', 20],
     ['tray', 'Disc swap', 'Pin a game to the tray.', 15],
     ['pinned', 'Pinned', 'Pin a game to My Pins.', 15],
     ['search', 'Decision engine', 'Search with Bing.', 20],
@@ -152,16 +159,16 @@
     ['networker', 'Networker', 'Open Hamza’s LinkedIn.', 10],
     ['messenger', 'Messenger', 'Send Hamza an email.', 30],
     ['leetcode', 'Grinding', 'Open Hamza’s LeetCode.', 10],
-    ['explorer', 'Explorer', 'Visit every tab on the dashboard.', 100],
+    ['explorer', 'Explorer', 'Visit every tab on the dashboard.', 75],
     ['nightowl', 'Night owl', 'Turn on the console between midnight and 5am.', 50],
     ['longhaul', 'Dedicated', 'Keep the console on for ten minutes.', 60],
-    ['regular', 'Regular', 'Turn on the console on three different days.', 80],
+    ['regular', 'Regular', 'Turn on the console on three different days.', 55],
     ['lightsout', 'Lights out', 'Turn off the console.', 30],
     ['persistent', 'Persistent', 'Press B on the dashboard three times.', 30],
   ].map(([id, t, d, g]) => ({ id, t, d, g }));
 
   /* ================= Settings ================= */
-  const DEFAULTS = { sounds: true, pad: true, startup: 'video', loading: true, volume: 1, theme: 'default', colour: '#028d02', tray: 'doom' };
+  const DEFAULTS = { sounds: true, pad: true, startup: 'video', loading: true, volume: 1, theme: 'default', colour: '#028d02', tray: 'capital-city' };
   const S = Object.assign({}, DEFAULTS, store.get('settings', {}));
   const saveSettings = () => store.set('settings', S);
 
@@ -298,7 +305,7 @@
   }
 
   function pageHome() {
-    const fx = 224, fy = 31, tray = byId(S.tray) || byId('doom');
+    const fx = 224, fy = 31, tray = trayGame();
     return `<div class="page" data-tab="home">
       ${tile('home.open-tray', fx, fy, 185, 131, `${fill(tray.wide)}${img(`${A}icons/disc-tray.webp`, { left: 55.5, top: 17, width: 74, height: 74 })}${tx('Open Tray', { left: 13, right: 8, bottom: 10, 'font-size': 18 })}`, { label: `Open Tray: ${tray.title}` })}
       ${tile('home.pins', fx, fy + 133, 185, 131, `${img(`${A}icons/pin.webp`, icoBox(185, 131, 38, 38, { mt: -20 }))}${tx('My Pins', { left: 12, bottom: 12, 'font-size': 17 })}`, { label: 'My Pins' })}
@@ -375,11 +382,11 @@
     const fx = 224, fy = 31, cw = 97.8875, ch = 93.425;
     const cells = [
       ['system', 'System', 'system', 39], ['preferences', 'Preferences', 'preferences', 39, 9], ['profile', 'Profile', 'account', 39], ['kinect', 'Kinect', 'kinect', 41],
-      ['account', 'Account', 'account', 39, 10, true], ['privacy', 'Privacy', 'privacy', 39, 10, true], ['family', 'Family', 'family', 39], ['turnoff', 'Turn Off', 'turnoff', 40],
+      ['account', 'Account', 'account', 39], ['privacy', 'Privacy', 'privacy', 39], ['family', 'Family', 'family', 39], ['turnoff', 'Turn Off', 'turnoff', 40],
     ];
-    const tiles = cells.map(([id, label, icon, s, fs = 10, dim], i) => {
+    const tiles = cells.map(([id, label, icon, s, fs = 10], i) => {
       const x = (i % 4) * cw, y = Math.floor(i / 4) * ch;
-      return `<button class="t${dim ? ' dim' : ''}" data-t="settings.${id}" data-sx="${x}" data-sy="${y}" style="${px({ left: x, top: y, width: cw, height: ch })}" aria-label="${label}"><span class="f">${img(`${A}icons/settings-${icon}.webp`, { left: (cw - s) / 2, top: (ch + 9 - s) / 2 - 9, width: s, height: s })}${tx(label, { left: fs === 9 ? 4 : 5, bottom: 5, 'font-size': fs })}</span></button>`;
+      return `<button class="t" data-t="settings.${id}" data-sx="${x}" data-sy="${y}" style="${px({ left: x, top: y, width: cw - 1, height: ch - 1 })}" aria-label="${label}"><span class="f">${img(`${A}icons/settings-${icon}.webp`, { left: (cw - s) / 2, top: (ch + 9 - s) / 2 - 9, width: s, height: s })}${tx(label, { left: fs === 9 ? 4 : 5, bottom: 5, 'font-size': fs })}</span></button>`;
     }).join('');
     return `<div class="page" data-tab="settings">
       <div class="sgrid" style="left:${fx}px;top:${fy}px">${tiles}</div>
@@ -409,7 +416,7 @@
         <button class="peek-hit peek-hit--l" type="button" aria-label="Previous" tabindex="-1"></button>
         <button class="peek-hit peek-hit--r" type="button" aria-label="Next" tabindex="-1"></button>
       </div>
-      <div class="hints foot"><span class="h" data-act="a">${G('A')} Select   </span><span class="h" data-act="y">${G('Y')} Eject</span></div>
+      <div class="hints foot"><span class="h" data-act="a">${G('A')} Select   </span><span class="h" data-act="y">${G('Y')} Search</span></div>
     </div>
     <div class="toast" aria-live="polite">
       <span class="toast__glow"></span><span class="toast__pill"></span>
@@ -477,7 +484,7 @@
     await wait(320);
     await anim(toastEl, [{ opacity: 1 }, { opacity: 0 }], 80, E.cubicIn).finished;
   }
-  const unavailable = (title) => { sfx('select'); toast(title, 'Not available here'); };
+  const unavailable = (title) => { achieve('region'); Message.open(title, 'This content isn’t available on this console.'); };
   function openLink(url, ach) {
     sfx('select');
     if (ach) achieve(ach);
@@ -667,11 +674,10 @@
   function refreshScore() { $$('[data-gs]').forEach((el) => { el.textContent = gamerscore(); }); }
 
   /* ================= Tile actions ================= */
-  const recentGame = () => byId(store.get('recent', 'doom')) || byId('doom');
   const ACTIONS = {
-    'home.open-tray': () => launch(byId(S.tray) || byId('doom')),
+    'home.open-tray': () => launch(trayGame()),
     'home.pins': () => Library.open('pins'),
-    'home.recent': () => Details.open(recentGame()),
+    'home.recent': () => Library.open('recent'),
     'home.hero': () => Profile.open(),
     'home.panic': () => Details.open(byId('panic-pack')),
     'home.unliker': () => Details.open(byId('instagram-unliker')),
@@ -725,18 +731,27 @@
   const Overlays = (() => {
     const stack = [];
     return {
-      push(name, api) { stack.push({ name, api }); syncDash(); },
+      push(name, api) { setActive(null); if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur(); stack.push({ name, api }); syncDash(); },
       pop(name) { const i = stack.findIndex((o) => o.name === name); if (i >= 0) stack.splice(i, 1); syncDash(); },
       top() { return stack.length ? stack[stack.length - 1].name : null; },
       api() { return stack.length ? stack[stack.length - 1].api : null; },
       has(name) { return stack.some((o) => o.name === name); },
+      // DashX360 opens one menu at a time: opening a menu closes the others
+      // (game details is the exception and opens over a list).
+      clear() { [...stack].reverse().forEach((o) => { if (o.api.dismiss) o.api.dismiss(); }); stack.length = 0; syncDash(); },
     };
   })();
   const overlayOpen = () => !!Overlays.top();
   // IsDashboardContentHidden: My Games and System Settings hide the tiles and tab row.
   function syncDash() {
-    host.style.visibility = Overlays.has('library') || Overlays.has('settings') ? 'hidden' : '';
+    host.style.visibility = ['library', 'settings', 'bing', 'game'].some((n) => Overlays.has(n)) ? 'hidden' : '';
     updateBackgrounds();
+  }
+  const recentIds = () => store.get('recentList', []);
+  function pushRecent(id) {
+    const r = recentIds().filter((x) => x !== id);
+    r.unshift(id);
+    store.set('recentList', r.slice(0, 12));
   }
   function overlayEl(cls) {
     const el = html(`<div class="ov ${cls}"></div>`);
@@ -748,7 +763,11 @@
   const Library = (() => {
     let el = null, mode = 'games', sel = 0, closing = false;
     const pins = () => store.get('pins', []);
-    const list = () => (mode === 'pins' ? GAMES().filter((g) => pins().includes(g.id)) : GAMES());
+    const list = () => {
+      if (mode === 'pins') return GAMES().filter((g) => pins().includes(g.id));
+      if (mode === 'recent') return recentIds().map(byId).filter(Boolean);
+      return GAMES();
+    };
     // RebuildAppLibraryTiles: five built-ins, then Hamza's apps filling columns from the third.
     const APP_TILES = () => {
       const size = 198, gap = 4, step = size + gap, x0 = 16, y0 = 8;
@@ -760,7 +779,7 @@
         { title: 'Microsoft Movies & TV', img: `${A}apps/movies-and-tv.webp`, col: 1, row: 1, act: () => unavailable('Microsoft Movies & TV') },
       ];
       const mine = [
-        { title: 'byhamza.dev', img: ME.pic, act: () => Details.open(byId('byhamza')) },
+        { title: 'byhamza.dev', img: '/favicon.svg', act: () => Details.open(byId('byhamza')) },
         { title: 'GitHub', glyph: 'github', act: () => openLink(LINKS.github, 'source') },
         { title: 'Instagram Unliker', img: `${A}apps/instagram-unliker.webp`, act: () => Details.open(byId('instagram-unliker')) },
         { title: 'LeetCode', glyph: 'leetcode', act: () => openLink(LINKS.leetcode, 'leetcode') },
@@ -771,20 +790,21 @@
       return tiles.map((t) => ({ ...t, x: x0 + step * t.col, y: y0 + step * t.row, w: size, h: size }));
     };
     function open(m) {
-      if (el) close(false, true);
+      Overlays.clear();
       mode = m; sel = 0; closing = false;
       el = overlayEl('lib');
-      const title = mode === 'apps' ? 'My Apps' : mode === 'pins' ? 'My Pins' : 'My Games';
-      const filter = mode === 'apps' ? 'all apps' : mode === 'pins' ? 'pinned games' : 'all games';
+      const title = { apps: 'My Apps', pins: 'My Pins', recent: 'Recent' }[mode] || 'My Games';
+      const filter = { apps: 'all apps', pins: 'pinned games', recent: 'games and apps' }[mode] || 'all games';
+      const sort = mode === 'recent' ? 'most recent' : 'titles';
       el.innerHTML = `<div class="lib__back"></div>
-        ${mode === 'apps' ? '' : `<div class="lib__filter"><div><small>&#x2304; show me</small><span>${filter}</span></div><div><small>&#x2304; sort</small><span>titles</span></div></div>`}
+        ${mode === 'apps' ? '' : `<div class="lib__filter"><div><small>&#x2304; show me</small><span>${filter}</span></div><div><small>&#x2304; sort</small><span>${sort}</span></div></div>`}
         <div class="lib__head"><b>${title}</b><span class="lib__count"></span><em class="lib__sel"></em></div>
         ${mode === 'apps' ? '<div class="apps__view"><div class="lib__strip apps__canvas"></div></div>' : '<div class="lib__view"><div class="lib__strip"></div></div>'}
         <div class="foot-row lib__foot" style="left:75px;bottom:34px;font-size:15px">${G('A')} Launch   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back   </span>${mode === 'apps' ? '' : `${G('X')} Game Details   `}${G('Y')} Pin</div>`;
       Overlays.push('library', api);
       render();
       sfx('menu-in');
-      achieve(mode === 'apps' ? 'apps' : 'library');
+      achieve({ apps: 'apps', recent: 'lookback', pins: 'library', games: 'library' }[mode]);
       if (reduced.matches) return;
       layerIn(el, 0, 120, 0);
       anim($('.lib__back', el), [{ opacity: 0 }, { opacity: 0.26 }], 260, E.sineOut);
@@ -810,9 +830,9 @@
       }
       const games = list();
       strip.innerHTML = games.map((g, i) => `<button class="t card" data-nav data-i="${i}" aria-label="${esc(g.title)}"><span class="f"><span class="card__cover"><img src="${g.cover}" alt=""></span><span class="card__t">${esc(g.title)}</span><span class="card__s">${esc(g.sub)}</span>${pins().includes(g.id) ? `<span class="card__pin"><img src="${A}icons/pin.webp" alt="Pinned"></span>` : ''}</span></button>`).join('');
-      if (!games.length) strip.insertAdjacentHTML('afterend', '<p class="lib__empty">Nothing pinned yet. Press Y on a game in My Games to pin it.</p>');
+      if (!games.length) strip.insertAdjacentHTML('afterend', `<p class="lib__empty">${mode === 'recent' ? 'Nothing here yet. Games and apps you open show up here.' : 'Nothing pinned yet. Press Y on a game in My Games to pin it.'}</p>`);
       $$('.t', strip).forEach((b, i) => {
-        b.addEventListener('click', () => { select(i); launch(games[i]); });
+        b.addEventListener('click', () => { select(i); if (games[i].type === 'app') Details.open(games[i]); else launch(games[i]); });
         b.addEventListener('mouseenter', () => setActive(b));
         b.addEventListener('mouseleave', () => { if (activeEl === b) setActive(null); });
       });
@@ -867,7 +887,7 @@
     function togglePin() {
       if (mode === 'apps') return;
       const g = list()[sel];
-      if (!g) return;
+      if (!g || g.type !== 'game') return;
       const p = pins(), i = p.indexOf(g.id);
       if (i >= 0) p.splice(i, 1); else { p.push(g.id); achieve('pinned'); }
       store.set('pins', p);
@@ -876,6 +896,7 @@
     }
     const api = {
       handle(a) {
+        if (!el) return true;
         if (['left', 'right', 'up', 'down'].includes(a)) { move(a); return true; }
         if (a === 'a') { const b = $$('.lib__strip .t', el)[sel]; if (b) b.click(); return true; }
         if (a === 'b') { close(); return true; }
@@ -883,7 +904,8 @@
         if (a === 'y') { togglePin(); return true; }
         return true;
       },
-      refocus() { select(sel, true); },
+      refocus() { if (!el) return; select(sel, true); },
+      dismiss() { if (el) { el.remove(); el = null; closing = false; } },
     };
     return { open, close, get mode() { return mode; }, get isOpen() { return !!el; } };
   })();
@@ -896,11 +918,12 @@
     function open(g) {
       if (!g) return;
       if (el) el.remove(), Overlays.pop('details');
+      if (!Overlays.has('library') && !Overlays.has('bing')) Overlays.clear();
       game = g; tab = 0; galleryI = 0;
-      store.set('recent', g.id);
+      pushRecent(g.id);
       const read = new Set(store.get('read', []));
       read.add(g.id); store.set('read', [...read]);
-      if (['doom', 'panic-pack', 'instagram-unliker', 'byhamza'].filter((x) => x !== 'doom').every((x) => read.has(x))) achieve('reader');
+      if (LIBRARY.every((x) => read.has(x.id))) achieve('reader');
       el = overlayEl('det');
       el.innerHTML = `<div class="det__tint"></div><img class="det__img" src="${g.wide}" alt=""><div class="det__shade"></div><div class="det__grad"></div>
         <nav class="det__tabs">${TABS_D.map((t, i) => `<button type="button" data-tab="${i}">${t}</button>`).join('')}</nav>
@@ -1000,6 +1023,7 @@
     }
     const api = {
       handle(a) {
+        if (!el) return true;
         if (a === 'lb' || a === 'rb') { setTab(tab + (a === 'lb' ? -1 : 1)); return true; }
         if (tab === 3 && (a === 'left' || a === 'right')) {
           const n = game.gallery.length, i = clamp(galleryI + (a === 'left' ? -1 : 1), 0, n - 1);
@@ -1016,7 +1040,8 @@
         if (a === 'y') { pinToTray(game); return true; }
         return true;
       },
-      refocus() { const f = $('.det__body [data-nav]', el); if (f) focusEl(f); },
+      refocus() { if (!el) return; const f = $('.det__body [data-nav]', el); if (f) focusEl(f); },
+      dismiss() { if (el) { el.remove(); el = null; } },
     };
     return { open, close };
   })();
@@ -1041,11 +1066,12 @@
       ['dashboard', 'Dashboard Customization', 'Change the dashboard theme and tile colour.'],
       ['audio', 'Audio', 'Choose how loud the dashboard sounds are.'],
       ['data', 'Data Control', 'Reset the dashboard data saved in this browser.'],
-      ['about', 'About', 'Credits for the dashboard, the artwork, the font and DOOM.'],
+      ['about', 'About', 'Credits for the dashboard, the artwork and the font.'],
     ];
     const STARTUP = [['video', 'Boot Video and Loading'], ['loading', 'Loading Only'], ['off', 'Straight to the Dashboard']];
     function open(category) {
       if (!el) {
+        Overlays.clear();
         el = overlayEl('set');
         el.innerHTML = `<div class="set__title">System Settings</div>
           <div class="set__frame"><div class="set__left"><div class="set__scroll"><div></div></div></div><div class="set__right"><h3></h3><p></p></div></div>
@@ -1113,7 +1139,7 @@
       } else if (k === 'data') {
         list([
           btn('reset-ach', 'Reset Achievements', 'Lock every achievement again. Your gamerscore goes back to 0.'),
-          btn('reset-lib', 'Reset Pins, Tray and Recent', 'Clear My Pins, put DOOM back in the tray and forget what you played.'),
+          btn('reset-lib', 'Reset Pins, Tray and Recent', 'Clear My Pins and Recent, and put Capital City back in the tray.'),
           btn('reset-all', 'Reset Everything', 'Clear all dashboard data saved in this browser, including settings.'),
         ]);
       } else if (k === 'about') {
@@ -1121,7 +1147,6 @@
           btn('l:dashx360', 'DashX360 by ZivvoZ', 'The Windows dashboard this site is ported from. Layouts, animations, sounds and artwork come from DashX360.'),
           btn('l:source', 'Source Code', 'byhamza.dev on GitHub.'),
           btn('l:selawik', 'Selawik Font', 'Microsoft’s open-source stand-in for Segoe UI, under the SIL Open Font License.'),
-          btn('l:doom', 'DOOM Shareware', 'Shareware DOOM v1.9 by id Software on Cloudflare’s WebAssembly build of Chocolate Doom (GPL-2.0).'),
           '<p class="otext">Unofficial non-commercial fan project. Xbox and related names, logos, and imagery are property of Microsoft. Not affiliated with or endorsed by Microsoft.</p>',
         ]);
       }
@@ -1142,12 +1167,12 @@
         if (id === 'themes') { Themes.open(); return; }
         if (id === 'music') { close(true); Music.open(); return; }
         if (id.startsWith('l:')) {
-          openLink({ dashx360: LINKS.dashx360, source: LINKS.source, selawik: 'https://github.com/microsoft/Selawik', doom: 'https://github.com/cloudflare/doom-wasm' }[id.slice(2)], id === 'l:source' ? 'source' : null);
+          openLink({ dashx360: LINKS.dashx360, source: LINKS.source, selawik: 'https://github.com/microsoft/Selawik' }[id.slice(2)], id === 'l:source' ? 'source' : null);
           return;
         }
         if (id === 'reset-ach') { store.del('achievements'); refreshScore(); sfx('select'); toast('Achievements', 'Reset'); }
-        if (id === 'reset-lib') { store.del('pins'); store.del('recent'); store.del('played'); S.tray = 'doom'; saveSettings(); rebuildPage('home'); sfx('select'); toast('My Pins', 'Reset'); }
-        if (id === 'reset-all') { ['achievements', 'pins', 'recent', 'played', 'read', 'visited', 'settings', 'days'].forEach(store.del); sfx('select'); setTimeout(() => location.reload(), 400); }
+        if (id === 'reset-lib') { store.del('pins'); store.del('recentList'); store.del('played'); S.tray = 'capital-city'; saveSettings(); rebuildPage('home'); sfx('select'); toast('My Pins', 'Reset'); }
+        if (id === 'reset-all') { ['achievements', 'pins', 'recentList', 'played', 'capitalBest', 'read', 'visited', 'settings', 'days'].forEach(store.del); sfx('select'); setTimeout(() => location.reload(), 400); }
       }
     }
     // DashboardInputRouter.TryAdjustFocusedSetting: left and right change values in place.
@@ -1199,6 +1224,7 @@
     }
     const api = {
       handle(a) {
+        if (!el) return true;
         if ((a === 'left' || a === 'right') && activeEl && el.contains(activeEl) && (activeEl.dataset.cycle || activeEl.dataset.slider)) { adjust(activeEl, a === 'left' ? -1 : 1); return true; }
         if (['left', 'right', 'up', 'down'].includes(a)) {
           const n = bestInDirection(rectCands($('.set__left', el)), activeEl, a);
@@ -1209,7 +1235,8 @@
         if (a === 'b') { if (cat) { sfx('menu-out'); showCategories(); } else close(); return true; }
         return true;
       },
-      refocus() { const f = $('.set__left [data-nav]', el); if (f) focusEl(f); },
+      refocus() { if (!el) return; const f = $('.set__left [data-nav]', el); if (f) focusEl(f); },
+      dismiss() { if (el) { el.remove(); el = null; } },
     };
     return { open, close };
   })();
@@ -1226,6 +1253,7 @@
     let el = null;
     function open() {
       if (el) return;
+      Overlays.clear();
       el = overlayEl('themes');
       el.innerHTML = `<div class="themes__back"></div><div class="themes__panel"><div class="themes__head">Select Theme</div>${THEMES.map((t) => `<button type="button" class="tbtn" data-nav data-theme="${t.id}">${esc(t.name)}${t.id === S.theme ? '<small>Current</small>' : ''}</button>`).join('')}</div>
         <div class="foot-row themes__foot" style="left:92px;bottom:45px;font-size:15px">${G('A')} Select   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back</span></div>`;
@@ -1261,6 +1289,7 @@
     }
     const api = {
       handle(a) {
+        if (!el) return true;
         if (a === 'up' || a === 'down') {
           const n = bestInDirection(rectCands(el), activeEl, a);
           if (n) { focusEl(n); sfx('focus'); }
@@ -1270,7 +1299,8 @@
         if (a === 'b') { close(); return true; }
         return true;
       },
-      refocus() { focusEl($('.tbtn', el)); },
+      refocus() { if (!el) return; focusEl($('.tbtn', el)); },
+      dismiss() { if (el) { el.remove(); el = null; } },
     };
     return { open };
   })();
@@ -1289,6 +1319,7 @@
     ];
     function open() {
       if (el) return;
+      Overlays.clear();
       el = overlayEl('prof');
       el.innerHTML = `<div class="prof__title">Profile</div>
         <div class="prof__pic"><img src="${ME.pic}" alt=""></div>
@@ -1330,6 +1361,7 @@
     }
     const api = {
       handle(a) {
+        if (!el) return true;
         if (a === 'up' || a === 'down') {
           const n = bestInDirection(rectCands($('.prof__left', el)), activeEl, a);
           if (n) { focusEl(n); sfx('focus'); }
@@ -1339,18 +1371,19 @@
         if (a === 'b') { close(); return true; }
         return true;
       },
-      refocus() { focusEl($('.pbtn', el)); },
+      refocus() { if (!el) return; focusEl($('.pbtn', el)); },
+      dismiss() { if (el) { el.remove(); el = null; } },
     };
     return { open };
   })();
 
   /* ================= Bing search ================= */
+  // Bing on the 360 searched the console, not the web, so results open here.
   function bingSearch(q) {
     q = (q || '').trim();
     if (!q) return false;
     achieve('search');
-    sfx('select');
-    window.open(`https://www.bing.com/search?q=${encodeURIComponent(q)}`, '_blank', 'noopener');
+    BingResults.open(q);
     return true;
   }
   function focusBingInput() {
@@ -1362,6 +1395,7 @@
     let el = null;
     function open() {
       if (el) return;
+      Overlays.clear();
       goTab('bing');
       el = overlayEl('srch');
       el.innerHTML = `<div class="srch__box"><h2>Bing</h2><p>Search games, help, stores, and the web.</p><input type="search" enterkeyhint="search" autocomplete="off" spellcheck="false" aria-label="Search with Bing"><div class="srch__btns"><button type="button" class="abtn" data-nav data-go>Search</button><button type="button" class="abtn" data-nav data-cancel>Cancel</button></div></div>`;
@@ -1372,9 +1406,9 @@
       $$('.abtn', el).forEach((b) => b.addEventListener('mouseenter', () => setActive(b)));
       Overlays.push('search', api);
       sfx('menu-in');
-      setTimeout(() => input.focus({ preventScroll: true }), 30);
+      setTimeout(() => { if (!el) return; setActive(null); input.focus({ preventScroll: true }); }, 30);
     }
-    function submit() { if (bingSearch($('input', el).value)) close(true); }
+    function submit() { const q = $('input', el).value.trim(); if (!q) return; close(true); bingSearch(q); }
     function close(silent) {
       if (!el) return;
       el.remove(); el = null;
@@ -1384,6 +1418,7 @@
     }
     const api = {
       handle(a) {
+        if (!el) return true;
         if (a === 'b') { close(); return true; }
         if (a === 'left' || a === 'right' || a === 'down') {
           const n = bestInDirection(rectCands(el), activeEl && el.contains(activeEl) ? activeEl : $('.abtn', el), a);
@@ -1394,6 +1429,164 @@
         if (a === 'a') { if (activeEl && el.contains(activeEl)) activeEl.click(); else submit(); return true; }
         return true;
       },
+      dismiss() { if (el) { el.remove(); el = null; } },
+    };
+    return { open };
+  })();
+
+  const BingResults = (() => {
+    let el = null, sel = 0, tiles = [];
+    const promo = (title, kw, img, act) => ({ title, kw, img, act, cat: 'marketplace' });
+    const INDEX = () => [
+      ...LIBRARY.map((g) => ({ title: g.title, kw: `${g.type} ${g.genre} ${g.sub} ${g.meta.join(' ')} hamza project`, img: g.icon || g.wide, act: () => Details.open(g), cat: g.type === 'game' ? 'games' : 'apps' })),
+      { title: 'Hamza', kw: 'profile about me gamercard student computer science aston university birmingham cv resume', img: ME.pic, act: () => Profile.open(), cat: 'profile' },
+      { title: 'GitHub', kw: 'code source repos repositories hamzaaaaaf', glyph: 'github', act: () => openLink(LINKS.github, 'source'), cat: 'apps' },
+      { title: 'LinkedIn', kw: 'cv resume work jobs contact', glyph: 'linkedin', act: () => openLink(LINKS.linkedin, 'networker'), cat: 'apps' },
+      { title: 'LeetCode', kw: 'problems algorithms data structures coding hamza57', glyph: 'leetcode', act: () => openLink(LINKS.leetcode, 'leetcode'), cat: 'apps' },
+      { title: 'Message Hamza', kw: 'email mail contact hello', glyph: 'mail', act: () => openLink(LINKS.mail, 'messenger'), cat: 'apps' },
+      { title: 'My Games', kw: 'library games collection', glyph: 'games', act: () => Library.open('games'), cat: 'dashboard' },
+      { title: 'My Apps', kw: 'library apps', glyph: 'apps', act: () => Library.open('apps'), cat: 'dashboard' },
+      { title: 'My Pins', kw: 'pinned favourites favorites', glyph: 'eject', act: () => Library.open('pins'), cat: 'dashboard' },
+      { title: 'Recent', kw: 'history played opened', glyph: 'prev', act: () => Library.open('recent'), cat: 'dashboard' },
+      { title: 'Achievements', kw: 'gamerscore trophies awards', glyph: 'trophy', vb: '0 0 30 32', act: () => Guide.open('achievements'), cat: 'dashboard' },
+      { title: 'Friends', kw: 'people social contacts', glyph: 'people', act: () => Guide.open('friends'), cat: 'dashboard' },
+      { title: 'Music Player', kw: 'songs music audio play', glyph: 'play', act: () => Music.open(), cat: 'dashboard' },
+      { title: 'Themes', kw: 'background wallpaper halo batman resident evil stockholm', glyph: 'sliders', act: () => Themes.open(), cat: 'dashboard' },
+      { title: 'System Settings', kw: 'settings options preferences sound volume controller startup', glyph: 'gear', act: () => Settings.open(), cat: 'dashboard' },
+      promo('Forza Horizon', 'racing cars driving game', `${A}tiles/forza.webp`, ACTIONS['games.forza']),
+      promo('Minecraft', 'blocks building game', `${A}tiles/minecraft.webp`, ACTIONS['games.minecraft']),
+      promo('Black Ops II', 'call of duty shooter game cod', `${A}tiles/blackops2.webp`, ACTIONS['games.blackops']),
+      promo('The Dark Knight', 'batman movie film video', `${A}tiles/darkknight.webp`, ACTIONS['video.feature']),
+      promo('Kung Fu Panda 2', 'movie film video', `${A}tiles/kungfupanda2.webp`, ACTIONS['video.kungfu']),
+      promo('Cloudy with a Chance of Meatballs', 'movie film video', `${A}tiles/cloudy.webp`, ACTIONS['video.cloudy']),
+      promo('Overexposed', 'maroon 5 album music', `${A}tiles/overexposed.webp`, ACTIONS['music.feature']),
+      promo('Evanescence', 'recent music album', `${A}tiles/evanescence.webp`, ACTIONS['music.recent']),
+      promo('Panchiko', 'music album', `${A}tiles/panchiko.webp`, ACTIONS['music.panchiko']),
+      promo('Netflix', 'movies tv streaming app', `${A}tiles/netflix.webp`, ACTIONS['apps.netflix']),
+      promo('YouTube', 'videos app', `${A}tiles/youtube-apps.webp`, ACTIONS['apps.youtube']),
+      promo('HBO GO', 'tv streaming app max', `${A}tiles/hbogo-apps.webp`, ACTIONS['apps.hbogo']),
+      promo('Hulu Plus', 'tv streaming app', null, ACTIONS['apps.hulu']),
+      promo('ESPN', 'sports live app', null, ACTIONS['apps.espn']),
+    ];
+    function search(q) {
+      const words = q.toLowerCase().split(/\s+/).filter(Boolean), ql = q.toLowerCase();
+      return INDEX().map((it) => {
+        const t = it.title.toLowerCase(), hay = `${t} ${it.kw}`.toLowerCase();
+        if (!words.every((w) => hay.includes(w))) return null;
+        return { it, rank: t.startsWith(ql) ? 0 : t.includes(ql) ? 1 : 2 };
+      }).filter(Boolean).sort((a, b) => a.rank - b.rank).map((r) => r.it);
+    }
+    function open(q) {
+      Overlays.clear();
+      const found = search(q);
+      tiles = [...found, { title: `Search the web for “${q}”`, web: q, act: () => { sfx('select'); window.open(`https://www.bing.com/search?q=${encodeURIComponent(q)}`, '_blank', 'noopener'); } }];
+      // Laid out like My Apps: 198 px tiles filling two rows, column by column.
+      tiles.forEach((t, i) => { t.x = 16 + 202 * Math.floor(i / 2); t.y = 8 + 202 * (i % 2); });
+      sel = 0;
+      el = overlayEl('lib bres');
+      el.innerHTML = `<div class="lib__back"></div>
+        <div class="lib__filter"><div style="width:auto"><small>&#x2304; bing</small><span>“${esc(q)}”</span></div></div>
+        <div class="lib__head"><b>Search Results</b><span class="lib__count"></span><em class="lib__sel"></em></div>
+        <div class="apps__view"><div class="lib__strip apps__canvas"></div></div>
+        ${found.length ? '' : `<p class="lib__empty" style="top:130px">No results on this console for “${esc(q)}”.</p>`}
+        <div class="foot-row lib__foot" style="left:75px;bottom:34px;font-size:15px">${G('A')} Select   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back</span></div>`;
+      const strip = $('.lib__strip', el);
+      strip.style.width = `${Math.max(1070, ...tiles.map((t) => t.x + 216))}px`;
+      strip.style.height = '430px';
+      strip.innerHTML = tiles.map((t, i) => {
+        const inner = t.web ? `<span class="app__glyph"><svg viewBox="0 0 50 50" style="fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round"><path d="${P.search}"/></svg></span><span class="app__t">${esc(t.title)}</span>`
+          : t.img ? `${fill(t.img)}<span class="bar" style="height:30px;background:rgba(0,0,0,.79)"></span><span class="tx" style="left:8px;right:8px;bottom:6px;font-size:16px">${esc(t.title)}</span>`
+            : t.glyph ? `<span class="app__glyph">${svg(t.glyph, t.vb)}</span><span class="app__t">${esc(t.title)}</span>`
+              : `<span class="logo" style="font-size:24px;font-weight:700">${esc(t.title)}</span>`;
+        return `<button class="t" data-nav data-i="${i}" style="${px({ left: t.x, top: t.y, width: 198, height: 198 })}" aria-label="${esc(t.title)}"><span class="f"${t.img || t.glyph || t.web ? '' : ' style="background:#fff;color:#333"'}>${inner}</span></button>`;
+      }).join('');
+      $$('.t', strip).forEach((b, i) => {
+        b.addEventListener('click', () => { sel = i; tiles[i].act(); });
+        b.addEventListener('mousemove', () => { if (activeEl !== b) { sel = i; setActive(b); paintHead(); } });
+      });
+      Overlays.push('bing', api);
+      select(0, true);
+      sfx('menu-in');
+      if (reduced.matches) return;
+      layerIn(el, 0, 120, 0);
+      anim($('.lib__back', el), [{ opacity: 0 }, { opacity: 0.26 }], 260, E.sineOut);
+      layerIn($('.lib__filter', el), -24, 240, 40);
+      layerIn($('.lib__head', el), 42, 260, 60);
+      layerIn($('.apps__view', el), 168, 360, 35);
+      layerIn($('.lib__foot', el), 28, 210, 145);
+    }
+    function paintHead() {
+      $('.lib__count', el).textContent = `${sel + 1} of ${tiles.length}`;
+      $('.lib__sel', el).textContent = tiles[sel].title;
+    }
+    function select(i, quiet) {
+      const prev = sel;
+      sel = clamp(i, 0, tiles.length - 1);
+      focusEl($$('.lib__strip .t', el)[sel]);
+      paintHead();
+      if (!quiet && prev !== sel) sfx('focus');
+      const strip = $('.lib__strip', el), vw = 1070 - 40, left = tiles[sel].x;
+      let off = -(parseFloat(strip.dataset.off) || 0);
+      if (left - off < 0) off = left;
+      if (left + 198 - off > vw) off = left + 198 - vw;
+      strip.dataset.off = -off;
+      strip.style.transform = `translateX(${-off}px)`;
+    }
+    function close() {
+      if (!el) return;
+      const node = el;
+      el = null;
+      sfx('menu-out');
+      Overlays.pop('bing');
+      node.remove();
+      focusDefault();
+    }
+    const api = {
+      handle(a) {
+        if (!el) return true;
+        if (['left', 'right', 'up', 'down'].includes(a)) {
+          const n = bestInDirection(tiles.map((t, i) => ({ el: i, x: t.x, y: t.y, w: 198, h: 198 })), sel, a);
+          if (n !== null && n !== undefined) select(n);
+          return true;
+        }
+        if (a === 'a') { tiles[sel].act(); return true; }
+        if (a === 'b') { close(); return true; }
+        return true;
+      },
+      refocus() { if (!el) return; select(sel, true); },
+      dismiss() { if (el) { el.remove(); el = null; } },
+    };
+    return { open };
+  })();
+
+  // The Guide's message box (GuideWindow SocialMessage), used for content the console can't open.
+  const Message = (() => {
+    let el = null;
+    function open(title, text) {
+      if (el) el.remove(), Overlays.pop('msg');
+      el = overlayEl('msg');
+      el.innerHTML = `<div class="msg__dim"></div><div class="msg__box" role="alertdialog" aria-label="${esc(title)}"><b>${esc(title)}</b><p>${esc(text)}</p></div>
+        <div class="gfoot msg__foot"><span class="h" data-act="a">${G('A')}OK</span></div>`;
+      el.addEventListener('click', () => close());
+      Overlays.push('msg', api);
+      sfx('select');
+      if (!reduced.matches) {
+        anim($('.msg__box', el), [{ opacity: 0, transform: 'scale(.94)' }, { opacity: 1, transform: 'scale(1)' }], 140, E.cubicOut);
+        anim($('.msg__dim', el), [{ opacity: 0 }, { opacity: 1 }], 140, E.sineOut);
+      }
+    }
+    function close() {
+      if (!el) return;
+      el.remove(); el = null;
+      sfx('back');
+      Overlays.pop('msg');
+      const t = Overlays.api();
+      if (t && t.refocus) t.refocus(); else if (!overlayOpen()) focusDefault();
+    }
+    const api = {
+      handle(a) {
+        if (!el) return true; if (a === 'a' || a === 'b') close(); return true; },
+      dismiss() { if (el) { el.remove(); el = null; } },
     };
     return { open };
   })();
@@ -1403,6 +1596,7 @@
     let el = null, tracks = [], cur = -1, audio = null, analyser = null, raf = 0;
     function open() {
       if (el) return;
+      Overlays.clear();
       el = overlayEl('mus');
       el.innerHTML = `<div class="mus__title">Music Player</div>
         <div class="mus__frame"><div class="mus__left">
@@ -1506,6 +1700,7 @@
     }
     const api = {
       handle(a) {
+        if (!el) return true;
         if (['left', 'right', 'up', 'down'].includes(a)) {
           const n = bestInDirection(rectCands(el), activeEl, a);
           if (n) { focusEl(n); sfx('hover'); }
@@ -1516,45 +1711,159 @@
         if (a === 'x' || a === 'y') { toggle(); return true; }
         return true;
       },
-      refocus() { focusEl($('.mus__src', el)); },
+      refocus() { if (!el) return; focusEl($('.mus__src', el)); },
+      dismiss() { if (el) { el.remove(); el = null; } },
     };
     return { open, toggle, next: () => tracks.length && play((cur + 1) % tracks.length), prev: () => tracks.length && play((cur - 1 + tracks.length) % tracks.length), stop: () => { if (audio) { audio.pause(); audio.currentTime = 0; } }, label: () => (cur >= 0 && audio && !audio.paused ? tracks[cur].name : 'Select Music'), get playing() { return !!(audio && !audio.paused); } };
   })();
 
-  /* ================= Running a game (DOOM) ================= */
-  const gameLayer = $('#game');
-  let running = null, playStart = 0, doomTimer = 0;
+  /* ================= Running a game ================= */
+  let running = null;
   async function launch(g) {
     if (!g) return;
-    if (g.launch.kind === 'link') { openLink(g.launch.url, 'source'); store.set('recent', g.id); return; }
+    pushRecent(g.id);
+    if (g.launch.kind === 'link') { openLink(g.launch.url, 'source'); return; }
     sfx('select');
-    store.set('recent', g.id);
     const played = store.get('played', {}); played[g.id] = Date.now(); store.set('played', played);
-    if (g.id === 'doom') achieve('doom');
-    await fakeLoading(700);
+    Overlays.clear();
+    await fakeLoading(900);
     running = g;
-    gameLayer.hidden = false;
-    gameLayer.innerHTML = `<iframe src="${g.launch.url}" title="${esc(g.title)}" allow="autoplay; fullscreen; gamepad"></iframe>`;
-    const frame = $('iframe', gameLayer);
-    frame.addEventListener('load', () => { try { frame.contentWindow.focus(); } catch (e) { /* cross-origin */ } });
-    playStart = Date.now();
-    clearInterval(doomTimer);
-    if (g.id === 'doom') doomTimer = setInterval(() => { if (running && Date.now() - playStart > 5 * 60 * 1000) { achieve('doom10'); clearInterval(doomTimer); } }, 10000);
+    CapitalCity.open();
   }
   function quitGame(fromGuide) {
     if (!running) return;
     running = null;
-    clearInterval(doomTimer);
-    gameLayer.hidden = true;
-    gameLayer.innerHTML = '';
+    CapitalCity.close();
     if (fromGuide) achieve('ragequit');
     if (!overlayOpen()) focusDefault();
   }
-  addEventListener('message', (e) => {
-    if (e.origin !== location.origin || !e.data || !e.data.x360) return;
-    if (e.data.t === 'guide') Guide.toggle();
-    if (e.data.t === 'close') quitGame();
-  });
+
+  // Capital City: Hamza's 2024 Python guessing game (github.com/hamzaaaaaf/CapitalCityGame),
+  // with four answers to choose from and a letter revealed after each wrong guess.
+  const CapitalCity = (() => {
+    const CAPITALS = {
+      China: 'Beijing', India: 'New Delhi', 'United States': 'Washington DC', Indonesia: 'Jakarta', Pakistan: 'Islamabad',
+      Brazil: 'Brasilia', Sweden: 'Stockholm', Bangladesh: 'Dhaka', Russia: 'Moscow', Mexico: 'Mexico City', Japan: 'Tokyo',
+      Norway: 'Oslo', Philippines: 'Manila', Egypt: 'Cairo', Finland: 'Helsinki', Turkey: 'Ankara', Iran: 'Tehran',
+      Thailand: 'Bangkok', 'United Kingdom': 'London', France: 'Paris', Italy: 'Rome', Denmark: 'Copenhagen',
+      'South Africa': 'Pretoria', Belgium: 'Brussels', 'South Korea': 'Seoul', Spain: 'Madrid', Argentina: 'Buenos Aires',
+    };
+    const COUNTRIES = Object.keys(CAPITALS);
+    let el = null, state = 'title', round = null, sel = 0, streak = 0, asking = false, askSel = 1, last = null;
+    const best = () => store.get('capitalBest', 0);
+    const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+    function open() {
+      state = 'title'; streak = 0; asking = false; last = null;
+      el = overlayEl('cc');
+      Overlays.push('game', api);
+      achieve('capital');
+      paint();
+      if (!reduced.matches) anim(el, [{ opacity: 0 }, { opacity: 1 }], 300, E.sineOut);
+    }
+    function close() {
+      if (!el) return;
+      el.remove(); el = null;
+      Overlays.pop('game');
+    }
+    function newRound() {
+      let country;
+      do country = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)]; while (country === last && COUNTRIES.length > 1);
+      last = country;
+      const capital = CAPITALS[country];
+      const others = shuffle(COUNTRIES.filter((c) => c !== country).map((c) => CAPITALS[c])).slice(0, 3);
+      round = { country, capital, choices: shuffle([capital, ...others]), wrong: new Set(), hints: 1, solved: false, firstTry: true };
+      state = 'round'; sel = 0;
+      paint();
+    }
+    function letters() {
+      const cap = round.capital.toUpperCase();
+      let shown = 0;
+      return [...cap].map((ch) => {
+        if (ch === ' ') return '<i class="cc__gap"></i>';
+        shown++;
+        const open_ = round.solved || shown <= round.hints;
+        return `<b class="cc__l${open_ ? ' on' : ''}">${open_ ? esc(ch) : ''}</b>`;
+      }).join('');
+    }
+    function paint() {
+      if (!el) return;
+      const head = `<div class="cc__title">Capital City</div><div class="cc__score">Streak ${streak}<span>Best ${best()}</span></div>`;
+      if (state === 'title') {
+        el.innerHTML = `${head}<div class="cc__splash"><b>CAPITAL CITY</b><span>You get a country and the length of its capital.<br>Every wrong guess reveals another letter.</span><button type="button" class="t cc__start" data-nav><span class="f">Start</span></button></div>
+          <div class="gfoot cc__foot"><span class="h" data-act="a">${G('A')}Start</span><span class="h" data-act="b">${G('B')}Quit</span></div>`;
+        const b = $('.cc__start', el);
+        b.addEventListener('click', newRound);
+        focusEl(b);
+      } else {
+        const n = round.capital.replace(/ /g, '').length;
+        const msg = round.solved ? (round.firstTry ? 'Correct!' : `Got it. The capital of ${esc(round.country)} is ${esc(round.capital)}.`) : round.wrong.size ? `Not quite. Hint: ${esc(round.capital.slice(0, round.hints))}…` : `It has ${n} letters. Can you guess it?`;
+        el.innerHTML = `${head}<div class="cc__q"><small>The capital of</small><b>${esc(round.country)}</b></div>
+          <div class="cc__word">${letters()}</div>
+          <div class="cc__msg${round.solved ? ' ok' : ''}">${msg}</div>
+          <div class="cc__grid">${round.choices.map((c, i) => `<button type="button" class="t cc__c${round.wrong.has(c) ? ' x' : ''}${round.solved && c === round.capital ? ' ok' : ''}" data-nav data-i="${i}"${round.wrong.has(c) || round.solved ? ' disabled' : ''}><span class="f"><span class="tx" style="left:18px;bottom:14px;font-size:26px;font-weight:300">${esc(c)}</span></span></button>`).join('')}</div>
+          <div class="gfoot cc__foot"><span class="h" data-act="a">${G('A')}${round.solved ? 'Next Country' : 'Guess'}</span><span class="h" data-act="b">${G('B')}Quit</span></div>`;
+        $$('.cc__c', el).forEach((b, i) => {
+          b.addEventListener('click', () => guess(i));
+          b.addEventListener('mousemove', () => { if (!b.disabled && activeEl !== b) { sel = i; setActive(b); } });
+        });
+        if (!round.solved) { const live = $$('.cc__c', el).filter((b) => !b.disabled); const b = $$('.cc__c', el)[sel]; focusEl(b && !b.disabled ? b : live[0]); sel = +(activeEl && activeEl.dataset.i || 0); }
+        else setActive(null);
+      }
+      $$('.cc__foot .h', el).forEach((h) => h.addEventListener('click', (e) => { e.stopPropagation(); api.handle(h.dataset.act); }));
+      if (asking) paintAsk();
+    }
+    function guess(i) {
+      if (!round || round.solved) { if (round && round.solved) newRound(); return; }
+      const c = round.choices[i];
+      if (round.wrong.has(c)) return;
+      if (c === round.capital) {
+        round.solved = true;
+        sfx('select');
+        if (round.firstTry) { streak++; if (streak > best()) store.set('capitalBest', streak); if (streak >= 5) achieve('capital5'); }
+        else streak = 0;
+      } else {
+        round.wrong.add(c); round.firstTry = false;
+        round.hints = Math.min(round.capital.replace(/ /g, '').length - 1, round.hints + 1);
+        sfx('back');
+        sel = round.choices.findIndex((x) => !round.wrong.has(x));
+      }
+      paint();
+    }
+    function paintAsk() {
+      let box = $('.cc__ask', el);
+      if (!box) { el.insertAdjacentHTML('beforeend', `<div class="msg__dim cc__askdim"></div><div class="ask cc__ask"><b>Capital City</b><div><p>Are you sure you want to quit? Any unsaved progress will be lost.</p><button type="button" class="grow" data-a="0"><span>Yes</span><span></span><span></span></button><button type="button" class="grow" data-a="1"><span>No</span><span></span><span></span></button></div></div>`); box = $('.cc__ask', el); $$('.grow', box).forEach((b, i) => b.addEventListener('click', () => { askSel = i; answer(); })); }
+      $$('.grow', box).forEach((b, i) => b.classList.toggle('sel', i === askSel));
+    }
+    function answer() {
+      asking = false;
+      if (askSel === 0) { sfx('select'); quitGame(false); return; }
+      sfx('back');
+      paint();
+    }
+    const api = {
+      handle(a) {
+        if (!el) return true;
+        if (asking) {
+          if (a === 'up' || a === 'down') { askSel = askSel ? 0 : 1; sfx('guide-hover'); paintAsk(); }
+          if (a === 'a') answer();
+          if (a === 'b') { askSel = 1; answer(); }
+          return true;
+        }
+        if (a === 'b') { asking = true; askSel = 1; setActive(null); sfx('menu-in'); paintAsk(); return true; }
+        if (state === 'title') { if (a === 'a') { sfx('select'); newRound(); } return true; }
+        if (a === 'a') { if (round.solved) { newRound(); return true; } if (activeEl && activeEl.classList.contains('cc__c')) guess(+activeEl.dataset.i); return true; }
+        if (['left', 'right', 'up', 'down'].includes(a) && !round.solved) {
+          const cands = rectCands($('.cc__grid', el));
+          const n = bestInDirection(cands, activeEl, a);
+          if (n) { focusEl(n); sel = +n.dataset.i; sfx('focus'); }
+        }
+        return true;
+      },
+      refocus() { if (!el) return; paint(); },
+      dismiss() { running = null; if (el) { el.remove(); el = null; } },
+    };
+    return { open, close };
+  })();
 
   async function fakeLoading(ms) {
     const L = $('#loading');
@@ -1573,7 +1882,7 @@
     const placeholder = (name) => setStatus(`${name} is not connected yet`);
     const closeThen = (fn) => () => { close(false); fn(); };
     function items() {
-      const trayGame = byId(S.tray) || byId('doom');
+      const tg = trayGame();
       switch (tab) {
         case 0: return [
           ['My Games', 'games', closeThen(() => Library.open('games'))],
@@ -1608,7 +1917,7 @@
           ['Inside Xbox', 'mail', () => placeholder('Inside Xbox'), '0'],
           ['Minimize', 'minimize', () => close(false)],
           ['Chat and IM', 'chat', () => placeholder('Chat and IM')],
-          [trayGame.title, 'eject', () => { close(false); launch(trayGame); }],
+          [tg.title, 'eject', () => { close(false); launch(tg); }],
         ];
       }
     }
@@ -1677,7 +1986,6 @@
       tab = 2; sel = 0; screen = 'main'; mediaFocus = 'list'; status = ''; askOpen = false;
       build(); paint();
       layer.hidden = false;
-      if (running) { try { $('iframe', gameLayer).blur(); } catch (e) { /* ignore */ } window.focus(); }
       if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
       sfx('guide-open');
       achieve('guide');
@@ -1701,8 +2009,9 @@
       const gd = $('.gd', canvas);
       const done = () => {
         layer.hidden = true; canvas.innerHTML = ''; busy = false;
-        if (running) { const f = $('iframe', gameLayer); if (f) try { f.contentWindow.focus(); } catch (e) { /* ignore */ } }
-        else if (!overlayOpen() && returnFocus && document.contains(returnFocus)) focusEl(returnFocus);
+        const top = Overlays.api();
+        if (top && top.refocus) top.refocus();
+        else if (!overlayOpen() && returnFocus && curPage().contains(returnFocus)) focusEl(returnFocus);
         else if (!overlayOpen()) focusDefault();
       };
       if (instant) { done(); return; }
@@ -1898,7 +2207,6 @@
     if (booting) return;
     if (a === 'guide') { Guide.toggle(); return; }
     if (Guide.isOpen) { Guide.handle(a); return; }
-    if (running) return;
     const top = Overlays.api();
     if (top) { top.handle(a); return; }
     dashboard(a);
@@ -1925,7 +2233,6 @@
       if (cur && curPage().contains(cur)) activateTile(cur); else focusDefault();
       return;
     }
-    if (a === 'x') { Details.open(recentGame()); return; }
     if (a === 'y') { Search.open(); return; }
     if (a === 'b') {
       bCount++; clearTimeout(bTimer); bTimer = setTimeout(() => { bCount = 0; }, 1500);
@@ -1948,11 +2255,13 @@
       if (e.key === 'Escape') { e.preventDefault(); t.blur(); if (t.closest('.bing__box')) focusEl(t.closest('.bing__box')); else act('b'); }
       if (e.key === 'Enter' && t.closest('.bing__box')) { e.preventDefault(); if (bingSearch(t.value)) t.value = ''; }
       if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && t.closest('.bing__box')) { e.preventDefault(); t.blur(); act(e.key === 'ArrowDown' ? 'down' : 'up'); }
-      if (['PageUp', 'PageDown', 'F1'].includes(e.code) && t.closest('.bing__box')) { e.preventDefault(); t.blur(); act(KEYS[e.code]); }
+      if (['PageUp', 'PageDown', 'F1', 'Tab'].includes(e.code) && t.closest('.bing__box')) { e.preventDefault(); t.blur(); act(e.code === 'Tab' ? (e.shiftKey ? 'lb' : 'rb') : KEYS[e.code]); }
       return;
     }
     // Typing on the bing tab goes straight into the search box.
-    if (!gateWaiting && !booting && !running && curTab() === 'bing' && !overlayOpen() && !Guide.isOpen && e.key.length === 1 && /\S/.test(e.key)) { focusBingInput(); return; }
+    // Q/E still switch tabs and G opens the Guide; every other letter starts a search.
+    if (!gateWaiting && !booting && curTab() === 'bing' && !overlayOpen() && !Guide.isOpen && e.key.length === 1 && /\S/.test(e.key) && !['KeyQ', 'KeyE', 'KeyG'].includes(e.code)) { focusBingInput(); return; }
+    if (e.key === 'Tab') { e.preventDefault(); if (!gateWaiting && !bootSkippable) { inputMode = 'key'; setPadMode(true); act(e.shiftKey ? 'lb' : 'rb'); } return; }
     const a = KEYS[e.code];
     if (gateWaiting || bootSkippable) { e.preventDefault(); act('a'); return; }
     if (!a) return;
@@ -2005,9 +2314,9 @@
   }, { passive: true });
 
   /* ----- Controllers (ControllerInputService) ----- */
-  const NAMES = ['a', 'b', 'x', 'y', 'lb', 'rb', 'lt', 'rt', 'back', 'start', 'ls', 'rs', 'up', 'down', 'left', 'right', 'guide'];
+  const NAMES = ['a', 'b', 'x', 'y', 'lb', 'rb', 'lt', 'rt', 'back', 'start', 'ls', 'rs', 'up', 'down', 'left', 'right', 'guide', 'touch'];
   const RAW = {
-    sony: { 0: 'x', 1: 'a', 2: 'b', 3: 'y', 4: 'lb', 5: 'rb', 6: 'lt', 7: 'rt', 8: 'back', 9: 'start', 10: 'ls', 11: 'rs', 12: 'guide' },
+    sony: { 0: 'x', 1: 'a', 2: 'b', 3: 'y', 4: 'lb', 5: 'rb', 6: 'lt', 7: 'rt', 8: 'back', 9: 'start', 10: 'ls', 11: 'rs', 12: 'guide', 13: 'touch' },
     nintendo: { 0: 'a', 1: 'b', 2: 'x', 3: 'y', 4: 'lb', 5: 'rb', 6: 'lt', 7: 'rt', 8: 'back', 9: 'start', 10: 'ls', 11: 'rs', 12: 'guide' },
     generic: { 0: 'a', 1: 'b', 2: 'x', 3: 'y', 4: 'lb', 5: 'rb', 6: 'lt', 7: 'rt', 8: 'back', 9: 'start', 10: 'ls', 11: 'rs', 12: 'up', 13: 'down', 14: 'left', 15: 'right', 16: 'guide' },
   };
@@ -2049,15 +2358,6 @@
     const all = pads.map(readPad), st = { ...all[0] };
     for (const s of all.slice(1)) { NAMES.forEach((n) => { st[n] = st[n] || s[n]; }); ['lx', 'ly', 'rx', 'ry'].forEach((k) => { if (Math.abs(s[k]) > Math.abs(st[k])) st[k] = s[k]; }); st.lt = Math.max(st.lt, s.lt); st.rt = Math.max(st.rt, s.rt); }
     const brands = all.map((s) => s.brand);
-    // While a game runs it gets the raw pad; only the Guide button reaches the dashboard.
-    if (running && !Guide.isOpen) {
-      const f = $('iframe', gameLayer);
-      if (f && f.contentWindow) f.contentWindow.postMessage({ doompad: { lx: st.lx, ly: st.ly, rx: st.rx, ry: st.ry, lt: st.lt, rt: st.rt, a: st.a, b: st.b, x: st.x, y: st.y, lb: st.lb, rb: st.rb, start: st.start, back: st.back, du: st.up, dd: st.down, dl: st.left, dr: st.right } }, location.origin);
-      if ((st.guide && !prev.guide) || (st.back && st.start && !chordDown)) Guide.open();
-      chordDown = st.back && st.start;
-      NAMES.forEach((n) => { prev[n] = st[n]; });
-      return;
-    }
     if (!S.pad && !gateWaiting && !bootSkippable) { NAMES.forEach((n) => { prev[n] = st[n]; }); return; }
     const press = (a) => {
       if (!gateWaiting && !bootSkippable) {
@@ -2084,7 +2384,7 @@
     }
     const fire = (btn, a) => { if (st[btn] && !prev[btn]) press(a); };
     fire('a', 'a'); fire('b', 'b'); fire('x', 'x'); fire('y', 'y');
-    fire('back', 'b'); fire('lb', 'lb'); fire('rb', 'rb'); fire('guide', 'guide');
+    fire('back', 'b'); fire('lb', 'lb'); fire('rb', 'rb'); fire('guide', 'guide'); fire('touch', 'guide');
     if (st.lt > 0.47 && !prev.ltOn) press('lt');
     if (st.rt > 0.47 && !prev.rtOn) press('rt');
     prev.ltOn = st.lt > 0.47; prev.rtOn = st.rt > 0.47;
@@ -2209,6 +2509,8 @@
   }
 
   /* ================= Go ================= */
+  const about = $('.about');
+  if (about) about.inert = true;
   applyColour();
   refreshScore();
   route();
