@@ -1,3 +1,5 @@
+import { DurableObject } from 'cloudflare:workers';
+
 // Serves /api/leetcode and /api/github; everything else is a static file
 // from public/.
 // LeetCode's API doesn't allow browser requests from other sites, so the
@@ -100,6 +102,11 @@ async function github(ctx) {
   ctx.waitUntil(cache.put(key, out.clone()));
   return out;
 }
+
+// The live-cursor Durable Object is retired. Preview builds can't apply class
+// deletions (only production deploys can), so this empty class stays exported
+// until a deleted_classes migration ships in a deploy of its own.
+export class Room extends DurableObject {}
 
 const json = (body, status = 200) =>
   Response.json(body, { status, headers: { 'cache-control': 'no-store' } });
