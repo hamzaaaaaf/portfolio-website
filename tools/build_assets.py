@@ -1,5 +1,5 @@
-# Builds public/assets/ from DashX360's asset folder, the DOOM shareware WAD
-# and Microsoft's Selawik font release.
+# Builds public/assets/ from DashX360's asset folder, Microsoft's Selawik font
+# release and Hamza's gamerpic (tools/src/gamerpic.jpg).
 #
 #   python3 tools/build_assets.py <path to dashx360/Assets> <path to Selawik release folder>
 #
@@ -11,16 +11,15 @@
 # parameters (x, y, width, height in source pixels).
 import os
 import shutil
-import struct
 import sys
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 OUT = os.path.join(ROOT, 'public', 'assets')
 SRC = os.path.abspath(sys.argv[1])
 FONTS = os.path.abspath(sys.argv[2])
-WAD = os.path.join(ROOT, 'public', 'doom', 'doom1.wad')
+GAMERPIC = os.path.join(ROOT, 'tools', 'src', 'gamerpic.jpg')
 SCALE = 2
 
 
@@ -154,50 +153,7 @@ for f in ['selawkl', 'selawksl', 'selawk', 'selawksb', 'selawkb']:
     shutil.copy(os.path.join(FONTS, f'{f}.woff2'), out(f'fonts/{f}.woff2'))
 
 
-# ---------- DOOM art from the shareware WAD (freely distributable) ----------
-def wad_pictures(*names):
-    w = open(WAD, 'rb').read()
-    _, n, off = struct.unpack('<4sii', w[:12])
-    lumps = {}
-    for i in range(n):
-        p, s, name = struct.unpack('<ii8s', w[off + 16 * i:off + 16 * i + 16])
-        lumps.setdefault(name.rstrip(b'\0').decode(), (p, s))
-    pal = w[lumps['PLAYPAL'][0]:lumps['PLAYPAL'][0] + 768]
-    pics = {}
-    for name in names:
-        p, s = lumps[name]
-        d = w[p:p + s]
-        width, height = struct.unpack('<hh', d[:4])
-        im = Image.new('RGBA', (width, height), (0, 0, 0, 0))
-        px = im.load()
-        for x, c in enumerate(struct.unpack(f'<{width}i', d[8:8 + 4 * width])):
-            i = c
-            while d[i] != 255:
-                top, ln = d[i], d[i + 1]
-                i += 3
-                for k in range(ln):
-                    v = d[i + k]
-                    px[x, top + k] = (pal[3 * v], pal[3 * v + 1], pal[3 * v + 2], 255)
-                i += ln + 1
-        pics[name] = im
-    return pics
-
-
-doom = wad_pictures('TITLEPIC', 'HELP1', 'CREDIT')
-# DOOM draws 320x200 at a 4:3 aspect, so stretch rows by 1.2 before scaling.
-title = doom['TITLEPIC'].convert('RGB').resize((960, 720), Image.NEAREST)
-save(title, 'covers/doom-wide.webp', quality=88)
-for lump, name in [('HELP1', 'doom-help'), ('CREDIT', 'doom-credit')]:
-    save(doom[lump].convert('RGB').resize((960, 720), Image.NEAREST), f'covers/{name}.webp', quality=88)
-# Portrait cover: the title screen letterboxed over a blurred, darkened copy of itself.
-bg = title.resize((1200, 900), Image.LANCZOS).crop((300, 0, 900, 900)).filter(ImageFilter.GaussianBlur(18))
-c = Image.blend(bg, Image.new('RGB', bg.size, (0, 0, 0)), 0.45)
-c.paste(title.resize((600, 450), Image.LANCZOS), (0, 225))
-save(c, 'covers/doom.webp', quality=86)
-
-
 # ---------- Hamza's own artwork ----------
-SYS = '/System/Library/Fonts/Supplemental/'
 SELAWIK_TTF = os.path.join(FONTS, 'selawkb.ttf')
 SELAWIK_L = os.path.join(FONTS, 'selawkl.ttf')
 
@@ -216,11 +172,8 @@ def grad(w, h, stops, diagonal=True):
     return im
 
 
-# Gamerpic: the yellow "h" from the favicon.
-g = grad(256, 256, [(0, (255, 243, 166)), (1, (245, 184, 0))], diagonal=False)
-d = ImageDraw.Draw(g)
-d.text((128, 112), 'h', font=ImageFont.truetype(SYS + 'Georgia Italic.ttf', 190), fill=(43, 33, 0), anchor='mm')
-save(g, 'gamerpics/hamza.webp', quality=92)
+# Gamerpic: Hamza's photo, already cropped square.
+save(Image.open(GAMERPIC).convert('RGB').resize((256, 256), Image.LANCZOS), 'gamerpics/hamza.webp', quality=88)
 
 
 def poster(w, h, stops, glyph, title, sub, glyph_color, rel, glyph_size=None, title_size=None):
@@ -243,4 +196,28 @@ poster(932, 526, PANIC, '!', '', '', (255, 236, 200), 'tiles/panic-pack.webp', g
 poster(600, 900, UNLIKE, '♡', 'Unliker', 'Instagram', (255, 220, 236), 'covers/instagram-unliker.webp', glyph_size=440, title_size=86)
 poster(932, 526, UNLIKE, '♡', '', '', (255, 220, 236), 'tiles/instagram-unliker.webp', glyph_size=380)
 poster(396, 396, UNLIKE, '♡', '', '', (255, 220, 236), 'apps/instagram-unliker.webp', glyph_size=260)
+
+
+def globe(w, h, stops, title, sub, rel, r, cy, title_size=None):
+    """Capital City art: a wireframe globe over a blue gradient."""
+    im = grad(w, h, stops)
+    d = ImageDraw.Draw(im)
+    cx, line, col = w * (0.66 if title else 0.72), max(4, round(r * 0.05)), (220, 240, 255)
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=col, width=line)
+    for k in (0.35, 0.72):
+        d.ellipse((cx - r * k, cy - r, cx + r * k, cy + r), outline=col, width=line)
+    d.line((cx, cy - r, cx, cy + r), fill=col, width=line)
+    for y in (-0.5, 0, 0.5):
+        half = r * (1 - y * y) ** 0.5
+        d.line((cx - half, cy + y * r, cx + half, cy + y * r), fill=col, width=line)
+    if title:
+        ts = title_size or int(h * 0.11)
+        d.text((w * 0.07, h * 0.80), title, font=ImageFont.truetype(SELAWIK_TTF, ts), fill=(255, 255, 255), anchor='ls')
+        d.text((w * 0.07, h * 0.80 + ts * 0.95), sub, font=ImageFont.truetype(SELAWIK_L, int(ts * 0.48)), fill=(214, 236, 255), anchor='ls')
+    save(im, rel, quality=88)
+
+
+CAPITAL = [(0, (64, 170, 220)), (0.5, (20, 90, 150)), (1, (8, 30, 60))]
+globe(600, 900, CAPITAL, 'Capital City', 'Python', 'covers/capital-city.webp', r=170, cy=330, title_size=80)
+globe(932, 526, CAPITAL, '', '', 'tiles/capital-city.webp', r=170, cy=270)
 print('assets written to', OUT)

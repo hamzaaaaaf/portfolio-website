@@ -12,7 +12,7 @@
     (function () {
       var k = location.pathname.replace(/\.html$/, '').replace(/\/$/, '').slice(1).toLowerCase();
       var to = { about: 'profile', work: 'games', projects: 'games', stats: 'profile', finder: 'games', settings: 'settings', achievements: 'achievements' }[k];
-      var home = ['guestbook', 'draw', 'terminal', 'arcade', 'play', 'type', 'wyr', 'review', 'index'].indexOf(k) >= 0;
+      var home = ['guestbook', 'draw', 'terminal', 'arcade', 'play', 'type', 'wyr', 'review', 'index', 'doom'].indexOf(k) >= 0;
       if (to || home) location.replace(to ? '/#' + to : '/');
     })();
   </script>

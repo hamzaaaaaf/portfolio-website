@@ -64,7 +64,8 @@ img { display: block; -webkit-user-drag: none; }
 #gate p { margin: 0; font-size: 20px; font-weight: 300; color: rgba(255, 255, 255, .72); letter-spacing: .02em; animation: pulse 2.4s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: .35; } }
 #boot { z-index: 80; background: #fff; }
-#boot video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #fff; }
+/* Cover, so a 16:10 or ultrawide screen gets no bars around the 16:9 video. */
+#boot video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #fff; }
 
 /* FakeLoadingOverlay */
 #loading { z-index: 70; background: linear-gradient(#384141 0%, #65706e 44%, #9a9f9c 100%); }
@@ -121,7 +122,6 @@ img { display: block; -webkit-user-drag: none; }
 .t.on { z-index: 100; transform: scale(1.07); transition: transform .16s var(--cubic-out); }
 .t.on > .f { box-shadow: 6.4px 6.4px 18px rgba(0, 0, 0, .34); }
 .t:active > .f { opacity: .82; }
-.t.dim { opacity: .42; }
 .f > img.fill { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .f > img.ico { position: absolute; object-fit: contain; }
 .f > .sh { position: absolute; inset: 0; }
@@ -138,7 +138,7 @@ img { display: block; -webkit-user-drag: none; }
 
 /* Settings tab: DashX360 draws a 4 x 2 UniformGrid at 391.55 x 186.85 and scales it by 2.08. */
 .sgrid { position: absolute; width: 391.55px; height: 186.85px; transform: scale(2.08); transform-origin: 0 0; }
-.sgrid .t { width: 97.8875px; height: 93.425px; }
+.sgrid .t { width: 96.8875px; height: 92.425px; }
 
 /* ---------- Sign-in and notification toast ---------- */
 .toast { position: absolute; left: 479.33px; top: 581.33px; width: 319.33px; height: 78.67px; z-index: 1000; opacity: 0; pointer-events: none; filter: drop-shadow(0 2px 7px rgba(0, 0, 0, .48)); }
@@ -311,6 +311,7 @@ img { display: block; -webkit-user-drag: none; }
 .bing__box { position: absolute; left: 377px; top: 134px; width: 585px; height: 92px; border: 2px solid rgba(255, 255, 255, .79); background: rgba(0, 0, 0, .784); }
 .bing__box input { position: absolute; inset: 0; width: 100%; height: 100%; padding: 18px 84px 0 28px; font: inherit; font-size: 40px; font-weight: 300; line-height: 1; color: rgba(255, 255, 255, .95); background: transparent; border: 0; caret-color: #fff; -webkit-user-select: text; user-select: text; }
 .bing__box input::placeholder { color: rgba(255, 255, 255, .35); }
+input[type=search]::-webkit-search-cancel-button { display: none; }
 .bing__box svg { position: absolute; right: 34px; top: 19px; width: 50px; height: 50px; fill: none; stroke: rgba(255, 255, 255, .95); stroke-width: 5; stroke-linecap: round; pointer-events: none; }
 .bing__box.on { border-color: #fff; }
 
@@ -333,9 +334,47 @@ img { display: block; -webkit-user-drag: none; }
 .mus__row.cur::before { content: "\25B6"; font-size: 12px; color: #9be27a; }
 .mus__empty { position: absolute; left: 30px; right: 30px; top: 300px; font-size: 18px; line-height: 1.5; color: rgba(255, 255, 255, .85); }
 
-/* Running game (DOOM) */
-#game { z-index: 60; background: #000; }
-#game iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+/* Message box (GuideWindow's social message) */
+.msg { z-index: 400; }
+.msg__dim { position: absolute; inset: 0; background: rgba(0, 0, 0, .6); }
+.msg__box { position: absolute; left: 404px; top: 244px; width: 472px; }
+.msg__box b { display: flex; align-items: center; height: 40px; padding-left: 16px; background: #15191b; border: 1px solid #5b6368; border-bottom: 0; font-size: 18px; font-weight: 400; color: #fff; }
+.msg__box p { margin: 0; min-height: 116px; display: grid; place-items: center; padding: 18px 24px; text-align: center; background: #e8ecee; border: 1px solid #98a2a8; color: #333638; font-size: 20px; line-height: 1.33; }
+.msg__foot { position: absolute; left: 426px; top: 418px; }
+
+/* Bing results reuse the My Apps grid; picture tiles get a title bar. */
+.bres .lib__filter span { max-width: 640px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Capital City */
+.cc { z-index: 300; background: radial-gradient(120% 90% at 50% 20%, #1d5a7a 0%, #0f3349 45%, #071723 100%); }
+.cc__title { position: absolute; left: 138px; top: 62px; font-size: 32px; font-weight: 300; line-height: 1.33; }
+.cc__score { position: absolute; right: 138px; top: 68px; font-size: 22px; line-height: 1.33; text-align: right; }
+.cc__score span { margin-left: 18px; color: rgba(255, 255, 255, .6); }
+.cc__splash { position: absolute; left: 0; right: 0; top: 190px; text-align: center; }
+.cc__splash b { display: block; font-size: 84px; font-weight: 300; letter-spacing: .06em; line-height: 1.1; }
+.cc__splash > span { display: block; margin-top: 18px; font-size: 22px; font-weight: 300; line-height: 1.5; color: rgba(255, 255, 255, .8); }
+.cc__start { left: 540px; top: 236px; width: 200px; height: 64px; }
+.cc__start .f { display: grid; place-items: center; font-size: 24px; font-weight: 300; }
+.cc__q { position: absolute; left: 0; right: 0; top: 140px; text-align: center; }
+.cc__q small { display: block; font-size: 24px; font-weight: 300; color: rgba(255, 255, 255, .75); }
+.cc__q b { display: block; font-size: 58px; font-weight: 300; line-height: 1.2; }
+.cc__word { position: absolute; left: 0; right: 0; top: 290px; display: flex; justify-content: center; gap: 6px; }
+.cc__l { display: grid; place-items: center; width: 42px; height: 54px; font-size: 30px; font-weight: 400; background: rgba(255, 255, 255, .08); border-bottom: 3px solid rgba(255, 255, 255, .45); }
+.cc__l.on { background: rgba(255, 255, 255, .16); border-bottom-color: #9be27a; }
+.cc__gap { width: 18px; }
+.cc__msg { position: absolute; left: 0; right: 0; top: 362px; text-align: center; font-size: 22px; font-weight: 300; color: rgba(255, 255, 255, .85); }
+.cc__msg.ok { color: #9be27a; }
+.cc__grid { position: absolute; left: 272px; top: 412px; width: 736px; height: 196px; }
+.cc__c { width: 364px; height: 94px; }
+.cc__c:nth-child(1) { left: 0; top: 0; } .cc__c:nth-child(2) { left: 372px; top: 0; }
+.cc__c:nth-child(3) { left: 0; top: 102px; } .cc__c:nth-child(4) { left: 372px; top: 102px; }
+.cc__c.x > .f { background: #3a4248; opacity: .55; }
+.cc__c.x .tx { text-decoration: line-through; }
+.cc__c.ok > .f { background: #6cb344; box-shadow: 0 0 0 3px #fff; }
+.cc__c:disabled { cursor: default; }
+.cc__foot { position: absolute; left: 138px; top: 650px; }
+.cc__ask { z-index: 210; }
+.cc__askdim { z-index: 200; }
 
 /* ---------- Xbox Guide (GuideWindow) ---------- */
 #guide { z-index: 100; background: rgba(0, 0, 0, .9); }
