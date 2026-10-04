@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <title>DOOM</title>
+  <meta name="robots" content="noindex">
+  <style>
+    html, body { margin: 0; height: 100%; background: #000; overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; }
+    #canvas { position: absolute; left: 50%; top: 50%; translate: -50% -50%; height: 100%; aspect-ratio: 4 / 3; max-width: 100%; object-fit: contain; image-rendering: pixelated; background: #000; outline: none; }
+    @media (max-aspect-ratio: 4/3) { #canvas { width: 100%; height: auto; } }
+    .pad { position: fixed; inset: auto 0 0 0; display: none; justify-content: space-between; align-items: flex-end; padding: 0 max(env(safe-area-inset-left), 18px) max(env(safe-area-inset-bottom), 18px); pointer-events: none; }
+    @media (pointer: coarse) { .pad { display: flex; } }
+    .stick { position: relative; width: 140px; height: 140px; border-radius: 50%; background: rgba(255, 255, 255, 0.08); border: 2px solid rgba(255, 255, 255, 0.18); pointer-events: auto; }
+    .stick i { position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px; border-radius: 50%; background: rgba(255, 255, 255, 0.28); }
+    .btns { display: grid; grid-template-columns: repeat(2, 64px); gap: 12px; pointer-events: auto; }
+    .btns button { width: 64px; height: 64px; border-radius: 50%; border: 0; font: 700 20px "Segoe UI", sans-serif; color: #fff; opacity: 0.85; }
+    .b-a { background: #60a917; } .b-b { background: #e3242b; } .b-x { background: #1f6fe0; } .b-y { background: #f4c20d; color: #3a2c00 !important; }
+    .msg { position: fixed; inset: 0; display: grid; place-items: center; color: #5dc21e; font: 300 18px "Segoe UI", sans-serif; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" tabindex="-1" oncontextmenu="event.preventDefault()"></canvas>
+  <div class="msg" id="msg">Loading…</div>
+  <div class="pad" aria-hidden="true">
+    <div class="stick" id="stick"><i></i></div>
+    <div class="btns">
+      <button class="b-x" data-k="use">X</button><button class="b-y" data-k="map">Y</button>
+      <button class="b-a" data-k="fire">A</button><button class="b-b" data-k="menu">B</button>
+    </div>
+  </div>
+  <script>
+    // Shareware DOOM (v1.9) on Cloudflare's WebAssembly build of Chocolate Doom
+    // (GPL-2.0, source: github.com/cloudflare/doom-wasm). Controller input comes
+    // from the dashboard as messages and is fed in as key presses.
+    var DOOMHOST = (() => {
+    const tell = (msg) => { try { parent.postMessage({ x360: true, ...msg }, location.origin); } catch (e) { /* standalone */ } };
+
+    // DOS scancodes for the config. W S A D move, arrows turn, Ctrl fires, E uses.
+    const CFG = `mouse_sensitivity 5
+sfx_volume 8
+music_volume 8
+show_messages 1
+key_right 77
+key_left 75
+key_up 17
+key_down 31
+key_strafeleft 30
+key_straferight 32
+key_fire 29
+key_use 18
+key_strafe 56
+key_speed 42
+use_mouse 1
+mouseb_fire 0
+mouseb_strafe 1
+mouseb_forward 2
+use_joystick 0
+screenblocks 10
+detaillevel 0
+snd_channels 8
+snd_musicdevice 3
+snd_sfxdevice 3
+usegamma 1
+`;
+    const EXTRA = `key_prevweapon 26
+key_nextweapon 27
+key_menu_activate 1
+key_map_toggle 15
+novert 1
+grabmouse 0
+startup_delay 0
+show_endoom 0
+autorun 1
+`;
+
+    const KEYS = {
+      up: ['ArrowUp', 38], down: ['ArrowDown', 40], left: ['ArrowLeft', 37], right: ['ArrowRight', 39],
+      w: ['KeyW', 87, 'w'], s: ['KeyS', 83, 's'], a: ['KeyA', 65, 'a'], d: ['KeyD', 68, 'd'], e: ['KeyE', 69, 'e'],
+      ctrl: ['ControlLeft', 17, 'Control'], shift: ['ShiftLeft', 16, 'Shift'], enter: ['Enter', 13, 'Enter'],
+      esc: ['Escape', 27, 'Escape'], tab: ['Tab', 9, 'Tab'], prev: ['BracketLeft', 219, '['], next: ['BracketRight', 221, ']'], y: ['KeyY', 89, 'y'], n: ['KeyN', 78, 'n'],
+    };
+    const down = new Set();
+    function pressKey(name, on) {
+      if (on === down.has(name)) return;
+      if (on) down.add(name); else down.delete(name);
+      const [code, keyCode, k] = KEYS[name];
+      const ev = new KeyboardEvent(on ? 'keydown' : 'keyup', { code, key: k || code, bubbles: true, cancelable: true });
+      for (const p of ['keyCode', 'which']) Object.defineProperty(ev, p, { get: () => keyCode });
+      Object.defineProperty(ev, 'charCode', { get: () => 0 });
+      document.dispatchEvent(ev);
+    }
+    // XBLA-style layout: left stick moves and strafes, right stick turns,
+    // RT fires, A uses (and confirms in menus), LB/RB change weapon,
+    // Back shows the map, Start opens the menu, B backs out of menus.
+    addEventListener('message', (e) => {
+      if (e.origin !== location.origin || !e.data || !e.data.doompad) return;
+      const p = e.data.doompad;
+      pressKey('w', p.ly < -0.4); pressKey('s', p.ly > 0.4);
+      pressKey('a', p.lx < -0.5); pressKey('d', p.lx > 0.5);
+      pressKey('left', p.rx < -0.35 || p.dl); pressKey('right', p.rx > 0.35 || p.dr);
+      pressKey('up', !!p.du); pressKey('down', !!p.dd);
+      pressKey('ctrl', p.rt > 0.3 || !!p.x);
+      pressKey('e', !!p.a); pressKey('enter', !!p.a);
+      pressKey('esc', !!p.start || !!p.b);
+      pressKey('tab', !!p.back);
+      pressKey('prev', !!p.lb); pressKey('next', !!p.rb);
+      pressKey('y', !!p.y);
+    });
+
+    // Touch: a stick on the left, buttons on the right.
+    const stick = document.getElementById('stick'), nub = stick.querySelector('i');
+    let sid = null;
+    const moveStick = (x, y) => {
+      const r = stick.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      let dx = (x - cx) / (r.width / 2), dy = (y - cy) / (r.height / 2);
+      const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; }
+      nub.style.transform = `translate(${dx * 42}px, ${dy * 42}px)`;
+      pressKey('w', dy < -0.35); pressKey('s', dy > 0.35); pressKey('left', dx < -0.45); pressKey('right', dx > 0.45);
+    };
+    stick.addEventListener('pointerdown', (e) => { sid = e.pointerId; stick.setPointerCapture(sid); moveStick(e.clientX, e.clientY); });
+    stick.addEventListener('pointermove', (e) => { if (e.pointerId === sid) moveStick(e.clientX, e.clientY); });
+    const endStick = () => { sid = null; nub.style.transform = ''; ['w', 's', 'left', 'right'].forEach((k) => pressKey(k, false)); };
+    stick.addEventListener('pointerup', endStick); stick.addEventListener('pointercancel', endStick);
+    const TOUCH = { fire: ['ctrl'], use: ['e', 'enter'], map: ['tab'], menu: ['esc'] };
+    document.querySelectorAll('[data-k]').forEach((b) => {
+      const ks = TOUCH[b.dataset.k];
+      b.addEventListener('pointerdown', (e) => { e.preventDefault(); ks.forEach((k) => pressKey(k, true)); });
+      const up = () => ks.forEach((k) => pressKey(k, false));
+      b.addEventListener('pointerup', up); b.addEventListener('pointercancel', up); b.addEventListener('pointerleave', up);
+    });
+
+    // The Home key opens the Guide, since Escape belongs to the game.
+    addEventListener('keydown', (e) => { if (e.isTrusted && (e.key === 'Home' || e.key === 'F1')) { e.preventDefault(); tell({ t: 'guide' }); } }, true);
+
+    return { tell, CFG, EXTRA };
+    })();
+    var Module = {
+      noInitialRun: true,
+      canvas: document.getElementById('canvas'),
+      preRun: [() => {
+        Module.FS.createPreloadedFile('', 'doom1.wad', 'doom1.wad', true, true);
+        Module.FS.writeFile('default.cfg', DOOMHOST.CFG);
+        Module.FS.writeFile('chocolate-doom.cfg', DOOMHOST.EXTRA);
+      }],
+      onRuntimeInitialized: () => {
+        document.getElementById('msg').remove();
+        callMain(['-iwad', 'doom1.wad', '-window', '-nogui', '-nomusic', '-config', 'default.cfg', '-extraconfig', 'chocolate-doom.cfg']);
+        DOOMHOST.tell({ t: 'ready' });
+        document.getElementById('canvas').focus();
+      },
+      onExit: () => DOOMHOST.tell({ t: 'close' }),
+      print: () => {}, printErr: () => {}, setStatus: () => {},
+    };
+    addEventListener('pointerdown', () => document.getElementById('canvas').focus());
+  </script>
+  <script src="websockets-doom.js"></script>
+</body>
+</html>

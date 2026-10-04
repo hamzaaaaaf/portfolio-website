@@ -224,7 +224,7 @@
       if (e.key !== 'Escape' || e.defaultPrevented) return;
       if (e.target.closest && e.target.closest('input, textarea, [contenteditable]')) return;
       if (document.querySelector('dialog[open], :popover-open')) return;
-      tellShell({ t: 'close' });
+      tellShell({ t: 'guide' });
     });
   }
   function toast(msg) {

@@ -63,36 +63,47 @@
 
   /* ---------- Achievements ---------- */
   const ACHIEVEMENTS = [
-    { id: 'hello', i: '👋', g: 5, t: 'Hello, world', d: 'Sign in to byhamza.dev for the first time.' },
-    { id: 'explorer', i: '🧭', g: 50, t: 'Explorer', d: 'Open every app on the dashboard.' },
-    { id: 'gamer', i: '🕹️', g: 10, t: 'Gamer', d: 'Open the games tab.' },
+    { id: 'hello', i: '👋', g: 5, t: 'Hello, world', d: 'Turn on the console for the first time.' },
+    { id: 'explorer', i: '🧭', g: 75, t: 'Explorer', d: 'Open every app on the dashboard.' },
+    { id: 'gamer', i: '🕹️', g: 10, t: 'Gamer', d: 'Open the games hub.' },
     { id: 'spotlight', i: '🧿', g: 10, t: 'Guide', d: 'Open the Guide.' },
+    { id: 'search', i: '🔎', g: 10, t: 'Decision engine', d: 'Search with bing.' },
     { id: 'darkside', i: '🌙', g: 10, t: 'Dark side', d: 'Switch to the dark theme.' },
-    { id: 'decorator', i: '🎨', g: 10, t: 'Interior designer', d: 'Change the theme.' },
-    { id: 'tidy', i: '🎮', g: 30, t: 'Plug and play', d: 'Navigate with a controller.' },
+    { id: 'decorator', i: '🎨', g: 10, t: 'Interior designer', d: 'Change the colour.' },
+    { id: 'tidy', i: '🎮', g: 40, t: 'Plug and play', d: 'Navigate with a controller.' },
+    { id: 'crossplay', i: '🔀', g: 40, t: 'Cross-platform', d: 'Use a PlayStation or Nintendo controller.' },
+    { id: 'doom', i: '💀', g: 30, t: 'Rip and tear', d: 'Launch DOOM.' },
+    { id: 'doom10', i: '🔥', g: 40, t: 'Knee-deep', d: 'Play DOOM for five minutes.' },
+    { id: 'ragequit', i: '🚪', g: 15, t: 'Any unsaved progress will be lost', d: 'Quit a game from the Guide.' },
+    { id: 'browser', i: '🌐', g: 15, t: 'World Wide Web', d: 'Open Internet Explorer.' },
+    { id: 'profile', i: '🪪', g: 10, t: 'Gamercard', d: 'View Hamza’s profile.' },
+    { id: 'reader', i: '📖', g: 30, t: 'Case study', d: 'Read about every project.' },
+    { id: 'stats', i: '📊', g: 15, t: 'By the numbers', d: 'Open Stats.' },
+    { id: 'library', i: '📚', g: 15, t: 'Collector', d: 'Browse Hamza’s games.' },
+    { id: 'pinned', i: '📌', g: 10, t: 'Pinned', d: 'Open My Pins.' },
+    { id: 'recent', i: '🕘', g: 10, t: 'Look back', d: 'Open Recent.' },
     { id: 'spark', i: '✦', g: 10, t: 'Spark', d: 'Leave a spark.' },
-    { id: 'stack10', i: '🧱', g: 20, t: 'Builder', d: 'Stack 10 blocks.' },
-    { id: 'stack20', i: '🏗️', g: 50, t: 'Skyscraper', d: 'Stack 20 blocks.' },
-    { id: 'perfect5', i: '🎯', g: 40, t: 'Precision', d: 'Land 5 perfect drops in a row.' },
-    { id: 'wpm60', i: '⌨️', g: 30, t: 'Quick fingers', d: 'Type 60 wpm or faster.' },
-    { id: 'wpm100', i: '⚡', g: 70, t: 'Blazing', d: 'Type 100 wpm or faster.' },
     { id: 'artist', i: '🖌️', g: 20, t: 'Artist', d: 'Save a kaleidoscope drawing.' },
-    { id: 'signer', i: '✍️', g: 30, t: 'Signed', d: 'Sign the guestbook.' },
+    { id: 'signer', i: '✍️', g: 40, t: 'Signed', d: 'Sign the guestbook.' },
     { id: 'hacker', i: '💻', g: 20, t: 'Hacker', d: 'Run hamzafetch in the terminal.' },
-    { id: 'company', i: '👥', g: 30, t: 'Party up', d: 'See another visitor online.' },
-    { id: 'nightowl', i: '🦉', g: 20, t: 'Night owl', d: 'Visit between midnight and 5am.' },
-    { id: 'voter', i: '🗳️', g: 10, t: 'Voter', d: 'Vote in Would You Rather.' },
-    { id: 'critic', i: '🏆', g: 30, t: 'Critic', d: 'Cast 25 Would You Rather votes.' },
-    { id: 'snake20', i: '🐍', g: 40, t: 'Long boi', d: 'Score 20 in Snake.' },
-    { id: 'breakout', i: '🧱', g: 40, t: 'Wrecking ball', d: 'Clear a level in Breakout.' },
+    { id: 'messenger', i: '✉️', g: 20, t: 'Messenger', d: 'Send Hamza a message.' },
+    { id: 'networker', i: '🤝', g: 10, t: 'Networker', d: 'Open Hamza’s LinkedIn.' },
+    { id: 'source', i: '🧬', g: 10, t: 'Open source', d: 'Look at the source code on GitHub.' },
+    { id: 'company', i: '👥', g: 40, t: 'Party up', d: 'Be online at the same time as someone else.' },
+    { id: 'nightowl', i: '🦉', g: 30, t: 'Night owl', d: 'Turn on the console between midnight and 5am.' },
+    { id: 'longhaul', i: '⏳', g: 30, t: 'Dedicated', d: 'Keep the console on for ten minutes.' },
+    { id: 'regular', i: '📅', g: 40, t: 'Regular', d: 'Turn on the console on three different days.' },
+    { id: 'lightsout', i: '⏻', g: 15, t: 'Lights out', d: 'Turn off the console.' },
+    { id: 'inception', i: '🌀', g: 75, t: 'We need to go deeper', d: 'Open Internet Explorer three levels deep.', secret: true },
     { id: 'cheater', i: '🕹️', g: 20, t: 'Cheater', d: 'Enter a cheat code.', secret: true },
-    { id: 'codebreaker', i: '🔓', g: 275, t: 'Code breaker', d: 'Find every cheat code.', secret: true },
+    { id: 'codebreaker', i: '🔓', g: 100, t: 'Code breaker', d: 'Find every cheat code.', secret: true },
     { id: 'persistent', i: '🅱️', g: 15, t: 'Persistent', d: 'Press B on the dashboard three times.', secret: true },
     { id: 'sudo', i: '🚫', g: 15, t: 'Nice try', d: 'Try sudo in the terminal.', secret: true },
-    { id: 'konami', i: '🎮', g: 50, t: 'Old school', d: 'Enter the Konami code.', secret: true },
+    { id: 'konami', i: '⬆️', g: 50, t: 'Old school', d: 'Enter the Konami code.', secret: true },
     { id: 'creeper', i: '💥', g: 25, t: 'Aw man', d: 'Type the word creeper anywhere.', secret: true },
-    { id: 'clicker', i: '🌀', g: 15, t: 'Spin cycle', d: 'Click your gamerpic five times.', secret: true },
-  ];  const achieved = () => store.get('achievements', {});
+    { id: 'clicker', i: '🔄', g: 15, t: 'Spin cycle', d: 'Click your gamerpic five times.', secret: true },
+  ];
+ const achieved = () => store.get('achievements', {});
   const notifs = document.createElement('div');
   notifs.className = 'notifs';
   notifs.setAttribute('aria-live', 'polite');
@@ -127,15 +138,10 @@
   // Any switch to dark mode counts, whichever control did it.
   addEventListener('themechange', () => { if (root.dataset.theme === 'dark') achieve('darkside'); });
 
-  // Page visits, first visit, night owl.
-  const PAGES = ['home', 'work', 'stats', 'about', 'play', 'draw', 'type', 'arcade', 'wyr', 'terminal', 'guestbook'];
-  const visited = store.get('visited', []);
-  if (!visited.includes(page)) { visited.push(page); store.set('visited', visited); }
-  setTimeout(() => {
-    if (!EMBED) achieve('hello');
-    if (PAGES.every((p) => visited.includes(p))) achieve('explorer');
-    const h = new Date().getHours();
-    if (h < 5) achieve('nightowl');
+  // First visit and night owl. Explorer is worked out by the dashboard.
+  if (!EMBED) setTimeout(() => {
+    achieve('hello');
+    if (new Date().getHours() < 5) achieve('nightowl');
   }, 1400);
 
   /* ---------- Easter eggs ---------- */
@@ -237,7 +243,7 @@
     blairwitch: () => { fx('fx--witch', '<svg viewBox="0 0 60 80"><g stroke="#111" stroke-width="3" stroke-linecap="round" fill="none"><path d="M30 5v70M12 20l36 10M10 45l40-6M18 70l24-24M42 70L18 46"/></g></svg>', 2600); },
     matrix,
     gravity: () => {
-      [...document.querySelectorAll('h1, .h2, .menubar__item, .dock__item')].slice(0, 30).forEach((el, i) => {
+      [...document.querySelectorAll('.pane.is-active .tile, .pivot, h1, .h2, .menubar__item, .dock__item')].slice(0, 30).forEach((el, i) => {
         el.animate([{ transform: 'none' }, { transform: `translateY(${innerHeight}px) rotate(${(i % 2 ? 1 : -1) * (10 + i * 3)}deg)`, offset: 0.45 }, { transform: `translateY(${innerHeight}px) rotate(${(i % 2 ? 1 : -1) * (10 + i * 3)}deg)`, offset: 0.7 }, { transform: 'none' }],
           { duration: 3400, easing: 'cubic-bezier(0.5,0,0.75,0)', delay: i * 40 });
       });
