@@ -15,6 +15,9 @@
   // v1 added the Room Durable Object (live cursors, now retired). Its empty
   // class stays in src/worker.js until a deleted_classes migration removes it.
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }],
+  // Branch builds run `npx wrangler preview`, which needs this block. Previews
+  // use the top-level settings, so it stays empty.
+  "previews": {},
   // Wrangler replaces the Worker's routes on every deploy, so both domains
   // must be listed here or they get dropped.
   "routes": [
