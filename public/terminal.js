@@ -47,8 +47,9 @@
 
   const OPEN = {
     github: 'https://github.com/hamzaaaaaf', linkedin: 'https://www.linkedin.com/in/hamza-faisal-125833263/',
-    leetcode: 'https://leetcode.com/u/hamza57/', arcade: '/arcade', wyr: '/wyr', type: '/type', typing: '/type', stack: '/play', play: '/play', draw: '/draw', kaleidoscope: '/draw',
-    settings: '/settings', home: '/', finder: '/finder', guestbook: '/guestbook', work: '/work', stats: '/stats', about: '/about', email: 'mailto:hello@byhamza.dev', source: 'https://github.com/hamzaaaaaf/portfolio-website',
+    leetcode: 'https://leetcode.com/u/hamza57/', doom: '/doom', ie: '/ie', browser: '/ie', draw: '/draw', kaleidoscope: '/draw',
+    achievements: '/achievements', games: '/library', home: '/', guestbook: '/guestbook', projects: '/projects', stats: '/stats', profile: '/profile', about: '/profile',
+    email: 'mailto:hello@byhamza.dev', source: 'https://github.com/hamzaaaaaf/portfolio-website',
   };
 
   const bar = (n, max, width = 24) => {
@@ -90,7 +91,9 @@
       const target = OPEN[(args[0] || '').toLowerCase()];
       if (!target) return print(`<span class="r">open: try one of: ${Object.keys(OPEN).join(', ')}</span>`);
       print(`<span class="m">opening ${esc(args[0])}…</span>`);
-      if (target.startsWith('http')) window.open(target, '_blank', 'noopener'); else setTimeout(() => { location.href = target; }, 300);
+      if (/^(https?:|mailto:)/.test(target)) window.open(target, '_blank', 'noopener');
+      else if (window.top !== window.self) parent.postMessage({ x360: true, t: 'go', href: target }, location.origin);
+      else setTimeout(() => { location.href = target === '/' ? '/' : `/#${target.slice(1)}`; }, 300);
     } },
     leetcode: { d: 'live LeetCode stats', run: async () => {
       const line = print('<span class="m">fetching leetcode.com/u/hamza57…</span>');
@@ -103,15 +106,6 @@
         print(`  <span class="r">hard  </span> ${bar(s.Hard, max)} ${s.Hard}`);
         if (d.recent && d.recent[0]) print(`<span class="m">latest: ${esc(d.recent[0].title)}</span>`);
       } catch (e) { line.innerHTML = '<span class="r">leetcode: could not reach the API</span>'; }
-    } },
-    scores: { d: 'Stack global leaderboard', run: async () => {
-      const line = print('<span class="m">loading leaderboard…</span>');
-      try {
-        const { scores } = await fetch('/api/scores').then((r) => r.json());
-        if (!scores.length) { line.innerHTML = 'No scores yet. <a href="/play">Be first.</a>'; return; }
-        line.innerHTML = '<span class="y">#   name  score</span>';
-        scores.forEach((r, i) => print(`${String(i + 1).padEnd(4)}${esc(r.name)}   ${r.score}`));
-      } catch (e) { line.innerHTML = '<span class="r">scores: offline</span>'; }
     } },
     time: { d: 'my time and yours', run: () => {
       const t = TZ();

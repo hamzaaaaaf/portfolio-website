@@ -4,26 +4,29 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Hamza · Computer Science</title>
-  <meta name="description" content="Hamza studies Computer Science at Aston University. Projects, live stats, an arcade, a terminal and achievements, on a dashboard you can drive with a controller.">
+  <meta name="description" content="Hamza studies Computer Science at Aston University. Projects, live stats, DOOM, a browser and achievements, on a dashboard you can drive with a controller.">
   <meta name="theme-color" content="#5a5c60">
   <link rel="canonical" href="https://byhamza.dev/">
   <meta property="og:title" content="Hamza · Computer Science">
-  <meta property="og:description" content="Projects, live stats, an arcade, a terminal and achievements.">
+  <meta property="og:description" content="Projects, live stats, DOOM, a browser and achievements, on a dashboard you can drive with a controller.">
   <meta property="og:url" content="https://byhamza.dev/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://byhamza.dev/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <script>(function(){var d=document.documentElement,p={};try{p=JSON.parse(localStorage.getItem('prefs')||'{}')}catch(e){}var t;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=t;d.dataset.skin=p.skin==='yellow'?'yellow':'green';if(p.motion==='reduce')d.dataset.motion='reduce';if(window.top!==window.self)d.classList.add('nested');d.classList.add('js')})();</script>
+  <script>(function(){var d=document.documentElement,p={};try{p=JSON.parse(localStorage.getItem('prefs')||'{}')}catch(e){}var t;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark')t='light';d.dataset.theme=t;d.dataset.skin=p.skin==='yellow'?'yellow':'green';d.dataset.bootlogo=p.bootlogo==='hamza'?'hamza':'xbox';if(p.motion==='reduce')d.dataset.motion='reduce';if(window.top!==window.self)d.classList.add('nested');d.classList.add('js')})();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Michroma&display=swap">
   <link rel="stylesheet" href="/x360.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","mainEntity":{"@type":"Person","name":"Hamza","url":"https://byhamza.dev","jobTitle":"Computer Science student","affiliation":{"@type":"CollegeOrUniversity","name":"Aston University"},"address":{"@type":"PostalAddress","addressLocality":"Birmingham","addressCountry":"GB"},"sameAs":["https://github.com/hamzaaaaaf","https://www.linkedin.com/in/hamza-faisal-125833263/","https://leetcode.com/u/hamza57/"]}}</script>
 </head>
 <body data-shell="x360" data-page="home">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
+      <radialGradient id="orb-metal" cx="38%" cy="30%" r="75%"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#d9dbd8"/><stop offset=".75" stop-color="#8d918c"/><stop offset="1" stop-color="#4c504b"/></radialGradient>
+      <linearGradient id="orb-green" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9ff8a"/><stop offset=".45" stop-color="#5dc21e"/><stop offset="1" stop-color="#1c7a0c"/></linearGradient>
+      <symbol id="orb" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="url(#orb-metal)"/><path d="M22 18c11 3 20 12 28 24 8-12 17-21 28-24 6 6 10 13 12 21-10 1-21 7-31 18 10 11 21 17 31 18-2 8-6 15-12 21-11-3-20-12-28-24-8 12-17 21-28 24-6-6-10-13-12-21 10-1 21-7 31-18-10-11-21-17-31-18 2-8 6-15 12-21Z" fill="url(#orb-green)"/><ellipse cx="38" cy="26" rx="20" ry="10" fill="#fff" opacity=".35"/></symbol>
       <symbol id="i-user" viewBox="0 0 48 48"><circle cx="24" cy="17" r="8" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M9 41c1.5-8 7.5-12 15-12s13.5 4 15 12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
       <symbol id="i-folder" viewBox="0 0 48 48"><path d="M6 13h13l4 4h19v21H6Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></symbol>
       <symbol id="i-pad" viewBox="0 0 48 48"><path d="M14 15h20c6 0 9 8 10 17 .6 5-4 7-7 3l-4-5H15l-4 5c-3 4-7.6 2-7-3 1-9 4-17 10-17Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M15 20v7M11.5 23.5h7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="21" r="1.8" fill="currentColor"/><circle cx="36" cy="25" r="1.8" fill="currentColor"/></symbol>
@@ -56,17 +59,29 @@
       <symbol id="i-pin" viewBox="0 0 48 48"><path d="M28 6 42 20l-5 2-7 7 1 8-3 3-8-8-9 10-2-2 10-9-8-8 3-3 8 1 7-7Z" fill="currentColor"/></symbol>
       <symbol id="i-clock" viewBox="0 0 48 48"><circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="3"/><path d="M24 14v11h8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></symbol>
       <symbol id="i-search" viewBox="0 0 48 48"><circle cx="20" cy="20" r="11" fill="none" stroke="currentColor" stroke-width="3.4"/><path d="m28 28 11 11" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></symbol>
+      <symbol id="i-skull" viewBox="0 0 48 48"><path d="M24 6C14 6 8 13 8 21c0 5 2 8 5 10v6h4v-3h3v3h8v-3h3v3h4v-6c3-2 5-5 5-10 0-8-6-15-16-15Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><circle cx="17.5" cy="22" r="4" fill="currentColor"/><circle cx="30.5" cy="22" r="4" fill="currentColor"/><path d="M24 27l-2.4 4h4.8Z" fill="currentColor"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 48 48"><rect x="11" y="21" width="26" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2.8"/><path d="M16 21v-5a8 8 0 0 1 16 0v5" fill="none" stroke="currentColor" stroke-width="2.8"/></symbol>
+      <symbol id="i-guide" viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="none" stroke="currentColor" stroke-width="2.8"/><path d="M16 15c4 1 6 4 8 7 2-3 4-6 8-7M16 33c3-1 6-5 8-9 2 4 5 8 8 9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></symbol>
+      <symbol id="i-star" viewBox="0 0 48 48"><path d="m24 6 5.3 11.6 12.7 1.4-9.5 8.6 2.7 12.4L24 33.6 12.8 40l2.7-12.4L6 19l12.7-1.4Z" fill="currentColor"/></symbol>
     </defs>
   </svg>
 
   <div class="power" hidden>
-    <button class="power__btn" type="button" aria-label="Turn on"><svg><use href="#i-power"/></svg></button>
-    <p class="power__hint">Press any key to turn on</p>
+    <button class="power__btn" type="button" aria-label="Turn on">
+      <span class="power__ring"><i></i><i></i><i></i><i></i></span>
+      <span class="power__disc"><svg><use href="#i-power"/></svg></span>
+    </button>
+    <p class="power__hint">Touch the power button, or press any key</p>
   </div>
+
   <div class="boot" aria-hidden="true" hidden>
-    <div class="boot__glow"></div>
-    <div class="boot__rings"><i></i><i></i><i></i><i></i></div>
-    <div class="boot__mark"><b>HAMZA</b><span>360</span></div>
+    <div class="boot__sky"></div>
+    <div class="boot__sphere"></div>
+    <div class="boot__burst"><i></i><i></i></div>
+    <div class="boot__orb"><svg viewBox="0 0 100 100"><use href="#orb"/></svg></div>
+    <div class="boot__ring"></div>
+    <div class="boot__mark"><b>XBOX</b><span>360</span></div>
+    <div class="boot__mark boot__mark--hamza"><b>HAMZA</b><span>360</span></div>
   </div>
 
   <header class="xbar">
@@ -85,7 +100,6 @@
         <span class="me__text"><b>Hamza</b><span class="gs"><i>G</i><span data-gs>0</span></span></span>
         <span class="pic" data-logo aria-hidden="true"><i>h</i></span>
       </button>
-      <time class="me__time" data-clock></time>
     </div>
   </header>
 
@@ -99,116 +113,126 @@
     </section>
     <section class="pane" data-pane="home" aria-label="home">
       <div class="tiles">
-        <button class="tile tile--img art-stack" type="button" data-open="play" style="--a:1/1/2/2"><span class="art"><i></i><i></i><i></i><i></i></span><span class="tile__label">Play Stack</span></button>
-        <button class="tile tile--sys" type="button" data-open="work" style="--a:2/1/3/2"><svg class="tile__ico"><use href="#i-pin"/></svg><span class="tile__label">My Projects</span></button>
-        <button class="tile tile--sys" type="button" data-open="achievements" style="--a:3/1/4/2"><svg class="tile__ico"><use href="#i-clock"/></svg><span class="tile__label">Recent Achievements</span></button>
-        <button class="tile tile--img art-hero" type="button" data-open="about" style="--a:1/2/3/4"><span class="art"><span class="pic pic--hero"><i>h</i></span><span class="hero__text"><b>Hamza</b><span>Turning curious ideas into real software.</span></span></span><span class="tile__label">Hamza · Computer Science at Aston University</span></button>
-        <button class="tile tile--img art-panic" type="button" data-open="work/panic-pack" style="--a:3/2/4/3"><span class="art"><b>!</b></span><span class="tile__label">Panic Pack!</span></button>
-        <button class="tile tile--img art-arcade" type="button" data-open="arcade" style="--a:3/3/4/4"><span class="art"><i></i><i></i><i></i><i></i><i></i><b></b></span><span class="tile__label">Arcade</span></button>
+        <button class="tile tile--img art-doom" type="button" data-open="doom" style="--a:1/1/2/2"><span class="art"><span class="doom-word">DOOM</span><span class="doom-sub"></span></span><span class="tile__label">Play DOOM</span></button>
+        <button class="tile tile--sys" type="button" data-open="pins" style="--a:2/1/3/2"><svg class="tile__ico"><use href="#i-pin"/></svg><span class="tile__label">My Pins</span></button>
+        <button class="tile tile--sys" type="button" data-open="recent" style="--a:3/1/4/2"><svg class="tile__ico"><use href="#i-clock"/></svg><span class="tile__label">Recent</span></button>
+        <button class="tile tile--img art-hero" type="button" data-open="profile" style="--a:1/2/3/4"><span class="art"><span class="pic pic--hero"><i>h</i></span><span class="hero__text"><b>Hamza</b><span>Turning curious ideas into real software.</span></span></span><span class="tile__label">Hamza · Computer Science at Aston University</span></button>
+        <button class="tile tile--img art-panic" type="button" data-open="projects/panic-pack" style="--a:3/2/4/3"><span class="art"><b>!</b></span><span class="tile__label">Panic Pack!</span></button>
+        <button class="tile tile--img art-ie" type="button" data-open="ie" style="--a:3/3/4/4"><span class="art"><svg><use href="#i-ie"/></svg></span><span class="tile__label">Internet Explorer</span></button>
         <button class="tile tile--img art-lc" type="button" data-open="stats" style="--a:1/4/2/5"><span class="art"><b data-live="lc">·</b><small>solved</small></span><span class="tile__label">LeetCode</span></button>
-        <button class="tile tile--img art-wyr" type="button" data-open="wyr" style="--a:2/4/3/5"><span class="art"><b data-live="wyr-a">·</b><em>vs</em><b data-live="wyr-b">·</b></span><span class="tile__label">Would You Rather</span></button>
-        <button class="tile tile--img art-guest" type="button" data-open="guestbook" style="--a:3/4/4/5"><span class="art" data-live="guest"></span><span class="tile__label">Guestbook</span></button>
+        <button class="tile tile--img art-guest" type="button" data-open="guestbook" style="--a:2/4/3/5"><span class="art" data-live="guest"></span><span class="tile__label">Guestbook</span></button>
+        <button class="tile tile--img art-ach" type="button" data-open="achievements" style="--a:3/4/4/5"><span class="art"><b data-gs>0</b><small>gamerscore</small></span><span class="tile__label">Achievements</span></button>
       </div>
     </section>
     <section class="pane" data-pane="social" aria-label="social">
       <div class="tiles">
-        <button class="tile tile--card" type="button" data-open="achievements" style="--a:1/1/4/3"><span class="card"><span class="pic pic--avatar"><i>h</i></span><span class="card__body"><b class="card__tag">Hamza</b><span class="gs gs--lg"><i>G</i><span data-gs>0</span></span><span class="card__meta">Computer Science · Aston University<br>Birmingham, UK</span><span class="card__recent" data-recent></span></span></span><span class="tile__label">Hamza</span></button>
+        <button class="tile tile--card" type="button" data-open="profile" style="--a:1/1/4/3"><span class="card"><span class="pic pic--avatar"><i>h</i></span><span class="card__body"><b class="card__tag">Hamza</b><span class="gs gs--lg"><i>G</i><span data-gs>0</span></span><span class="card__meta">Computer Science · Aston University<br>Birmingham, UK</span><span class="card__recent" data-recent></span></span></span><span class="tile__label">Hamza</span></button>
         <button class="tile tile--sys tile--online" type="button" data-focus-only style="--a:1/3/2/4"><svg class="tile__ico"><use href="#i-people"/></svg><b class="tile__n" data-online-n>1</b><span class="tile__label">Online Now</span></button>
         <button class="tile tile--img art-guest" type="button" data-open="guestbook" style="--a:2/3/3/4"><span class="art" data-live="guest2"></span><span class="tile__label">Guestbook</span></button>
         <button class="tile tile--sys" type="button" data-spark style="--a:3/3/4/4"><svg class="tile__ico"><use href="#i-spark"/></svg><b class="tile__n" data-sparks>·</b><span class="tile__label">Leave a Spark</span></button>
-        <a class="tile tile--img art-linkedin" href="https://www.linkedin.com/in/hamza-faisal-125833263/" target="_blank" rel="noopener" style="--a:1/4/2/5"><svg class="tile__ico"><use href="#i-in"/></svg><span class="tile__label">LinkedIn</span></a>
-        <a class="tile tile--img art-github" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener" style="--a:2/4/3/5"><svg class="tile__ico"><use href="#i-git"/></svg><span class="tile__label">GitHub</span></a>
-        <a class="tile tile--sys" href="mailto:hello@byhamza.dev" style="--a:3/4/4/5"><svg class="tile__ico"><use href="#i-mail"/></svg><span class="tile__label">Message Hamza</span></a>
+        <a class="tile tile--img art-linkedin" href="https://www.linkedin.com/in/hamza-faisal-125833263/" target="_blank" rel="noopener" data-ach="networker" style="--a:1/4/2/5"><svg class="tile__ico"><use href="#i-in"/></svg><span class="tile__label">LinkedIn</span></a>
+        <a class="tile tile--img art-github" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener" data-ach="source" style="--a:2/4/3/5"><svg class="tile__ico"><use href="#i-git"/></svg><span class="tile__label">GitHub</span></a>
+        <a class="tile tile--sys" href="mailto:hello@byhamza.dev" data-ach="messenger" style="--a:3/4/4/5"><svg class="tile__ico"><use href="#i-mail"/></svg><span class="tile__label">Message Hamza</span></a>
       </div>
     </section>
     <section class="pane" data-pane="games" aria-label="games">
       <div class="tiles">
         <button class="tile tile--sys" type="button" data-open="library" style="--a:1/1/3/2"><svg class="tile__ico"><use href="#i-games"/></svg><span class="tile__label">My Games</span></button>
         <button class="tile tile--sys" type="button" data-open="achievements" style="--a:3/1/4/2"><svg class="tile__ico"><use href="#i-trophy"/></svg><span class="tile__label">Achievements</span></button>
-        <button class="tile tile--img art-stack" type="button" data-open="play" style="--a:1/2/3/3"><span class="art"><i></i><i></i><i></i><i></i></span><span class="tile__label">Stack</span></button>
-        <button class="tile tile--img art-snake" type="button" data-open="snake" style="--a:1/3/3/4"><span class="art"><i></i><i></i><i></i><i></i><i></i><b></b></span><span class="tile__label">Snake</span></button>
-        <button class="tile tile--img art-breakout" type="button" data-open="breakout" style="--a:3/2/4/3"><span class="art"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b></span><span class="tile__label">Breakout</span></button>
-        <button class="tile tile--img art-type" type="button" data-open="type" style="--a:3/3/4/4"><span class="art"><b data-live="type">·</b><small>wpm record</small></span><span class="tile__label">Typing Test</span></button>
-        <button class="tile tile--img art-wyr art-wyr--tall" type="button" data-open="wyr" style="--a:1/4/3/5"><span class="art"><b data-live="wyr-a">·</b><em>vs</em><b data-live="wyr-b">·</b></span><span class="tile__label">Would You Rather</span></button>
-        <button class="tile tile--img art-arcade" type="button" data-open="arcade" style="--a:3/4/4/5"><span class="art"><i></i><i></i><i></i><i></i><i></i><b></b></span><span class="tile__label">Arcade</span></button>
+        <button class="tile tile--img art-doom art-doom--big" type="button" data-open="doom" style="--a:1/2/3/4"><span class="art"><span class="doom-word">DOOM</span><span class="doom-sub">Knee-Deep in the Dead</span></span><span class="tile__label">DOOM · Play now</span></button>
+        <button class="tile tile--img art-fav" type="button" data-open="library" data-favlabel="0" style="--a:3/2/4/3"><span class="art" data-fav="0"></span><span class="tile__label">·</span></button>
+        <button class="tile tile--img art-fav" type="button" data-open="library" data-favlabel="1" style="--a:3/3/4/4"><span class="art" data-fav="1"></span><span class="tile__label">·</span></button>
+        <button class="tile tile--img art-fav" type="button" data-open="library" data-favlabel="2" style="--a:1/4/2/5"><span class="art" data-fav="2"></span><span class="tile__label">·</span></button>
+        <button class="tile tile--img art-fav" type="button" data-open="library" data-favlabel="3" style="--a:2/4/3/5"><span class="art" data-fav="3"></span><span class="tile__label">·</span></button>
+        <button class="tile tile--sys" type="button" data-open="recent" style="--a:3/4/4/5"><svg class="tile__ico"><use href="#i-clock"/></svg><span class="tile__label">Recently Played</span></button>
       </div>
     </section>
     <section class="pane" data-pane="projects" aria-label="projects">
       <div class="tiles">
-        <button class="tile tile--sys" type="button" data-open="work" style="--a:1/1/2/2"><svg class="tile__ico"><use href="#i-folder"/></svg><span class="tile__label">All Projects</span></button>
-        <button class="tile tile--sys" type="button" data-open="stats" style="--a:2/1/3/2"><svg class="tile__ico"><use href="#i-chart"/></svg><span class="tile__label">Live Stats</span></button>
-        <button class="tile tile--sys" type="button" data-open="about" style="--a:3/1/4/2"><svg class="tile__ico"><use href="#i-user"/></svg><span class="tile__label">About Me</span></button>
-        <button class="tile tile--img art-panic art-panic--big" type="button" data-open="work/panic-pack" style="--a:1/2/3/4"><span class="art"><b>!</b><span class="hero__text"><b>Panic Pack!</b><span>Grab everything on the list before the taxi leaves.</span></span></span><span class="tile__label">Panic Pack! · Godot 4</span></button>
-        <button class="tile tile--img art-heart" type="button" data-open="work/instagram-unliker" style="--a:3/2/4/3"><span class="art"><b>♡</b></span><span class="tile__label">Instagram Unliker</span></button>
-        <button class="tile tile--img art-site" type="button" data-open="work/this-site" style="--a:3/3/4/4"><span class="art"><b>h</b></span><span class="tile__label">byhamza.dev</span></button>
-        <a class="tile tile--img art-github" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener" style="--a:1/4/2/5"><svg class="tile__ico"><use href="#i-git"/></svg><span class="tile__label">GitHub</span></a>
+        <button class="tile tile--sys" type="button" data-open="projects" style="--a:1/1/2/2"><svg class="tile__ico"><use href="#i-folder"/></svg><span class="tile__label">All Projects</span></button>
+        <button class="tile tile--sys" type="button" data-open="stats" style="--a:2/1/3/2"><svg class="tile__ico"><use href="#i-chart"/></svg><span class="tile__label">Stats</span></button>
+        <button class="tile tile--sys" type="button" data-open="profile" style="--a:3/1/4/2"><svg class="tile__ico"><use href="#i-user"/></svg><span class="tile__label">Profile</span></button>
+        <button class="tile tile--img art-panic art-panic--big" type="button" data-open="projects/panic-pack" style="--a:1/2/3/4"><span class="art"><b>!</b><span class="hero__text"><b>Panic Pack!</b><span>Grab everything on the list before the taxi leaves.</span></span></span><span class="tile__label">Panic Pack! · Godot 4</span></button>
+        <button class="tile tile--img art-heart" type="button" data-open="projects/instagram-unliker" style="--a:3/2/4/3"><span class="art"><b>♡</b></span><span class="tile__label">Instagram Unliker</span></button>
+        <button class="tile tile--img art-site" type="button" data-open="projects/this-site" style="--a:3/3/4/4"><span class="art"><b>h</b></span><span class="tile__label">byhamza.dev</span></button>
+        <a class="tile tile--img art-github" href="https://github.com/hamzaaaaaf" target="_blank" rel="noopener" data-ach="source" style="--a:1/4/2/5"><svg class="tile__ico"><use href="#i-git"/></svg><span class="tile__label">GitHub</span></a>
         <a class="tile tile--img art-lc art-lc--sm" href="https://leetcode.com/u/hamza57/" target="_blank" rel="noopener" style="--a:2/4/3/5"><span class="art"><b>{ }</b></span><span class="tile__label">LeetCode</span></a>
-        <a class="tile tile--img art-linkedin" href="https://www.linkedin.com/in/hamza-faisal-125833263/" target="_blank" rel="noopener" style="--a:3/4/4/5"><svg class="tile__ico"><use href="#i-in"/></svg><span class="tile__label">LinkedIn</span></a>
+        <a class="tile tile--img art-linkedin" href="https://www.linkedin.com/in/hamza-faisal-125833263/" target="_blank" rel="noopener" data-ach="networker" style="--a:3/4/4/5"><svg class="tile__ico"><use href="#i-in"/></svg><span class="tile__label">LinkedIn</span></a>
       </div>
     </section>
     <section class="pane" data-pane="apps" aria-label="apps">
       <div class="tiles">
         <button class="tile tile--sys" type="button" data-open="terminal" style="--a:1/1/2/2"><svg class="tile__ico"><use href="#i-term"/></svg><span class="tile__label">Terminal</span></button>
         <button class="tile tile--sys" type="button" data-open="draw" style="--a:2/1/3/2"><svg class="tile__ico"><use href="#i-kaleido"/></svg><span class="tile__label">Kaleidoscope</span></button>
-        <button class="tile tile--sys" type="button" data-open="stats" style="--a:3/1/4/2"><svg class="tile__ico"><use href="#i-chart"/></svg><span class="tile__label">Stats</span></button>
-        <button class="tile tile--img art-ie" type="button" data-open="ie" style="--a:1/2/3/4"><span class="art"><svg><use href="#i-ie"/></svg></span><span class="tile__label">Internet Explorer</span></button>
-        <button class="tile tile--img art-guestbook2" type="button" data-open="guestbook" style="--a:3/2/4/3"><svg class="tile__ico"><use href="#i-book"/></svg><span class="tile__label">Guestbook</span></button>
-        <button class="tile tile--img art-type" type="button" data-open="type" style="--a:3/3/4/4"><span class="art"><svg class="tile__ico"><use href="#i-keys"/></svg></span><span class="tile__label">Typing Test</span></button>
-        <button class="tile tile--img art-wyr art-wyr--icon" type="button" data-open="wyr" style="--a:1/4/2/5"><svg class="tile__ico"><use href="#i-vs"/></svg><span class="tile__label">Would You Rather</span></button>
-        <button class="tile tile--img art-arcade" type="button" data-open="arcade" style="--a:2/4/3/5"><span class="art"><i></i><i></i><i></i><i></i><i></i><b></b></span><span class="tile__label">Arcade</span></button>
+        <button class="tile tile--sys" type="button" data-open="guestbook" style="--a:3/1/4/2"><svg class="tile__ico"><use href="#i-book"/></svg><span class="tile__label">Guestbook</span></button>
+        <button class="tile tile--img art-ie art-ie--big" type="button" data-open="ie" style="--a:1/2/3/4"><span class="art"><svg><use href="#i-ie"/></svg></span><span class="tile__label">Internet Explorer</span></button>
+        <button class="tile tile--img art-doom" type="button" data-open="doom" style="--a:3/2/4/3"><span class="art"><span class="doom-word">DOOM</span><span class="doom-sub"></span></span><span class="tile__label">DOOM</span></button>
+        <button class="tile tile--sys" type="button" data-open="stats" style="--a:3/3/4/4"><svg class="tile__ico"><use href="#i-chart"/></svg><span class="tile__label">Stats</span></button>
+        <button class="tile tile--sys" type="button" data-open="achievements" style="--a:1/4/2/5"><svg class="tile__ico"><use href="#i-trophy"/></svg><span class="tile__label">Achievements</span></button>
+        <button class="tile tile--sys" type="button" data-open="library" style="--a:2/4/3/5"><svg class="tile__ico"><use href="#i-games"/></svg><span class="tile__label">My Games</span></button>
         <button class="tile tile--sys" type="button" data-open="system" style="--a:3/4/4/5"><svg class="tile__ico"><use href="#i-info"/></svg><span class="tile__label">System Info</span></button>
       </div>
     </section>
     <section class="pane" data-pane="settings" aria-label="settings">
       <div class="tiles">
-        <button class="tile tile--sys" type="button" data-open="achievements" style="--a:1/1/2/2"><svg class="tile__ico"><use href="#i-user"/></svg><span class="tile__label">Profile</span></button>
+        <button class="tile tile--sys" type="button" data-open="profile" style="--a:1/1/2/2"><svg class="tile__ico"><use href="#i-user"/></svg><span class="tile__label">Profile</span></button>
         <button class="tile tile--sys" type="button" data-open="system" style="--a:2/1/3/2"><svg class="tile__ico"><use href="#i-info"/></svg><span class="tile__label">System</span></button>
         <button class="tile tile--sys" type="button" data-poweroff style="--a:3/1/4/2"><svg class="tile__ico"><use href="#i-power"/></svg><span class="tile__label">Turn Off</span></button>
         <button class="tile tile--sys" type="button" data-set="theme" style="--a:1/2/2/3"><svg class="tile__ico"><use href="#i-moon"/></svg><span class="tile__label">Theme: <b data-setval="theme"></b></span></button>
         <button class="tile tile--sys" type="button" data-set="skin" style="--a:2/2/3/3"><svg class="tile__ico"><use href="#i-palette"/></svg><span class="tile__label">Colour: <b data-setval="skin"></b></span></button>
         <button class="tile tile--sys" type="button" data-set="sound" style="--a:3/2/4/3"><svg class="tile__ico"><use href="#i-sound"/></svg><span class="tile__label">Sound: <b data-setval="sound"></b></span></button>
-        <button class="tile tile--sys" type="button" data-set="motion" style="--a:1/3/2/4"><svg class="tile__ico"><use href="#i-motion"/></svg><span class="tile__label">Motion: <b data-setval="motion"></b></span></button>
-        <button class="tile tile--sys" type="button" data-set="live" style="--a:2/3/3/4"><svg class="tile__ico"><use href="#i-people"/></svg><span class="tile__label">Online: <b data-setval="live"></b></span></button>
-        <button class="tile tile--sys" type="button" data-open="achievements" style="--a:3/3/4/4"><svg class="tile__ico"><use href="#i-trophy"/></svg><span class="tile__label">Achievements</span></button>
+        <button class="tile tile--sys" type="button" data-set="bootlogo" style="--a:1/3/2/4"><svg class="tile__ico"><use href="#i-guide"/></svg><span class="tile__label">Startup: <b data-setval="bootlogo"></b></span></button>
+        <button class="tile tile--sys" type="button" data-set="motion" style="--a:2/3/3/4"><svg class="tile__ico"><use href="#i-motion"/></svg><span class="tile__label">Motion: <b data-setval="motion"></b></span></button>
+        <button class="tile tile--sys" type="button" data-set="live" style="--a:3/3/4/4"><svg class="tile__ico"><use href="#i-people"/></svg><span class="tile__label">Online: <b data-setval="live"></b></span></button>
+        <button class="tile tile--sys" type="button" data-open="achievements" style="--a:1/4/2/5"><svg class="tile__ico"><use href="#i-trophy"/></svg><span class="tile__label">Achievements</span></button>
+        <button class="tile tile--sys" type="button" data-open="system" style="--a:2/4/3/5"><svg class="tile__ico"><use href="#i-pad"/></svg><span class="tile__label">Controllers</span></button>
+        <button class="tile tile--sys" type="button" data-open="recent" style="--a:3/4/4/5"><svg class="tile__ico"><use href="#i-clock"/></svg><span class="tile__label">Recent</span></button>
       </div>
     </section>
   </main>
 
-  <p class="hints" aria-hidden="true"><span><i class="btn btn--a">A</i> Select</span><span><i class="btn btn--b">B</i> Back</span><span><i class="btn btn--y">Y</i> Search</span><span><i class="btn btn--x">X</i> Guide</span></p>
+  <p class="hints" data-hints aria-hidden="true"><span><i class="btn btn--a">A</i> Select</span><span><i class="btn btn--y">Y</i> Search</span><span><i class="btn btn--x">X</i> Guide</span></p>
+
+  <section class="screen" hidden aria-live="polite">
+    <div class="screen__head"><small class="screen__over"></small><nav class="screen__pivots"></nav></div>
+    <div class="screen__body"></div>
+    <p class="hints hints--screen" aria-hidden="true"><span><i class="btn btn--a">A</i> Select</span><span><i class="btn btn--b">B</i> Back</span></p>
+  </section>
 
   <div class="app" hidden>
-    <div class="app__bar">
-      <button class="app__back" type="button" data-back aria-label="Back"><i class="btn btn--b">B</i><span>back</span></button>
-      <h1 class="app__title"></h1>
-      <span class="gs"><i>G</i><span data-gs>0</span></span>
-    </div>
-    <div class="app__body">
-      <div class="app__load" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-    </div>
+    <div class="app__body"></div>
+    <div class="splash" hidden><div class="splash__art"></div><p class="splash__name"></p><div class="splash__dots"><i></i><i></i><i></i><i></i><i></i></div></div>
+    <button class="guidebtn" type="button" data-guide aria-label="Open the Guide"><svg viewBox="0 0 100 100"><use href="#orb"/></svg></button>
   </div>
 
   <div class="guide" hidden>
     <div class="guide__panel" role="dialog" aria-label="Guide">
-      <div class="guide__head">
-        <span class="pic" aria-hidden="true"><i>h</i></span>
-        <span><b>Hamza</b><span class="gs"><i>G</i><span data-gs>0</span></span></span>
+      <div class="guide__top">
+        <span class="pic" data-logo aria-hidden="true"><i>h</i></span>
+        <span class="guide__me"><b>Hamza</b><span class="gs"><i>G</i><span data-gs>0</span></span></span>
+        <time class="guide__time" data-clock></time>
       </div>
-      <div class="guide__list">
-        <button type="button" data-go="home">Dashboard home</button>
-        <button type="button" data-open="achievements">Achievements</button>
-        <button type="button" data-go="projects">Projects</button>
-        <button type="button" data-go="games">Games</button>
-        <button type="button" data-open="arcade">Arcade</button>
-        <button type="button" data-go="social">Social</button>
-        <button type="button" data-go="settings">System settings</button>
-        <button type="button" data-poweroff>Turn off console</button>
-      </div>
-      <div class="guide__foot"><time data-clock></time><span><i class="btn btn--b">B</i> back</span></div>
+      <nav class="guide__tabs"><button type="button" data-gtab="0">Games & Apps</button><button type="button" data-gtab="1">Media</button><button type="button" data-gtab="2">Settings</button></nav>
+      <div class="guide__lists"><div class="guide__list" data-glist="0"><button type="button" data-open="achievements"><span>Achievements</span></button><button type="button" data-open="recent"><span>Recently Played</span></button><button type="button" data-open="library"><span>My Games</span></button><button type="button" data-open="doom"><span>DOOM</span></button><button type="button" data-open="ie"><span>Internet Explorer</span></button><button type="button" data-open="pins"><span>My Pins</span></button></div><div class="guide__list" data-glist="1" hidden><button type="button" data-open="profile"><span>Hamza’s Profile</span></button><button type="button" data-open="projects"><span>Projects</span></button><button type="button" data-open="stats"><span>Stats</span></button><button type="button" data-open="guestbook"><span>Guestbook</span></button><button type="button" data-open="draw"><span>Kaleidoscope</span></button><button type="button" data-open="terminal"><span>Terminal</span></button></div><div class="guide__list" data-glist="2" hidden><button type="button" data-set="theme"><span>Theme</span><b data-setval="theme"></b></button><button type="button" data-set="skin"><span>Colour</span><b data-setval="skin"></b></button><button type="button" data-set="sound"><span>Sound</span><b data-setval="sound"></b></button><button type="button" data-set="bootlogo"><span>Startup Animation</span><b data-setval="bootlogo"></b></button><button type="button" data-go="settings"><span>System Settings</span></button><button type="button" data-poweroff><span>Turn Off Console</span></button></div></div>
+      <div class="guide__foot"><button type="button" data-home><i class="btn btn--y">Y</i> Xbox Home</button><button type="button" data-poweroff><i class="btn btn--x">X</i> Turn Off</button><button type="button" data-back><i class="btn btn--b">B</i> Back</button></div>
     </div>
   </div>
 
-  <div class="toaster" aria-live="polite"></div>
+  <div class="dialog" hidden>
+    <div class="dialog__panel" role="alertdialog" aria-modal="true">
+      <h2 class="dialog__title"></h2>
+      <p class="dialog__text"></p>
+      <div class="dialog__btns"><button type="button" data-dialog="yes">Yes</button><button type="button" data-dialog="no">No</button></div>
+      <p class="dialog__foot"><span><i class="btn btn--a">A</i> Select</span><span><i class="btn btn--b">B</i> Back</span></p>
+    </div>
+  </div>
 
+  <div class="blackout" hidden></div>
+  <div class="toaster" aria-live="polite"></div>
+  <p class="legal">byhamza.dev is a fan-made tribute to the Xbox 360 dashboard and isn’t affiliated with Microsoft. DOOM shareware © id Software, running on Chocolate Doom (GPL).</p>
+
+  <script src="/sound.js" defer></script>
+  <script src="/pad.js" defer></script>
   <script src="/os.js" defer></script>
   <script src="/x360.js" defer></script>
 </body>
