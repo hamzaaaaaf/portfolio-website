@@ -4,7 +4,7 @@
   "name": "portfolio-website",
   "compatibility_date": "2026-09-23",
   // Only /api/* runs code (src/worker.js); every other path is a static
-  // file from public/, with no build step. D1 holds the Stack leaderboard.
+  // file from public/, with no build step.
   "main": "src/worker.js",
   "assets": {
     "directory": "./public",
@@ -12,14 +12,12 @@
     "run_worker_first": ["/api/*"],
     "not_found_handling": "404-page"
   },
-  // One Durable Object per page relays live cursor positions.
-  "durable_objects": {
-    "bindings": [{ "name": "ROOMS", "class_name": "Room" }]
-  },
+  // v1 added the Room Durable Object (live cursors, now retired). Its empty
+  // class stays in src/worker.js until a deleted_classes migration removes it.
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }],
-  "d1_databases": [
-    { "binding": "DB", "database_name": "portfolio-db", "database_id": "acb84a8a-c265-4afb-8fd8-ba55c0b3ae42" }
-  ],
+  // Branch builds run `npx wrangler preview`, which needs this block. Previews
+  // use the top-level settings, so it stays empty.
+  "previews": {},
   // Wrangler replaces the Worker's routes on every deploy, so both domains
   // must be listed here or they get dropped.
   "routes": [
