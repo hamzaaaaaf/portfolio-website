@@ -121,8 +121,9 @@ async function letterboxd(env, imdb) {
   }
   favourites = favourites.map((f) => ({ ...f, poster: f.poster || (recent.find((r) => r.title === f.title && r.year === f.year) || {}).poster || null }));
 
-  let lookups = 0;
-  const src = env.OMDB_API_KEY ? 'omdb' : 'free';
+  // Without an OMDb key there's nothing to look up, so the lookups stop there.
+  let lookups = env.OMDB_API_KEY ? 0 : Infinity;
+  const src = 'omdb';
   const rate = async (f) => {
     const key = `${f.title}|${f.year}`;
     const hit = imdb[key];
@@ -140,7 +141,7 @@ async function letterboxd(env, imdb) {
     favourites: await Promise.all(favourites.map(rate)),
     recent: await Promise.all(recent.map(rate)),
   };
-  out.ratings = imdbError || `${[...out.favourites, ...out.recent].filter((f) => f.imdb).length} rated via ${src}`;
+  out.ratings = !env.OMDB_API_KEY ? 'OMDB_API_KEY not set' : imdbError || `${[...out.favourites, ...out.recent].filter((f) => f.imdb).length} films rated`;
   return out;
 }
 
@@ -155,21 +156,15 @@ async function profileFavourites() {
   });
 }
 
-// IMDb's own site blocks servers, so ratings come from OMDb when there's a key,
-// or the free imdbapi.dev otherwise.
+// IMDb's own site blocks servers, so ratings come from OMDb.
 async function imdbRating(env, f) {
-  if (env.OMDB_API_KEY) {
-    const q = new URLSearchParams({ apikey: env.OMDB_API_KEY, t: f.title, type: 'movie' });
-    if (f.year) q.set('y', f.year);
-    const d = await get(`https://www.omdbapi.com/?${q}`);
-    if (d.Response === 'True' && d.imdbRating && d.imdbRating !== 'N/A') {
-      return { rating: d.imdbRating, poster: d.Poster && d.Poster !== 'N/A' ? d.Poster : null };
-    }
-    return null;
+  const q = new URLSearchParams({ apikey: env.OMDB_API_KEY, t: f.title, type: 'movie' });
+  if (f.year) q.set('y', f.year);
+  const d = await get(`https://www.omdbapi.com/?${q}`);
+  if (d.Response === 'True' && d.imdbRating && d.imdbRating !== 'N/A') {
+    return { rating: d.imdbRating, poster: d.Poster && d.Poster !== 'N/A' ? d.Poster : null };
   }
-  const d = await get(`https://api.imdbapi.dev/search/titles?query=${encodeURIComponent(f.title)}&limit=8`);
-  const t = (d.titles || []).find((x) => (!f.year || Math.abs((x.startYear || 0) - f.year) <= 1) && x.rating && x.rating.aggregateRating);
-  return t ? { rating: t.rating.aggregateRating.toFixed(1), poster: (t.primaryImage && t.primaryImage.url) || null } : null;
+  return null;
 }
 
 /* ---------- Steam ---------- */
