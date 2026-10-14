@@ -1033,7 +1033,7 @@
   // A row you can select; its index points at the window's actions.
   const pick = (i, title, sub = '', side = '') => `<button type="button" class="wpick" data-nav data-i="${i}"><span><b>${esc(title)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span>${side ? `<em>${esc(side)}</em>` : ''}</button>`;
   const filmRow = (f) => `<li class="film">${f.poster ? `<img src="${esc(f.poster)}" alt="" loading="lazy">` : '<i></i>'}<span><b>${esc(f.title)}</b><small>${[f.year, f.watched ? `watched ${when(f.watched)}` : ''].filter(Boolean).join(' · ')}</small></span><em>${f.rating ? `<span class="me">${stars(f.rating)}</span>` : ''}${f.imdb ? `<span class="imdb">IMDb ${esc(f.imdb)}</span>` : ''}</em></li>`;
-  const gameRow = ([name, hrs, plat]) => `<li><span>${esc(name)}</span><small>${plat ? `${esc(plat)} · ` : ''}${n(hrs)} h</small></li>`;
+  const gameRow = ([name, hrs, plat]) => `<li><span>${esc(name)}</span><small>${plat ? `${esc(plat)} · ` : ''}${n(Math.round(hrs))} h</small></li>`;
   function copyEmail() {
     const done = () => { achieve('messenger'); sfx('select'); toast(LINKS.email, 'Copied to clipboard'); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(LINKS.email).then(done, () => toast(LINKS.email, 'Copy it from here'));
@@ -1652,7 +1652,7 @@
     LIVE[`recent${i}`] = () => F('movies', (d) => d.recent[i] && `${d.recent[i].title}   ${stars(d.recent[i].rating)}`);
     LIVE_SRC[`fav${i}`] = () => F('movies', (d) => d.favourites[i] && d.favourites[i].poster);
   }
-  for (let i = 0; i < 3; i++) LIVE[`most${i}`] = () => { const g = mostPlayed()[i]; return g ? `${g[0]} · ${n(g[1])} h` : null; };
+  for (let i = 0; i < 3; i++) LIVE[`most${i}`] = () => { const g = mostPlayed()[i]; return g ? `${g[0]} · ${n(Math.round(g[1]))} h` : null; };
   function fillLive() {
     $$('[data-live]').forEach((el) => {
       const v = LIVE[el.dataset.live] && LIVE[el.dataset.live]();
