@@ -73,22 +73,16 @@ def fit(rel, w, h, crop=None, name=None):
 T = 'Tiles/'
 M = 'Misc/'
 fit(M + 'disc-tray.png', 74, 74, name='icons/disc-tray.webp')
-fit(M + 'pin.png', 38, 38, crop=(574, 274, 392, 392), name='icons/pin.webp')
 fit(M + 'music.png', 58, 58, crop=(250, 210, 460, 540), name='icons/music.webp')
 fit(T + 'Marketplace/mygames.png', 72, 72, name='icons/mygames.webp')
-for k in ['game', 'apps']:
-    fit(T + f'Marketplace/{k}_marketplace.png', 58, 58, name=f'icons/{k}-marketplace.webp')
 fit(T + 'Social/friends.png', 58, 58, name='icons/friends.webp')
 fit(T + 'Social/transparent_avatars.png', 300, 256, name='tiles/avatars.webp')
-for k in ['system', 'preferences', 'account', 'privacy', 'turnoff']:
+for k in ['system', 'preferences', 'privacy', 'turnoff']:
     fit(M + f'SettingsIcons/{k}.png', 85, 85, name=f'icons/settings-{k}.webp')
 fit(M + 'SignIn/xbox-orb.png', 64, 64, name='ui/xbox-orb.webp')
 fit(M + 'SignIn/live-alert.png', 64, 64, name='ui/live-alert.webp')
-for k in ['Hard Drive', 'songs', 'saved playlists']:
-    fit(M + f'MusicBrowserIcons/{k}.png', 96, 96, name=f'icons/music-{k.lower().replace(" ", "-")}.webp')
-cover('References/penguin_bing_background.png', 960, 540, name='ui/bing-background.webp')
 for theme in sorted(t for t in os.listdir(os.path.join(SRC, 'Custom Files', 'Themes')) if not t.startswith('.')):
-    for part in ['home', 'games', 'settings']:
+    for part in ['home', 'settings']:
         im = load(f'Custom Files/Themes/{theme}/{part}.png').convert('RGB')
         save(im.resize((1280, 720), Image.LANCZOS), f'themes/{theme.lower()}/{part}.webp', quality=80)
 
@@ -162,33 +156,8 @@ def poster(w, h, stops, glyph, title, sub, glyph_color, rel, glyph_size=None, ti
 
 PANIC = [(0, (255, 196, 64)), (0.45, (240, 98, 30)), (1, (120, 22, 18))]
 UNLIKE = [(0, (255, 120, 170)), (0.5, (214, 41, 118)), (1, (79, 12, 74))]
-poster(600, 900, PANIC, '!', 'Panic Pack!', 'Godot 4', (255, 236, 200), 'covers/panic-pack.webp', glyph_size=500, title_size=86)
 poster(932, 526, PANIC, '!', '', '', (255, 236, 200), 'tiles/panic-pack.webp', glyph_size=440)
-poster(600, 900, UNLIKE, '♡', 'Unliker', 'Instagram', (255, 220, 236), 'covers/instagram-unliker.webp', glyph_size=440, title_size=86)
 poster(932, 526, UNLIKE, '♡', '', '', (255, 220, 236), 'tiles/instagram-unliker.webp', glyph_size=380)
-poster(396, 396, UNLIKE, '♡', '', '', (255, 220, 236), 'apps/instagram-unliker.webp', glyph_size=260)
 
 
-def globe(w, h, stops, title, sub, rel, r, cy, title_size=None):
-    """Capital City art: a wireframe globe over a blue gradient."""
-    im = grad(w, h, stops)
-    d = ImageDraw.Draw(im)
-    cx, line, col = w * (0.66 if title else 0.72), max(4, round(r * 0.05)), (220, 240, 255)
-    d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=col, width=line)
-    for k in (0.35, 0.72):
-        d.ellipse((cx - r * k, cy - r, cx + r * k, cy + r), outline=col, width=line)
-    d.line((cx, cy - r, cx, cy + r), fill=col, width=line)
-    for y in (-0.5, 0, 0.5):
-        half = r * (1 - y * y) ** 0.5
-        d.line((cx - half, cy + y * r, cx + half, cy + y * r), fill=col, width=line)
-    if title:
-        ts = title_size or int(h * 0.11)
-        d.text((w * 0.07, h * 0.80), title, font=ImageFont.truetype(SELAWIK_TTF, ts), fill=(255, 255, 255), anchor='ls')
-        d.text((w * 0.07, h * 0.80 + ts * 0.95), sub, font=ImageFont.truetype(SELAWIK_L, int(ts * 0.48)), fill=(214, 236, 255), anchor='ls')
-    save(im, rel, quality=88)
-
-
-CAPITAL = [(0, (64, 170, 220)), (0.5, (20, 90, 150)), (1, (8, 30, 60))]
-globe(600, 900, CAPITAL, 'Capital City', 'Python', 'covers/capital-city.webp', r=170, cy=330, title_size=80)
-globe(932, 526, CAPITAL, '', '', 'tiles/capital-city.webp', r=170, cy=270)
 print('assets written to', OUT)

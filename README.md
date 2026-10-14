@@ -1,19 +1,17 @@
 # byhamza.dev
 
-My personal site: a web port of [DashX360](https://github.com/ZivvoZ/dashx360) by ZivvoZ, the Xbox 360 Metro dashboard recreated for Windows. Live at **[byhamza.dev](https://byhamza.dev)**.
+My personal site, built like the Xbox 360 dashboard because the 360 was my first console. It's a web port of [DashX360](https://github.com/ZivvoZ/dashx360) by ZivvoZ, the Metro dashboard recreated for Windows. Live at **[byhamza.dev](https://byhamza.dev)**.
 
 Every screen is DashX360's 1280×720 canvas scaled to fit the window, so tile positions, colours, fonts, animation timings and sound cues come straight from its XAML and C#. The content is mine.
 
-- **Startup**: the boot video, the loading ring, the dashboard settling in and the "signed in to Xbox LIVE" pop-up.
-- **Dashboard**: bing, home, about, projects, social and settings, with DashX360's sliding tab change and the neighbouring tabs peeking in at the edges. The real 2011 dashboard had eight tabs; this keeps the ones a portfolio needs.
-- **About**: a profile with my background, tech stack, the games I play, the game that got me into gaming (Batman: Arkham Asylum) and a timeline.
-- **Projects**: My Projects with DashX360's game details screen (overview, details, extras, gallery). Capital City, my first Python game, is playable.
+- **Tabs**: home, about, projects, games, movies, social and settings. Each tile opens its own window, or goes straight to the project's page.
+- **About**: about me, education, tech stack and the summer of 2022.
+- **Projects**: Panic Pack!, Instagram Unliker and this site, plus live LeetCode and GitHub stats.
+- **Games**: where it began (Batman: Arkham Asylum), my console journey, the games I play, and live Valorant, PlayStation and Steam stats.
+- **Movies**: favourite and recently watched films from Letterboxd, with IMDb ratings.
 - **Open Tray** behaves like a console with no disc in it: it opens and closes the tray.
-- **Menus slide away and the tiles fly back in** when you back out, and quitting a game drops to black and loads back into Home.
 - **Xbox Guide**: Games & Apps, profile, Xbox Home, Media and Settings blades, plus Achievements and Friends. Y goes to Xbox Home.
-- **Bing**: searches the console like the 360's Bing did, with a last tile that searches the web.
-- **System Settings, Themes and a Music Player** for songs on your own device.
-- **Achievements**: 31 of them worth 1000 gamerscore, saved in your browser.
+- **Achievements**: 33 of them worth 1000 gamerscore, saved in your browser.
 
 ### Controls
 
@@ -23,27 +21,46 @@ Every screen is DashX360's 1280×720 canvas scaled to fit the window, so tile po
 | Select | A | Enter or Space |
 | Back | B or Back | Escape, Backspace or B |
 | Switch tabs | LB / RB | Q / E, Tab / Shift+Tab, or Page Up / Page Down |
-| Game details | X | X |
-| Search | Y | Y or F |
 | Xbox Guide | Guide / PS / Home button, PlayStation touchpad, or Back + Start | Home or G |
 | Xbox Home (in the Guide) | Y | Y |
 
 Xbox, PlayStation and Nintendo controllers are mapped by button position, so the bottom face button is always A. Mouse, trackpad swipes and touch work too.
 
+## Live stats
+
+`src/worker.js` serves `/api/feed`. A cron trigger pulls everything every six hours into the `FEED` KV namespace, so visits never wait on other sites, and a source that fails keeps its last good copy. Nothing is typed in by hand.
+
+| Source | Where it comes from | Needs |
+| --- | --- | --- |
+| LeetCode | LeetCode's GraphQL API | nothing |
+| GitHub | GitHub's REST API | nothing |
+| Films | the Letterboxd RSS feed | nothing |
+| IMDb ratings | OMDb | `OMDB_API_KEY` |
+| Steam | the public profile, and the Web API for full library hours | `STEAM_API_KEY`, with "Game details" set to public |
+| PlayStation | PSN's mobile API: trophies and play time | `PSN_NPSSO` |
+| Valorant | the HenrikDev API | `HENRIK_API_KEY` and `VALORANT_ID` (`name#tag`, kept out of the repo and the page) |
+
+Add the secrets under Workers & Pages → portfolio-website → Settings → Variables and Secrets. A section with no secret just stays hidden.
+
+- **OMDb**: a free key from omdbapi.com/apikey.aspx.
+- **Steam**: a key from steamcommunity.com/dev/apikey, then Profile → Edit Profile → Privacy Settings → Game details: Public.
+- **PlayStation**: sign in at playstation.com, then open ca.account.sony.com/api/v1/ssocookie and copy the `npsso` value. The Worker swaps it for a refresh token and keeps that renewed; if PlayStation stats ever stop updating, paste a fresh one.
+- **Valorant**: a free key from the HenrikDev Discord (docs.henrikdev.xyz). Set `VALORANT_REGION` too if you're not on `eu`.
+
 ## Stack
 
-Plain HTML, CSS and JavaScript with no build step, hosted on Cloudflare Workers with static assets. The Worker only serves `/api/leetcode` and `/api/github` (cached stats).
+Plain HTML, CSS and JavaScript with no build step, hosted on Cloudflare Workers with static assets.
 
 ```
 public/index.html        page shell and a plain-text summary for search engines
 public/dash.css          DashX360's styles
-public/dash.js           dashboard, Guide, menus, sounds and input
+public/dash.js           dashboard, windows, Guide, sounds and input
 public/assets/           artwork, sounds, boot video and fonts (built by tools/build_assets.py)
-src/worker.js            /api/leetcode and /api/github
+src/worker.js            /api/feed and the cron that refreshes it
 tools/build_assets.py    converts DashX360's assets for the web
 ```
 
-`tools/build_assets.py` takes DashX360's `Assets` folder and Microsoft's [Selawik](https://github.com/microsoft/Selawik) release (an open-source stand-in for Segoe UI), resizes everything to twice its on-screen size as WebP, crops my gamerpic from `tools/src/gamerpic.jpg`, and draws the Capital City, Panic Pack! and Instagram Unliker artwork:
+`tools/build_assets.py` takes DashX360's `Assets` folder and Microsoft's [Selawik](https://github.com/microsoft/Selawik) release (an open-source stand-in for Segoe UI), resizes everything to twice its on-screen size as WebP, crops my gamerpic from `tools/src/gamerpic.jpg`, and draws the Panic Pack! and Instagram Unliker artwork:
 
 ```sh
 python3 tools/build_assets.py path/to/dashx360/Assets path/to/Selawik_Release

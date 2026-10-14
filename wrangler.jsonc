@@ -12,6 +12,10 @@
     "run_worker_first": ["/api/*"],
     "not_found_handling": "404-page"
   },
+  // The live stats feed (src/worker.js) is cached here between refreshes.
+  "kv_namespaces": [{ "binding": "FEED", "id": "171853385f764e2490b868616fcfc187" }],
+  // Pull fresh stats every six hours.
+  "triggers": { "crons": ["23 */6 * * *"] },
   // v1 added the Room Durable Object (live cursors, now retired). Its empty
   // class stays in src/worker.js until a deleted_classes migration removes it.
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }],
