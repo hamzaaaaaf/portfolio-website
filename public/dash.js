@@ -17,7 +17,6 @@
     set(k, v) { try { localStorage.setItem(`dx.${k}`, JSON.stringify(v)); } catch (e) { /* storage blocked */ } },
     del(k) { try { localStorage.removeItem(`dx.${k}`); } catch (e) { /* storage blocked */ } },
   };
-  const getJSON = (u) => fetch(u, { signal: AbortSignal.timeout(8000) }).then((r) => (r.ok ? r.json() : Promise.reject(r.status)));
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
   // WPF easing functions as CSS curves.
@@ -50,7 +49,7 @@
     github: 'https://github.com/hamzaaaaaf',
     linkedin: 'https://www.linkedin.com/in/hamza-faisal-125833263/',
     leetcode: 'https://leetcode.com/u/hamza57/',
-    mail: 'mailto:hello@byhamza.dev',
+    email: 'hello@byhamza.dev',
     source: 'https://github.com/hamzaaaaaf/portfolio-website',
     dashx360: 'https://github.com/ZivvoZ/dashx360',
   };
@@ -59,103 +58,37 @@
     pic: '/assets/gamerpics/hamza.webp',
     motto: 'Turning curious ideas into real software.',
     short: 'Second-year Computer Science student at Aston University in Birmingham.',
-    zone: 'Recreation',
   };
   const A = '/assets/';
-  // The About section of the profile.
-  const ABOUT = {
-    intro: 'I’m a second-year Computer Science student at Aston University in Birmingham. I like turning curious ideas into real software: games, browser tools and this Xbox 360 dashboard.',
-    facts: [
-      ['Studying', 'BSc Computer Science, second year'],
-      ['University', 'Aston University'],
-      ['Based in', 'Birmingham, UK'],
-      ['Modules', 'Data structures, algorithms, OOP'],
-      ['Off the clock', 'Games and found-footage horror films'],
-    ],
-    stack: [
-      ['Python', 'Capital City and side projects'],
-      ['Java', 'Uni modules and OOP'],
-      ['JavaScript', 'This site and the Unliker'],
-      ['HTML & CSS', 'Hand-built, no framework'],
-      ['Godot 4', 'Panic Pack!, in GDScript'],
-      ['Cloudflare Workers', 'Hosting and the stats API'],
-      ['SQL', 'Databases'],
-      ['Git & GitHub', 'Every project'],
-    ],
-    games: [
-      ['Batman: Arkham Asylum', 2009], ['Batman: Arkham City', 2011], ['Batman: Arkham Origins', 2013], ['Batman: Arkham Knight', 2015],
-      ['Minecraft', 2011], ['Grand Theft Auto V', 2013], ['Uncharted 4', 2016], ['Rocket League', 2015],
-      ['Fortnite', 2017], ['Call of Duty: Warzone', 2020], ['Friday the 13th', 2017], ['Spider-Man 3', 2007],
-      ['The Amazing Spider-Man', 2012], ['The Amazing Spider-Man 2', 2014], ['Crash of the Titans', 2007],
-    ],
-    origin: 'Rocksteady’s Arkham Asylum is the game that got me into gaming. I’ve played every Arkham game since: City, Origins and Knight.',
-    timeline: [
-      ['2024', 'Capital City', 'My first game, written in Python'],
-      ['2025', 'Aston University', 'Started BSc Computer Science'],
-      ['Aug 2026', 'Instagram Unliker', 'Clears old likes in bulk'],
-      ['Sep 2026', 'Panic Pack!', 'A first-person packing race in Godot'],
-      ['Sep 2026', 'byhamza.dev', 'This site goes live'],
-      ['Now', 'Second year', 'More modules, more projects'],
-    ],
-  };
-  const ORIGIN_ART = `${A}themes/batman_arkham_asylum/home.webp`;
-  // Every project in My Projects. "kind" decides what Launch does.
-  const LIBRARY = [
-    {
-      id: 'capital-city', type: 'game', title: 'Capital City', sub: 'Python · Playable here', cover: `${A}covers/capital-city.webp`, wide: `${A}tiles/capital-city.webp`,
-      launch: { kind: 'play', label: 'Launch' },
-      second: { label: 'View Source', url: 'https://github.com/hamzaaaaaf/CapitalCityGame' },
-      meta: ['Guess the capital, one letter at a time', 'Python, ported to the console', 'Single player', 'Controller, keyboard, mouse or touch'],
-      rating: ['E', 'Everyone'],
-      source: 'GitHub', genre: 'Trivia',
-      developer: 'Hamza', publisher: 'Hamza',
-      local: 'Single player\nController, keyboard, mouse or touch', online: 'None',
-      note: 'My first game, a Python guessing game from 2024. You get a country and the length of its capital; every wrong guess reveals another letter. On the console it’s four answers to choose from.',
-      extras: [['Source code', 'https://github.com/hamzaaaaaf/CapitalCityGame', 'GitHub'], ['How to play', '#details', 'Rules']],
-      gallery: [`${A}tiles/capital-city.webp`, `${A}covers/capital-city.webp`],
-    },
-    {
-      id: 'panic-pack', type: 'game', title: 'Panic Pack!', sub: 'Godot 4 · Windows', cover: `${A}covers/panic-pack.webp`, wide: `${A}tiles/panic-pack.webp`,
-      launch: { kind: 'link', url: 'https://github.com/hamzaaaaaf/panic-pack-/releases/tag/v0.1.0', label: 'Download' },
-      second: { label: 'View Source', url: 'https://github.com/hamzaaaaaf/panic-pack-' },
-      meta: ['First-person, beat the clock', 'Godot 4 · GDScript', 'Single player', 'Windows'],
-      rating: ['RP', 'Rating Pending'],
-      source: 'GitHub release v0.1.0', genre: 'Action, Puzzle',
-      developer: 'Hamza', publisher: 'Hamza',
-      local: 'Single player\nKeyboard and mouse', online: 'None',
-      note: 'Your taxi is coming. Search the house, grab everything on a randomised packing list, then sprint for the front door before the flight countdown runs out. WASD to move, E to pick up, hold Tab for the list.',
-      extras: [['Download v0.1.0', 'https://github.com/hamzaaaaaf/panic-pack-/releases/tag/v0.1.0', 'Windows'], ['Source code', 'https://github.com/hamzaaaaaf/panic-pack-', 'GitHub']],
-      gallery: [`${A}tiles/panic-pack.webp`, `${A}covers/panic-pack.webp`],
-    },
-    {
-      id: 'instagram-unliker', type: 'app', title: 'Instagram Unliker', sub: 'JavaScript', cover: `${A}covers/instagram-unliker.webp`, wide: `${A}tiles/instagram-unliker.webp`, icon: `${A}apps/instagram-unliker.webp`,
-      launch: { kind: 'link', url: 'https://github.com/hamzaaaaaf/instagram-post-unliker', label: 'View Source' },
-      second: null,
-      meta: ['Browser console script', 'JavaScript', 'No password, cookie or API key', 'Works on Instagram’s Likes page'],
-      rating: ['E', 'Everyone'],
-      source: 'GitHub', genre: 'Utility',
-      developer: 'Hamza', publisher: 'Hamza',
-      local: 'Runs in your own browser', online: 'Instagram',
-      note: 'Instagram makes you unlike old posts one at a time. Paste this into the console on Your Activity › Likes and it selects every loaded post, unlikes them, confirms, waits for Instagram to catch up and keeps going.',
-      extras: [['Source code', 'https://github.com/hamzaaaaaf/instagram-post-unliker', 'GitHub']],
-      gallery: [`${A}tiles/instagram-unliker.webp`, `${A}covers/instagram-unliker.webp`],
-    },
-    {
-      id: 'byhamza', type: 'app', title: 'byhamza.dev', sub: 'This site', cover: '/favicon.svg', wide: '/favicon.svg', icon: '/favicon.svg',
-      launch: { kind: 'link', url: LINKS.source, label: 'View Source' },
-      second: { label: 'DashX360', url: LINKS.dashx360 },
-      meta: ['A web port of DashX360', 'HTML, CSS and JavaScript', 'No framework, no build step', 'Cloudflare Workers'],
-      rating: ['E', 'Everyone'],
-      source: 'GitHub', genre: 'Website',
-      developer: 'Hamza', publisher: 'Hamza',
-      local: 'Controller, keyboard, mouse or touch', online: 'Live LeetCode and GitHub stats',
-      note: 'The site you’re on: DashX360’s Xbox 360 Metro dashboard ported to the web, with the same layouts, animations, sounds and Guide, served from Cloudflare’s edge.',
-      extras: [['Source code', LINKS.source, 'GitHub'], ['DashX360 by ZivvoZ', LINKS.dashx360, 'Original']],
-      gallery: ['/favicon.svg'],
-    },
+  // A click on a project goes straight to its page.
+  const PROJECTS = [
+    { title: 'Panic Pack!', line: 'A first-person race to pack before your taxi arrives. Godot 4.', url: 'https://github.com/hamzaaaaaf/panic-pack-/releases/tag/v0.1.0' },
+    { title: 'Instagram Unliker', line: 'A browser script that unlikes Instagram posts in bulk. JavaScript.', url: 'https://github.com/hamzaaaaaf/instagram-post-unliker' },
+    { title: 'byhamza.dev', line: 'This site: the Xbox 360 dashboard, rebuilt for the web.', url: LINKS.source },
   ];
-  const byId = (id) => LIBRARY.find((g) => g.id === id);
-  const pins = () => store.get('pins', []);
+  const ABOUT = [
+    'I’m Hamza, a second-year Computer Science student at Aston University in Birmingham. I like turning curious ideas into real software.',
+    'My first console was an Xbox 360, so this site is built like its dashboard.',
+  ];
+  const FACTS = [['Studying', 'BSc Computer Science'], ['Based in', 'Birmingham, UK'], ['Languages', 'Python, Java, JavaScript'], ['Off the clock', 'Games and horror films']];
+  const EDUCATION = [
+    { place: 'Aston University', what: 'BSc Computer Science', when: '2025 to now' },
+    { place: 'LACAS', what: 'A-levels', when: '' },
+  ];
+  const STACK = [
+    ['Python', 'Side projects and scripts'], ['Java', 'Uni modules and OOP'], ['JavaScript', 'This site and the Unliker'], ['HTML & CSS', 'Hand-built, no framework'],
+    ['Godot 4', 'Panic Pack!, in GDScript'], ['Cloudflare Workers', 'Hosting and the live stats'], ['SQL', 'Databases'], ['Git & GitHub', 'Every project'],
+  ];
+  // Oldest first.
+  const GAMES = [
+    ['Crash of the Titans', 2007], ['Spider-Man 3', 2007], ['Batman: Arkham Asylum', 2009], ['Batman: Arkham City', 2011], ['Minecraft', 2011],
+    ['The Amazing Spider-Man', 2012], ['Batman: Arkham Origins', 2013], ['Grand Theft Auto V', 2013], ['The Amazing Spider-Man 2', 2014],
+    ['Batman: Arkham Knight', 2015], ['Rocket League', 2015], ['Uncharted 4', 2016], ['Fortnite', 2017], ['Friday the 13th: The Game', 2017],
+    ['Call of Duty: Warzone', 2020], ['Valorant', 2020],
+  ].sort((a, b) => a[1] - b[1] || a[0].localeCompare(b[0]));
+  const JOURNEY = [['Xbox 360', 'Where it started'], ['PSP', ''], ['PS4', ''], ['PC', 'Now']];
+  const SUMMER = [['Played', 'Valorant'], ['Watched', 'Stranger Things'], ['Listened to', 'SOUR by Olivia Rodrigo']];
+  const ORIGIN = { title: 'Batman: Arkham Asylum', year: 2009, art: `${A}themes/batman_arkham_asylum/home.webp`, text: 'The game that got me into gaming. I’ve played every Arkham game since: City, Origins and Knight.' };
 
   const THEMES = [
     { id: 'default', name: 'Default' },
@@ -169,29 +102,31 @@
   const ACHIEVEMENTS = [
     ['hello', 'Signed in', 'Turn on the console.', 10],
     ['guide', 'Guide me', 'Open the Xbox Guide.', 20],
-    ['profile', 'Gamercard', 'View Hamza’s profile.', 10],
-    ['library', 'Collector', 'Open My Projects.', 10],
+    ['about', 'Gamercard', 'Read About Me.', 10],
+    ['education', 'Back to school', 'Look at Hamza’s education.', 10],
     ['stack', 'Full stack', 'Look at Hamza’s tech stack.', 10],
-    ['reader', 'Case study', 'Open the details of every project Hamza made.', 80],
-    ['capital', 'Geography class', 'Play Capital City.', 20],
-    ['capital5', 'Capital idea', 'Get five capitals right in a row.', 50],
-    ['ragequit', 'Any unsaved progress will be lost', 'Quit a game from the Guide.', 30],
-    ['friends', 'Friends list', 'Open Friends in the Xbox Guide.', 40],
-    ['colour', 'Paint job', 'Change the tile color.', 30],
-    ['lookback', 'Look back', 'Open Recent.', 20],
-    ['sysset', 'Under the hood', 'Open System Settings.', 20],
+    ['stats', 'By the numbers', 'Open Stats.', 20],
+    ['projects', 'Portfolio', 'Open All Projects.', 20],
+    ['source', 'Open source', 'Open one of Hamza’s projects.', 10],
+    ['leetcode', 'Grinding', 'Open Hamza’s LeetCode.', 10],
+    ['networker', 'Networker', 'Open Hamza’s LinkedIn.', 10],
+    ['messenger', 'Messenger', 'Copy Hamza’s email address or open it in your mail app.', 35],
+    ['friends', 'Friends list', 'Open Friends.', 50],
     ['origin', 'Where it all began', 'Find the game that got Hamza into gaming.', 20],
+    ['journey', 'Generations', 'Look at Hamza’s console journey.', 20],
+    ['gamer', 'Player two', 'See the games Hamza plays.', 20],
+    ['valorant', 'Ranked', 'Check Hamza’s Valorant rank.', 30],
+    ['trophies', 'Trophy hunter', 'Open PlayStation.', 30],
+    ['steam', 'Full steam ahead', 'Open Steam.', 30],
+    ['summer', 'Summer of 2022', 'Find Hamza’s best summer.', 40],
+    ['critic', 'Critic', 'Open Recently Watched.', 20],
+    ['cinephile', 'Cinephile', 'Open Favourite Films.', 30],
     ['tray', 'No disc', 'Open the disc tray.', 15],
-    ['pinned', 'Pinned', 'Pin a project to My Pins.', 15],
-    ['search', 'Decision engine', 'Search with Bing.', 20],
+    ['colour', 'Paint job', 'Change the tile color.', 30],
     ['themes', 'Interior designer', 'Change the dashboard theme.', 30],
+    ['sysset', 'Under the hood', 'Open System Settings.', 20],
     ['tidy', 'Plug and play', 'Navigate with a controller.', 75],
     ['crossplay', 'Cross-platform', 'Use a PlayStation or Nintendo controller.', 75],
-    ['music', 'DJ', 'Play your own music in the Music Player.', 40],
-    ['source', 'Open source', 'Look at the source code on GitHub.', 10],
-    ['networker', 'Networker', 'Open Hamza’s LinkedIn.', 10],
-    ['messenger', 'Messenger', 'Send Hamza an email.', 30],
-    ['leetcode', 'Grinding', 'Open Hamza’s LeetCode.', 10],
     ['explorer', 'Explorer', 'Visit every tab on the dashboard.', 75],
     ['nightowl', 'Night owl', 'Turn on the console between midnight and 5am.', 50],
     ['longhaul', 'Dedicated', 'Keep the console on for ten minutes.', 60],
@@ -268,34 +203,24 @@
   /* ================= Icons (Segoe MDL2 stand-ins) ================= */
   const P = {
     games: 'M7 6h10a5 5 0 0 1 4.8 6.4l-1.3 4.4a2.6 2.6 0 0 1-4.5.9L14.4 16H9.6L8 17.7a2.6 2.6 0 0 1-4.5-.9l-1.3-4.4A5 5 0 0 1 7 6Zm0 3v1.5H5.5V12H7v1.5h1.5V12H10v-1.5H8.5V9Zm9 .5a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm2 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z',
-    apps: 'M3 3h8v8H3Zm10 0h8v8h-8ZM3 13h8v8H3Zm10 0h8v8h-8Z',
-    bag: 'M6 7V6a6 6 0 0 1 12 0v1h3l-1 15H4L3 7Zm2 0h8V6a4 4 0 0 0-8 0Z',
     gear: 'M10.3 2h3.4l.5 2.6 1.8.8 2.2-1.5 2.4 2.4-1.5 2.2.8 1.8 2.6.5v3.4l-2.6.5-.8 1.8 1.5 2.2-2.4 2.4-2.2-1.5-1.8.8-.5 2.6h-3.4l-.5-2.6-1.8-.8-2.2 1.5-2.4-2.4 1.5-2.2-.8-1.8L2 13.7v-3.4l2.6-.5.8-1.8-1.5-2.2 2.4-2.4 2.2 1.5 1.8-.8ZM12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z',
     person: 'M12 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 12c5 0 9 2.5 9 6v2H3v-2c0-3.5 4-6 9-6Z',
     sliders: 'M3 5h10v2H3Zm14 0h4v2h-4Zm-2-2h2v6h-2ZM3 11h4v2H3Zm8 0h10v2H11ZM9 9h2v6H9Zm-6 8h12v2H3Zm16 0h2v2h-2Zm-2-2h2v6h-2Z',
     power: 'M11 2h2v10h-2Zm-4.4 3.4 1.4 1.4a6 6 0 1 0 8 0l1.4-1.4A8 8 0 1 1 6.6 5.4Z',
     minimize: 'M4 11h16v2H4Z',
-    chat: 'M3 3h18v13H8l-5 5Zm2 2v11l2-2h12V5Z',
     eject: 'M12 4 21 15H3Zm-9 13h18v3H3Z',
     people: 'M9 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm8 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM9 13c4.4 0 7 2 7 5v3H2v-3c0-3 2.6-5 7-5Zm8.5.5c3 .3 5.5 1.8 5.5 4.5v3h-5v-3c0-1.7-.2-3.2-.5-4.5Z',
     mail: 'M2 5h20v14H2Zm2 2v.5l8 5.5 8-5.5V7Zm0 2.9V17h16V9.9l-8 5.5Z',
     contact: 'M12 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm0 10c4.4 0 8 2 8 5v3H4v-3c0-3 3.6-5 8-5Z',
-    prev: 'M4 5h2v14H4Zm3 7 13-7v14Z',
-    next: 'M18 5h2v14h-2ZM4 5l13 7-13 7Z',
-    play: 'M6 4l14 8-14 8Z',
-    pause: 'M6 4h4v16H6Zm8 0h4v16h-4Z',
-    stop: 'M5 5h14v14H5Z',
-    shuffle: 'M2 6h4.5l9 11H19v-2l3 3-3 3v-2h-4.4l-9-11H2Zm13.5 0H19V4l3 3-3 3V8h-2.6l-2.6 3.2-1.3-1.6Zm-9 12H2v-2h3.6l2.6-3.2 1.3 1.6Z',
-    volume: 'M3 9h4l5-4v14l-5-4H3Zm12.5-1.5a6 6 0 0 1 0 9l-1.4-1.4a4 4 0 0 0 0-6.2Zm2.8-2.8a10 10 0 0 1 0 14.6l-1.4-1.4a8 8 0 0 0 0-11.8Z',
     trophy: 'M8,2 L22,2 L20,17 C19,22 16,25 15,25 C14,25 11,22 10,17 M3,5 L8,5 L8,9 L5,9 C4,9 4,10 4,11 C4,14 6,16 9,16 L10,20 C4,19 0,15 0,10 C0,7 1,5 3,5 M22,5 L27,5 C29,5 30,7 30,10 C30,15 26,19 20,20 L21,16 C24,16 26,14 26,11 C26,10 26,9 25,9 L22,9 M12,25 L18,25 L18,29 L23,29 L23,32 L7,32 L7,29 L12,29',
     lock: 'M8,14 L8,10 C8,4 12,0 18,0 C24,0 28,4 28,10 L28,14 L24,14 L24,10 C24,6 22,4 18,4 C14,4 12,6 12,10 L12,14 M4,14 L32,14 L32,32 L4,32',
     github: 'M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5Z',
     leetcode: 'M13.5 2 5.7 10.3a3.4 3.4 0 0 0 0 4.7l4.3 4.6a3.4 3.4 0 0 0 4.8.2l2.4-2.3-1.4-1.5-2.4 2.3a1.4 1.4 0 0 1-2-.1L7.2 13.6a1.4 1.4 0 0 1 0-1.9l7.8-8.3ZM10 12.5h10v2H10Z',
     linkedin: 'M4 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM2.3 8.5h3.4V21H2.3Zm6 0h3.3v1.7c.5-.9 1.7-2 3.6-2 3.8 0 4.5 2.5 4.5 5.8V21h-3.4v-6.2c0-1.5 0-3.3-2-3.3s-2.3 1.6-2.3 3.2V21H8.3Z',
-    search: 'M17,17 A14,14 0 1 1 36,36M34,34 L47,47',
     layers: 'M12 2 22 7l-10 5L2 7Zm-7.6 8.3L12 14l7.6-3.7L22 11.5 12 16.5 2 11.5Zm0 4.5L12 18.5l7.6-3.7L22 16 12 21 2 16Z',
-    clock: 'M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20Zm0 2.2a7.8 7.8 0 1 0 0 15.6 7.8 7.8 0 0 0 0-15.6ZM11 6h2v5.6l3.8 2.2-1 1.7-4.8-2.8Z',
-    pin: 'M14.5 2 22 9.5l-1.4 1.4-1.3-.6-4.1 4.1.5 4.2-1.4 1.4-3.6-3.6L4.4 22.7 3 21.3l6.4-6.4-3.6-3.6 1.4-1.4 4.2.5 4.1-4.1-.6-1.3Z',
+    film: 'M3 9h18v11H3Zm0-5.6 16.8-3 .7 3.6-16.8 3Z',
+    cap: 'M12 3 1 8.5 12 14l9-4.5V16h2V8.5ZM5 12.2V16c0 2 3.1 3.5 7 3.5s7-1.5 7-3.5v-3.8L12 15.7Z',
+    info: 'M10.5 4h3v3h-3Zm0 5h3v11h-3Z',
   };
   const svg = (name, vb = '0 0 24 24', cls = '') => `<svg viewBox="${vb}"${cls ? ` class="${cls}"` : ''} aria-hidden="true"><path d="${P[name]}"/></svg>`;
   // Controller button glyphs: a glossy disc with the letter drawn as strokes,
@@ -309,8 +234,8 @@
   const G = (letter) => { const l = letter.toLowerCase(); return `<i class="g g--${l}" role="img" aria-label="${letter}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="${GLYPHS[l]}"/></svg></i>`; };
 
   /* ================= Dashboard markup ================= */
-  // The 2011 dashboard had eight tabs; this one keeps the six a portfolio needs.
-  const TABS = ['bing', 'home', 'about', 'projects', 'social', 'settings'].map((k) => ({ k }));
+  // The 2011 dashboard had eight tabs; this one keeps the seven a portfolio needs.
+  const TABS = ['home', 'about', 'projects', 'games', 'movies', 'social', 'settings'].map((k) => ({ k }));
 
   const px = (o) => Object.entries(o).map(([k, v]) => `${k}:${typeof v === 'number' ? `${v}px` : v}`).join(';');
   const tile = (id, x, y, w, h, inner, { label = '', bg = '', cls = '', def = false } = {}) =>
@@ -327,19 +252,14 @@
   }
   // A white glyph centred above the label, for tiles without artwork.
   const glyph = (name, w, h, size = 50, vb) => `<span class="abs tile__glyph" style="${px(icoBox(w, h, size, size, { mt: -24 }))}">${svg(name, vb)}</span>`;
+  const label = (t, size = 17) => tx(t, { left: 12, right: 10, bottom: 10, 'font-size': size });
   // Picture tile: artwork, a darkening gradient and a title bar.
   const picture = (src, title, sub = '') => `${fill(src)}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.12) 55%,rgba(0,0,0,.7) 100%')}${bar(sub ? 48 : 30, 'rgba(0,0,0,.79)')}${sub ? tx(title, { left: 10, right: 10, bottom: 22, 'font-size': 18 }) + tx(sub, { left: 10, right: 10, bottom: 5, 'font-size': 13, color: 'rgba(255,255,255,.78)' }) : tx(title, { left: 8, right: 8, bottom: 6, 'font-size': 17 })}`;
-
-  function pageBing() {
-    return `<div class="page" data-tab="bing" data-l="198">
-      ${tx('Search Hamza’s projects, profile and settings', { left: 378, top: 104, 'font-size': 19, 'font-weight': 300, color: 'rgba(255,255,255,.75)' })}
-      ${tx('bing', { left: 198, top: 148, 'font-size': 44, 'font-weight': 300, color: 'rgba(255,255,255,.95)' })}
-      <div class="bing__box t-like" data-nav data-x="377" data-y="134" data-w="585" data-h="92" tabindex="-1">
-        <input type="search" enterkeyhint="search" autocomplete="off" spellcheck="false" aria-label="Search with Bing">
-        <svg viewBox="0 0 50 50"><path d="${P.search}"/></svg>
-      </div>
-    </div>`;
-  }
+  // Text that fills in once the live stats arrive (see fillLive).
+  const live = (key, fallback = '', cls = '') => `<span${cls ? ` class="${cls}"` : ''} data-live="${key}">${esc(fallback)}</span>`;
+  const livePic = (key, style = '') => `<img class="fill" data-live-src="${key}" alt="" draggable="false" hidden${style ? ` style="${style}"` : ''}>`;
+  const LINKEDIN = `<span class="logo" style="display:flex;align-items:center;gap:3px;font-size:30px;font-weight:700;color:#0a66c2;letter-spacing:-.5px">Linked<span style="display:grid;place-items:center;width:34px;height:34px;border-radius:5px;background:#0a66c2;color:#fff;font-size:26px">in</span></span>`;
+  const VAL_BG = grad('#ff5a63 0%,#d1323e 45%,#5a1016 100%');
 
   // The Open Tray tile, as on a console with no disc in the drive.
   let trayOpen = false;
@@ -348,42 +268,62 @@
     const fx = 224, fy = 31;
     return `<div class="page" data-tab="home">
       ${tile('home.tray', fx, fy, 185, 131, `${img(`${A}icons/disc-tray.webp`, { left: 55.5, top: 14, width: 74, height: 74 }, 'ico tray__ico')}${tx(trayLabel(), { left: 13, bottom: 10, 'font-size': 18 }, ' tray__t')}`, { label: trayLabel() })}
-      ${tile('home.pins', fx, fy + 133, 185, 131, `${img(`${A}icons/pin.webp`, icoBox(185, 131, 38, 38, { mt: -20 }))}${tx('My Pins', { left: 12, bottom: 12, 'font-size': 17 })}`, { label: 'My Pins' })}
-      ${tile('home.recent', fx, fy + 266, 185, 131, `<svg class="ico" viewBox="0 0 36 36" style="${px(icoBox(185, 131, 36, 36, { mt: -20 }))};position:absolute;fill:none;stroke:rgba(255,255,255,.91);stroke-width:4;stroke-linecap:round"><circle cx="18" cy="18" r="16"/><path d="M18,8 L18,20 L27,20"/></svg>${tx('Recent', { left: 12, bottom: 12, 'font-size': 17 })}`, { label: 'Recent' })}
-      ${tile('home.hero', fx + 187, fy, 466, 263, `<span class="hero"><img src="${ME.pic}" alt=""><span><b>${esc(ME.tag)}</b><span>${esc(ME.motto)}</span></span></span>${shade('rgba(0,0,0,.14) 0%,rgba(0,0,0,0) 48%,rgba(0,0,0,.66) 100%')}${bar(30, 'rgba(0,0,0,.79)')}${tx('About Me · Computer Science at Aston University', { left: 8, right: 8, bottom: 6, 'font-size': 17 })}`, { label: 'About Hamza', bg: grad('#bfd5d8 0%,#3b5e65 34%,#111a1d 78%,#9eaeb0 100%'), def: true })}
-      ${tile('home.capital', fx + 187, fy + 265, 231, 133, `${picture(`${A}tiles/capital-city.webp`, 'Capital City')}<span class="badge">Play</span>`, { label: 'Capital City', bg: '#145a96' })}
-      ${tile('home.panic', fx + 420, fy + 265, 233, 133, picture(`${A}tiles/panic-pack.webp`, 'Panic Pack!'), { label: 'Panic Pack!', bg: grad('#2d100d 0%,#e27522 50%,#321a16 100%') })}
-      ${tile('home.leetcode', fx + 655, fy, 179, 131, `<span class="big-n" style="top:16px;font-size:50px" data-live="lc">&middot;</span><span class="big-n" style="top:70px;font-size:15px;opacity:.85">solved</span>${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.14) 58%,rgba(0,0,0,.69) 100%')}${bar(30, 'rgba(0,0,0,.79)')}${tx('LeetCode', { left: 8, right: 8, bottom: 6, 'font-size': 16 })}`, { label: 'LeetCode', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}
-      ${tile('home.github', fx + 655, fy + 133, 179, 131, githubArt(179, 131), { label: 'GitHub', bg: '#1b1f23' })}
-      ${tile('home.linkedin', fx + 655, fy + 266, 179, 131, `<span class="logo" style="display:flex;align-items:center;gap:3px;font-size:30px;font-weight:700;color:#0a66c2;letter-spacing:-.5px">Linked<span style="display:grid;place-items:center;width:34px;height:34px;border-radius:5px;background:#0a66c2;color:#fff;font-size:26px">in</span></span>${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,0) 58%,rgba(0,0,0,.47) 100%')}`, { label: 'LinkedIn', bg: '#fff' })}
+      ${tile('home.message', fx, fy + 133, 185, 131, glyph('mail', 185, 131, 44) + label('Message Me'), { label: 'Message Me' })}
+      ${tile('home.linkedin', fx, fy + 266, 185, 131, `${LINKEDIN}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,0) 58%,rgba(0,0,0,.47) 100%')}`, { label: 'LinkedIn', bg: '#fff' })}
+      ${tile('home.hero', fx + 187, fy, 466, 263, `<span class="hero"><img src="${ME.pic}" alt=""><span><b>${esc(ME.tag)}</b><span>${esc(ME.motto)}</span></span></span>${shade('rgba(0,0,0,.14) 0%,rgba(0,0,0,0) 48%,rgba(0,0,0,.66) 100%')}${bar(30, 'rgba(0,0,0,.79)')}${tx('About Me · Computer Science at Aston University', { left: 8, right: 8, bottom: 6, 'font-size': 17 })}`, { label: 'About Me', bg: grad('#bfd5d8 0%,#3b5e65 34%,#111a1d 78%,#9eaeb0 100%'), def: true })}
+      ${tile('home.projects', fx + 187, fy + 265, 231, 133, `<span class="lines">${PROJECTS.map((p) => `<i>${esc(p.title)}</i>`).join('')}</span>${label('Projects')}`, { label: 'Projects', bg: grad('#3a4a55 0%,#1f2a31 60%,#11181c 100%') })}
+      ${tile('home.stats', fx + 420, fy + 265, 233, 133, `<span class="big-n" style="top:12px;font-size:46px">${live('lc', '·')}</span><span class="big-n" style="top:64px;font-size:14px;opacity:.85">LeetCode problems solved</span>${label('Stats')}`, { label: 'Stats', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}
+      ${tile('home.valorant', fx + 655, fy, 179, 263, valorantArt(), { label: 'Valorant', bg: VAL_BG })}
+      ${tile('home.film', fx + 655, fy + 265, 179, 133, `${glyph('film', 179, 133, 40)}${livePic('film0')}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.1) 50%,rgba(0,0,0,.75) 100%')}${label('Last Watched', 16)}`, { label: 'Last Watched', bg: '#2a2d30' })}
     </div>`;
+  }
+  function valorantArt() {
+    return `<span class="val"><small>Valorant</small>${live('valRank', 'Ranked', 'val__rank')}${live('valPeak', '', 'val__peak')}</span>${label('Valorant')}`;
   }
   function githubArt(w, h) {
     const top = h - 33;
-    return `<span class="abs" style="left:0;right:0;top:0;height:${top}px;background:#1b1f23"></span><span class="logo" style="top:${top * 0.42}px;width:44px;height:44px;fill:#fff">${svg('github')}</span><span class="big-n" style="top:${top * 0.42 + 28}px;font-size:13px;opacity:.8" data-live="gh">hamzaaaaaf</span>${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.06) 58%,rgba(0,0,0,.69) 100%')}<span class="bar" style="height:33px;background:#2b3137"></span>${tx('GitHub', { left: 8, bottom: 6, 'font-size': 16 })}`;
+    return `<span class="abs" style="left:0;right:0;top:0;height:${top}px;background:#1b1f23"></span><span class="logo" style="top:${top * 0.42}px;width:44px;height:44px;fill:#fff">${svg('github')}</span><span class="big-n" style="top:${top * 0.42 + 28}px;font-size:13px;opacity:.8">${live('gh', 'hamzaaaaaf')}</span><span class="bar" style="height:33px;background:#2b3137"></span>${tx('GitHub', { left: 8, bottom: 6, 'font-size': 16 })}`;
   }
 
   function pageAbout() {
-    const games = ABOUT.games.slice(0, 8).map(([t]) => t.replace(/^Batman: /, ''));
     return `<div class="page" data-tab="about">
       ${tile('about.me', 224, 31, 300, 263, `<span class="mecard"><img src="${ME.pic}" alt=""><b>About Me</b><span>${esc(ME.short)}</span></span>`, { label: 'About Me', bg: grad('#3f7f97 0%,#1d4656 50%,#0c1d25 100%'), def: true })}
-      ${tile('about.stack', 224, 296, 300, 132, `<span class="chips">${ABOUT.stack.slice(0, 5).map(([n]) => `<i>${esc(n)}</i>`).join('')}</span>${tx('Tech Stack', { left: 12, bottom: 10, 'font-size': 18 })}`, { label: 'Tech Stack', bg: grad('#2b3a44 0%,#1a252c 100%') })}
-      ${tile('about.origin', 526, 31, 354, 263, picture(ORIGIN_ART, 'Where It Began', 'Batman: Arkham Asylum, 2009'), { label: 'Where it began: Batman: Arkham Asylum', bg: '#1a120c' })}
-      ${tile('about.games', 526, 296, 354, 132, `<span class="glist">${games.map((t) => `<i>${esc(t)}</i>`).join('')}</span>${tx('Games I Play', { left: 12, bottom: 10, 'font-size': 18 })}`, { label: 'Games I Play', bg: grad('#5a2a7a 0%,#34174a 55%,#1b0b28 100%') })}
-      ${tile('about.achievements', 882, 31, 179, 263, `${glyph('trophy', 179, 263, 62, '0 0 30 32')}<span class="big-n" style="top:158px;font-size:30px"><span data-gs>0</span>G</span>${tx('Achievements', { left: 12, bottom: 12, 'font-size': 17 })}`, { label: 'Achievements' })}
-      ${tile('about.timeline', 882, 296, 179, 132, `${glyph('clock', 179, 132, 40)}${tx('Timeline', { left: 12, bottom: 10, 'font-size': 17 })}`, { label: 'Timeline' })}
+      ${tile('about.education', 224, 296, 300, 132, `${glyph('cap', 300, 132, 44)}<span class="tile__note">Aston University · LACAS</span>${label('Education')}`, { label: 'Education' })}
+      ${tile('about.stack', 526, 31, 354, 131, `<span class="chips">${STACK.slice(0, 5).map(([n]) => `<i>${esc(n)}</i>`).join('')}</span>${label('Tech Stack')}`, { label: 'Tech Stack', bg: grad('#2b3a44 0%,#1a252c 100%') })}
+      ${tile('about.summer', 526, 164, 354, 130, `<span class="lines">${SUMMER.map(([, v]) => `<i>${esc(v)}</i>`).join('')}</span>${label('Summer of 2022')}`, { label: 'Summer of 2022', bg: grad('#f2a64b 0%,#c4553a 55%,#5d1c33 100%') })}
+      ${tile('about.achievements', 526, 296, 354, 132, `${glyph('trophy', 354, 132, 42, '0 0 30 32')}<span class="tile__note"><span data-gs>0</span> of 1000G</span>${label('Achievements')}`, { label: 'Achievements' })}
     </div>`;
   }
 
   function pageProjects() {
     return `<div class="page" data-tab="projects">
-      ${tile('projects.all', 224, 31, 185, 197, `${img(`${A}icons/mygames.webp`, icoBox(185, 197, 72, 72, { mt: -24 }))}${tx('My Projects', { left: 12, bottom: 12, 'font-size': 20 })}`, { label: 'My Projects' })}
+      ${tile('projects.list', 224, 31, 185, 197, `${img(`${A}icons/mygames.webp`, icoBox(185, 197, 72, 72, { mt: -24 }))}${label('All Projects', 19)}`, { label: 'All Projects' })}
       ${tile('projects.github', 224, 230, 185, 198, githubArt(185, 198), { label: 'GitHub', bg: '#1b1f23' })}
-      ${tile('projects.panic', 411, 31, 466, 263, `${picture(`${A}tiles/panic-pack.webp`, 'Panic Pack!', 'Godot 4 · Free download for Windows')}`, { label: 'Panic Pack!', bg: grad('#2d100d 0%,#e27522 50%,#321a16 100%'), def: true })}
-      ${tile('projects.capital', 411, 296, 232, 132, `${picture(`${A}tiles/capital-city.webp`, 'Capital City')}<span class="badge">Play</span>`, { label: 'Capital City', bg: '#145a96' })}
-      ${tile('projects.unliker', 645, 296, 232, 132, picture(`${A}tiles/instagram-unliker.webp`, 'Instagram Unliker'), { label: 'Instagram Unliker', bg: grad('#ff78aa 0%,#d62976 50%,#4f0c4a 100%') })}
-      ${tile('projects.site', 879, 31, 179, 263, `<img class="ico" src="/favicon.svg" alt="" style="${px(icoBox(179, 263, 96, 96, { mt: -40 }))}">${bar(48, 'rgba(0,0,0,.5)')}${tx('byhamza.dev', { left: 10, bottom: 22, 'font-size': 17 })}${tx('This site', { left: 10, bottom: 5, 'font-size': 13, color: 'rgba(255,255,255,.78)' })}`, { label: 'byhamza.dev', bg: grad('#4a4f52 0%,#2a2e30 60%,#151718 100%') })}
-      ${tile('projects.leetcode', 879, 296, 179, 132, `<span class="big-n" style="top:14px;font-size:44px" data-live="lc">&middot;</span><span class="big-n" style="top:62px;font-size:14px;opacity:.85">problems solved</span>${bar(30, 'rgba(0,0,0,.6)')}${tx('LeetCode', { left: 8, bottom: 6, 'font-size': 16 })}`, { label: 'LeetCode', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}
+      ${tile('projects.panic', 411, 31, 466, 263, picture(`${A}tiles/panic-pack.webp`, 'Panic Pack!', 'Godot 4 · Free download for Windows'), { label: 'Panic Pack!', bg: grad('#2d100d 0%,#e27522 50%,#321a16 100%'), def: true })}
+      ${tile('projects.unliker', 411, 296, 232, 132, picture(`${A}tiles/instagram-unliker.webp`, 'Instagram Unliker'), { label: 'Instagram Unliker', bg: grad('#ff78aa 0%,#d62976 50%,#4f0c4a 100%') })}
+      ${tile('projects.site', 645, 296, 232, 132, `<img class="ico" src="/favicon.svg" alt="" style="${px(icoBox(232, 132, 62, 62, { mt: -26 }))}">${label('byhamza.dev')}`, { label: 'byhamza.dev', bg: grad('#4a5054 0%,#2a2e30 60%,#151718 100%') })}
+      ${tile('projects.stats', 879, 31, 179, 397, `<span class="statcol"><b>${live('lc', '·')}</b><span>LeetCode solved</span><b>${live('ghRepos', '·')}</b><span>Public repos</span><b>${live('lcDays', '·')}</b><span>Active days</span></span>${label('Stats')}`, { label: 'Stats', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}
+    </div>`;
+  }
+
+  function pageGames() {
+    return `<div class="page" data-tab="games">
+      ${tile('games.origin', 224, 31, 354, 263, picture(ORIGIN.art, 'Where It Began', `${ORIGIN.title}, ${ORIGIN.year}`), { label: 'Where it began', bg: '#1a120c', def: true })}
+      ${tile('games.valorant', 580, 31, 232, 263, valorantArt(), { label: 'Valorant', bg: VAL_BG })}
+      ${tile('games.played', 814, 31, 232, 131, glyph('games', 232, 131, 46) + label('Games I Play'), { label: 'Games I Play' })}
+      ${tile('games.journey', 814, 164, 232, 130, `<span class="journey">${JOURNEY.map(([n]) => `<i>${esc(n)}</i>`).join('<em>›</em>')}</span>${label('Console Journey')}`, { label: 'Console Journey', bg: grad('#4c5a62 0%,#2a3338 100%') })}
+      ${tile('games.psn', 224, 296, 354, 132, `<span class="tile__big">${live('psnLevel', 'Trophies')}</span><span class="tile__note">${live('psnSub', '')}</span>${label('PlayStation')}`, { label: 'PlayStation', bg: grad('#2b6fd6 0%,#0f3f8f 55%,#081d45 100%') })}
+      ${tile('games.steam', 580, 296, 232, 132, `<span class="tile__big">${live('steamBig', 'Steam')}</span><span class="tile__note">${live('steamSub', '')}</span>${label('Steam')}`, { label: 'Steam', bg: grad('#2a475e 0%,#1b2838 60%,#0e141b 100%') })}
+      ${tile('games.most', 814, 296, 232, 132, `<span class="lines">${live('most0', '', 'li')}${live('most1', '', 'li')}${live('most2', '', 'li')}</span>${label('Most Played')}`, { label: 'Most Played', bg: grad('#3d4a52 0%,#20282d 100%') })}
+    </div>`;
+  }
+
+  function pageMovies() {
+    const favs = [0, 1, 2, 3].map((i) => `<span class="poster" style="left:${14 + i * 112}px">${livePic(`fav${i}`)}</span>`).join('');
+    return `<div class="page" data-tab="movies">
+      ${tile('movies.latest', 224, 31, 175, 263, `${glyph('film', 175, 263, 50)}${livePic('film0')}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.1) 55%,rgba(0,0,0,.78) 100%')}<span class="tile__note" style="bottom:34px">${live('film0', '')}</span>${label('Last Watched')}`, { label: 'Last Watched', bg: '#2a2d30' })}
+      ${tile('movies.favs', 401, 31, 466, 263, `${favs}${bar(30, 'rgba(0,0,0,.6)')}${tx('Favourite Films', { left: 8, bottom: 6, 'font-size': 17 })}`, { label: 'Favourite Films', bg: grad('#3a2f45 0%,#1c1724 100%'), def: true })}
+      ${tile('movies.recent', 224, 296, 643, 132, `<span class="lines lines--2">${live('recent0', '', 'li')}${live('recent1', '', 'li')}${live('recent2', '', 'li')}${live('recent3', '', 'li')}</span>${label('Recently Watched')}`, { label: 'Recently Watched', bg: grad('#2e3438 0%,#1a1e21 100%') })}
     </div>`;
   }
 
@@ -391,9 +331,9 @@
     const fx = 224, fy = 31, lab = (t) => tx(t, { left: 8, bottom: 8, 'font-size': 15 });
     return `<div class="page" data-tab="social">
       ${img(`${A}tiles/avatars.webp`, { left: fx + 219, top: fy + 87, width: 300, height: 256, opacity: 0.96, 'object-fit': 'contain' }, 'abs')}
-      <div class="say" style="left:${fx + 540}px;top:${fy + 120}px"><b>Say hello</b><span>Message me about projects, uni or games.</span><em>hello@byhamza.dev</em></div>
+      <div class="say" style="left:${fx + 540}px;top:${fy + 120}px"><b>Say hello</b><span>Message me about projects, uni or games.</span><em>${esc(LINKS.email)}</em></div>
       ${tile('social.friends', fx, fy, 177, 122, img(`${A}icons/friends.webp`, icoBox(177, 122, 58, 58, { mt: -15 })) + lab('Friends'), { label: 'Friends' })}
-      ${tile('social.message', fx, fy + 123, 177, 122, glyph('mail', 177, 122, 46) + lab('Message Hamza'), { label: 'Message Hamza' })}
+      ${tile('social.message', fx, fy + 123, 177, 122, glyph('mail', 177, 122, 46) + lab('Message Me'), { label: 'Message Me', def: true })}
       ${tile('social.linkedin', fx, fy + 246, 177, 122, glyph('linkedin', 177, 122, 44) + lab('LinkedIn'), { label: 'LinkedIn' })}
     </div>`;
   }
@@ -403,25 +343,23 @@
     const cells = [
       ['system', 'System', img(`${A}icons/settings-system.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
       ['preferences', 'Preferences', img(`${A}icons/settings-preferences.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
-      ['profile', 'Profile', img(`${A}icons/settings-account.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
       ['audio', 'Audio', img(`${A}icons/music.webp`, icoBox(w, h, 50, 50, { mt: -30 }))],
       ['privacy', 'Privacy', img(`${A}icons/settings-privacy.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
+      ['credits', 'Credits', glyph('info', w, h, 56)],
       ['turnoff', 'Turn Off', img(`${A}icons/settings-turnoff.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
     ];
-    const tiles = cells.map(([id, label, icon], i) => tile(`settings.${id}`, fx + (i % 3) * (w + 2), fy + Math.floor(i / 3) * (h + 2), w, h, icon + tx(label, { left: 11, bottom: 10, 'font-size': 21 }), { label, def: i === 0 })).join('');
+    const tiles = cells.map(([id, name, icon], i) => tile(`settings.${id}`, fx + (i % 3) * (w + 2), fy + Math.floor(i / 3) * (h + 2), w, h, icon + tx(name, { left: 11, bottom: 10, 'font-size': 21 }), { label: name, def: i === 0 })).join('');
     return `<div class="page" data-tab="settings">
       ${tiles}
-      <p class="tx wrap" style="left:${fx}px;top:${fy + 2 * (h + 2) + 12}px;width:650px;margin:0;font-size:12px;color:rgba(255,255,255,.53)">Unofficial non-commercial fan project. Xbox and related names, logos, and imagery are property of Microsoft. Not affiliated with or endorsed by Microsoft. Dashboard design and assets from DashX360 by ZivvoZ.</p>
+      <p class="tx wrap" style="left:${fx}px;top:${fy + 2 * (h + 2) + 12}px;width:650px;margin:0;font-size:12px;color:rgba(255,255,255,.53)">Unofficial non-commercial fan project, inspired by my first console. Xbox and related names, logos, and imagery are property of Microsoft. Not affiliated with or endorsed by Microsoft. Dashboard design and assets from DashX360 by ZivvoZ.</p>
     </div>`;
   }
 
-  const PAGES = { bing: pageBing, home: pageHome, about: pageAbout, projects: pageProjects, social: pageSocial, settings: pageSettings };
+  const PAGES = { home: pageHome, about: pageAbout, projects: pageProjects, games: pageGames, movies: pageMovies, social: pageSocial, settings: pageSettings };
   // The side previews show the end of the previous tab and the start of the next one.
   function pageSpan(k) {
-    const page = pageEls[k], els = $$('[data-x]', page);
-    const left = Math.min(...els.map((e) => +e.dataset.x), page.dataset.l ? +page.dataset.l : Infinity);
-    const right = Math.max(...els.map((e) => +e.dataset.x + +e.dataset.w));
-    return [left, right];
+    const els = $$('[data-x]', pageEls[k]);
+    return [Math.min(...els.map((e) => +e.dataset.x)), Math.max(...els.map((e) => +e.dataset.x + +e.dataset.w))];
   }
   const leftCrop = (k) => pageSpan(k)[1] - 104;
   const rightCrop = (k) => pageSpan(k)[0];
@@ -446,7 +384,7 @@
         <button class="peek-hit peek-hit--l" type="button" aria-label="Previous" tabindex="-1"></button>
         <button class="peek-hit peek-hit--r" type="button" aria-label="Next" tabindex="-1"></button>
       </div>
-      <div class="hints foot"><span class="h" data-act="a">${G('A')} Select   </span><span class="h" data-act="y">${G('Y')} Search</span></div>
+      <div class="hints foot"><span class="h" data-act="a">${G('A')} Select   </span></div>
     </div>
     <div class="toast" aria-live="polite">
       <span class="toast__glow"></span><span class="toast__pill"></span>
@@ -457,7 +395,7 @@
   const pageEls = Object.fromEntries($$('.page', pagesEl).map((p) => [p.dataset.tab, p]));
   const tabBtns = $$('.tab');
   const peekL = $('.peek--l'), peekR = $('.peek--r');
-  const bgTheme = $('.bg-theme'), bgBing = $('.bg-bing');
+  const bgTheme = $('.bg-theme');
   document.body.insertAdjacentHTML('beforeend', '<p class="rotate">Turn your phone sideways for the full dashboard</p>');
 
   /* ================= Toast (RunSignInToastSequenceAsync) ================= */
@@ -570,7 +508,7 @@
   }
 
   /* ================= Tabs ================= */
-  let tabIndex = 1, animatingTab = false, queuedStep = 0;
+  let tabIndex = TABS.findIndex((t) => t.k === 'home'), animatingTab = false, queuedStep = 0;
   const lastFocus = {};
   const curTab = () => TABS[tabIndex].k;
   const curPage = () => pageEls[curTab()];
@@ -674,14 +612,12 @@
     if (TABS.every((t) => visited.has(t.k))) achieve('explorer');
   }
 
-  // Theme and Bing backgrounds (UpdateThemeBackgroundVisual / UpdateBingBackgroundVisual).
+  // Theme backgrounds (UpdateThemeBackgroundVisual).
   let themeSection = 'home';
   function updateBackgrounds() {
     const theme = THEMES.find((t) => t.id === S.theme);
-    const bingOn = curTab() === 'bing' && !Overlays.top();
-    bgBing.classList.toggle('on', bingOn);
     if (!theme || theme.id === 'default') { bgTheme.classList.remove('on'); return; }
-    themeSection = Overlays.has('settings') ? 'settings' : Overlays.has('library') ? 'games' : 'home';
+    themeSection = Overlays.has('settings') ? 'settings' : 'home';
     const url = `${A}themes/${theme.id}/${themeSection}.webp`;
     if (bgTheme.dataset.src !== url) {
       bgTheme.dataset.src = url;
@@ -705,40 +641,46 @@
   /* ================= Tile actions ================= */
   const ACTIONS = {
     'home.tray': () => toggleTray(),
-    'home.pins': () => Library.open('pins'),
-    'home.recent': () => Library.open('recent'),
-    'home.hero': () => Profile.open('about'),
-    'home.capital': () => launch(byId('capital-city')),
-    'home.panic': () => Details.open(byId('panic-pack')),
-    'home.leetcode': () => openLink(LINKS.leetcode, 'leetcode'),
-    'home.github': () => openLink(LINKS.github, 'source'),
+    'home.message': () => Win.open('message'),
     'home.linkedin': () => openLink(LINKS.linkedin, 'networker'),
-    'about.me': () => Profile.open('about'),
-    'about.stack': () => Profile.open('stack'),
-    'about.origin': () => Profile.open('origin'),
-    'about.games': () => Profile.open('games'),
+    'home.hero': () => Win.open('about'),
+    'home.projects': () => Win.open('projects'),
+    'home.stats': () => Win.open('stats'),
+    'home.valorant': () => Win.open('valorant'),
+    'home.film': () => Win.open('recent'),
+    'about.me': () => Win.open('about'),
+    'about.education': () => Win.open('education'),
+    'about.stack': () => Win.open('stack'),
+    'about.summer': () => Win.open('summer'),
     'about.achievements': () => Guide.open('achievements'),
-    'about.timeline': () => Profile.open('timeline'),
-    'projects.all': () => Library.open('projects'),
+    'projects.list': () => Win.open('projects'),
     'projects.github': () => openLink(LINKS.github, 'source'),
-    'projects.panic': () => Details.open(byId('panic-pack')),
-    'projects.capital': () => launch(byId('capital-city')),
-    'projects.unliker': () => Details.open(byId('instagram-unliker')),
-    'projects.site': () => Details.open(byId('byhamza')),
-    'projects.leetcode': () => openLink(LINKS.leetcode, 'leetcode'),
+    'projects.panic': () => openLink(PROJECTS[0].url, 'source'),
+    'projects.unliker': () => openLink(PROJECTS[1].url, 'source'),
+    'projects.site': () => openLink(PROJECTS[2].url, 'source'),
+    'projects.stats': () => Win.open('stats'),
+    'games.origin': () => Win.open('origin'),
+    'games.valorant': () => Win.open('valorant'),
+    'games.played': () => Win.open('played'),
+    'games.journey': () => Win.open('journey'),
+    'games.psn': () => Win.open('psn'),
+    'games.steam': () => Win.open('steam'),
+    'games.most': () => Win.open('most'),
+    'movies.latest': () => Win.open('recent'),
+    'movies.favs': () => Win.open('favs'),
+    'movies.recent': () => Win.open('recent'),
     'social.friends': () => Guide.open('friends'),
-    'social.message': () => openLink(LINKS.mail, 'messenger'),
+    'social.message': () => Win.open('message'),
     'social.linkedin': () => openLink(LINKS.linkedin, 'networker'),
     'settings.system': () => Settings.open(),
     'settings.preferences': () => Settings.open('dashboard'),
-    'settings.profile': () => Profile.open('about'),
     'settings.audio': () => Settings.open('audio'),
     'settings.privacy': () => Settings.open('data'),
+    'settings.credits': () => Settings.open('about'),
     'settings.turnoff': () => powerOff(),
   };
   function activateTile(el) {
     const id = el.dataset.t;
-    if (el.classList.contains('bing__box')) { focusBingInput(); return; }
     if (ACTIONS[id]) ACTIONS[id]();
   }
 
@@ -772,7 +714,7 @@
   const overlayOpen = () => !!Overlays.top();
   // Full-screen menus hide the dashboard. Going into one, the hub slides away to
   // the left; backing out, its tiles fly back in column by column, like the 360.
-  const FULL = ['library', 'settings', 'bing', 'game', 'details', 'profile', 'music'];
+  const FULL = ['settings', 'win'];
   let dashHidden = false, leaving = null, syncQueued = false, quietReturn = false;
   function syncDash() {
     // Stack changes made together (close one menu, open the next) settle once.
@@ -802,7 +744,8 @@
     const els = $$('.t, [data-nav]', curPage());
     const cols = [...new Set(els.map((e) => +e.dataset.x))].sort((a, b) => a - b);
     els.forEach((el) => el.animate([{ opacity: 0, translate: `${fromX}px 0` }, { opacity: 1, translate: '0 0' }], { duration: 400, delay: delay + cols.indexOf(+el.dataset.x) * 45, easing: E.quartOut, fill: 'backwards' }));
-    [$('.tabs', host), $('.me', host), $('.foot', host), peekL, peekR].forEach((el) => el.animate([{ opacity: 0 }, { opacity: getComputedStyle(el).opacity }], { duration: 300, delay, easing: E.sineOut, fill: 'backwards' }));
+    // A single keyframe animates up to each element's own opacity, whatever else is running.
+    [$('.tabs', host), $('.me', host), $('.foot', host), peekL, peekR].forEach((el) => el.animate([{ opacity: 0 }], { duration: 300, delay, easing: E.sineOut, fill: 'backwards' }));
   }
   // AnimateOverlayOut: a menu slides 112 px right while it fades. Menus that
   // float over the dashboard fade, and message boxes shrink away.
@@ -824,248 +767,11 @@
     const t = Overlays.api();
     if (t && t.refocus) t.refocus(); else if (!overlayOpen()) focusDefault();
   }
-  const recentIds = () => store.get('recentList', []);
-  function pushRecent(id) {
-    const r = recentIds().filter((x) => x !== id);
-    r.unshift(id);
-    store.set('recentList', r.slice(0, 12));
-  }
   function overlayEl(cls) {
     const el = html(`<div class="ov ${cls}"></div>`);
     dashCanvas.appendChild(el);
     return el;
   }
-
-  /* ================= My Projects / My Pins / Recent ================= */
-  function togglePin(g) {
-    const p = pins(), i = p.indexOf(g.id);
-    if (i >= 0) p.splice(i, 1); else { p.push(g.id); achieve('pinned'); }
-    store.set('pins', p);
-    sfx('select');
-    toast(g.title, i >= 0 ? 'Removed from My Pins' : 'Pinned to My Pins');
-  }
-  // A on a project: play it if it runs here, otherwise show its details.
-  const openProject = (g) => (g.launch.kind === 'play' ? launch(g) : Details.open(g));
-  const Library = (() => {
-    let el = null, mode = 'projects', sel = 0;
-    const list = () => {
-      if (mode === 'pins') return LIBRARY.filter((g) => pins().includes(g.id));
-      if (mode === 'recent') return recentIds().map(byId).filter(Boolean);
-      return LIBRARY;
-    };
-    function open(m) {
-      Overlays.clear();
-      mode = m; sel = 0;
-      el = overlayEl('lib');
-      const title = { pins: 'My Pins', recent: 'Recent' }[mode] || 'My Projects';
-      const filter = { pins: 'pinned projects', recent: 'recently opened' }[mode] || 'all projects';
-      el.innerHTML = `<div class="lib__back"></div>
-        <div class="lib__filter"><div><small>&#x2304; show me</small><span>${filter}</span></div><div><small>&#x2304; sort</small><span>${mode === 'recent' ? 'most recent' : 'featured'}</span></div></div>
-        <div class="lib__head"><b>${title}</b><span class="lib__count"></span><em class="lib__sel"></em></div>
-        <div class="lib__view"><div class="lib__strip"></div></div>
-        <div class="foot-row lib__foot" style="left:75px;bottom:34px;font-size:15px">${G('A')} Select   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back   </span>${G('X')} Details   ${G('Y')} Pin</div>`;
-      Overlays.push('library', api);
-      render();
-      sfx('menu-in');
-      achieve({ recent: 'lookback', pins: 'library' }[mode] || 'library');
-      if (reduced.matches) return;
-      layerIn(el, 0, 120, 0);
-      anim($('.lib__back', el), [{ opacity: 0 }, { opacity: 0.26 }], 260, E.sineOut);
-      layerIn($('.lib__filter', el), -24, 240, 40);
-      layerIn($('.lib__head', el), 42, 260, 60);
-      layerIn($('.lib__view', el), 168, 360, 35);
-      layerIn($('.lib__foot', el), 28, 210, 145);
-    }
-    function render() {
-      const strip = $('.lib__strip', el), items = list();
-      $$('.lib__empty', el).forEach((p) => p.remove());
-      strip.innerHTML = items.map((g, i) => `<button class="t card" data-nav data-i="${i}" aria-label="${esc(g.title)}"><span class="f"><span class="card__cover"><img src="${g.cover}" alt=""></span><span class="card__t">${esc(g.title)}</span><span class="card__s">${esc(g.sub)}</span>${pins().includes(g.id) ? `<span class="card__pin"><img src="${A}icons/pin.webp" alt="Pinned"></span>` : ''}</span></button>`).join('');
-      if (!items.length) strip.parentElement.insertAdjacentHTML('afterend', `<p class="lib__empty">${mode === 'recent' ? 'Nothing here yet. Projects you open show up here.' : 'Nothing pinned yet. Press Y on a project to pin it.'}</p>`);
-      $$('.t', strip).forEach((b, i) => {
-        b.addEventListener('click', () => { select(i, true); openProject(items[i]); });
-        b.addEventListener('mouseenter', () => setActive(b));
-        b.addEventListener('mouseleave', () => { if (activeEl === b) setActive(null); });
-      });
-      select(Math.min(sel, Math.max(0, items.length - 1)), true);
-    }
-    function select(i, quiet) {
-      const n = list().length;
-      if (!n) { $('.lib__count', el).textContent = '0 of 0'; $('.lib__sel', el).textContent = ''; return; }
-      const prev = sel;
-      sel = clamp(i, 0, n - 1);
-      focusEl($$('.lib__strip .t', el)[sel]);
-      $('.lib__count', el).textContent = `${sel + 1} of ${n}`;
-      $('.lib__sel', el).textContent = list()[sel].title;
-      if (!quiet && prev !== sel) sfx('focus');
-      // Keep the focused card inside the visible strip.
-      const strip = $('.lib__strip', el), vw = strip.parentElement.clientWidth - 40, left = sel * 196;
-      let off = -(parseFloat(strip.dataset.off) || 0);
-      if (left - off < 0) off = left;
-      if (left + 188 - off > vw) off = left + 188 - vw;
-      strip.dataset.off = -off;
-      strip.style.transform = `translateX(${-off}px)`;
-    }
-    function close(silent, instant) {
-      if (!el) return;
-      const node = el;
-      el = null;
-      if (!silent) sfx('menu-out');
-      Overlays.pop('library');
-      refocusUnder();
-      if (instant || reduced.matches) { node.remove(); return; }
-      layerOut($('.lib__filter', node), -34, 145);
-      layerOut($('.lib__head', node), 48, 160);
-      layerOut($('.lib__view', node), 150, 210);
-      layerOut($('.lib__foot', node), 24, 130);
-      layerOut($('.lib__back', node), 0, 190, 0.26);
-      overlayOut(node);
-    }
-    const api = {
-      handle(a) {
-        if (!el) return true;
-        const g = list()[sel];
-        if (a === 'left' || a === 'right') select(sel + (a === 'left' ? -1 : 1));
-        else if (a === 'a') { if (g) openProject(g); }
-        else if (a === 'b') close();
-        else if (a === 'x') { if (g) Details.open(g); }
-        else if (a === 'y') { if (g) { togglePin(g); render(); } }
-        return true;
-      },
-      refocus() { if (!el) return; render(); },
-      dismiss() { overlayOut(el, 'fade'); el = null; },
-    };
-    return { open, close, get isOpen() { return !!el; } };
-  })();
-
-  /* ================= Game Details ================= */
-  const Details = (() => {
-    let el = null, game = null, tab = 0;
-    const TABS_D = ['overview', 'details', 'extras', 'gallery'];
-    let galleryI = 0;
-    function open(g) {
-      if (!g) return;
-      if (el) el.remove(), Overlays.pop('details');
-      if (!Overlays.has('library') && !Overlays.has('bing')) Overlays.clear();
-      game = g; tab = 0; galleryI = 0;
-      pushRecent(g.id);
-      const read = new Set(store.get('read', []));
-      read.add(g.id); store.set('read', [...read]);
-      if (LIBRARY.every((x) => read.has(x.id))) achieve('reader');
-      el = overlayEl('det');
-      el.innerHTML = `<div class="det__tint"></div><img class="det__img" src="${g.wide}" alt=""><div class="det__shade"></div><div class="det__grad"></div>
-        <nav class="det__tabs">${TABS_D.map((t, i) => `<button type="button" data-tab="${i}">${t}</button>`).join('')}</nav>
-        <div class="det__title">${esc(g.title)}</div>
-        <div class="det__body"></div>
-        <div class="foot-row foot-row--20 det__foot" style="left:95px;bottom:38px;font-size:16px">${G('A')} Select   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back   </span>${G('Y')} Pin</div>`;
-      $$('.det__tabs button', el).forEach((b) => b.addEventListener('click', () => setTab(+b.dataset.tab)));
-      Overlays.push('details', api);
-      paint(true);
-      sfx('menu-in');
-      if (reduced.matches) return;
-      layerIn(el, 0, 120, 0);
-      anim($('.det__tint', el), [{ opacity: 0 }, { opacity: 1 }], 210, E.sineOut);
-      anim($('.det__img', el), [{ opacity: 0 }, { opacity: 0.46 }], 270, E.sineOut, 25);
-      anim($('.det__shade', el), [{ opacity: 0 }, { opacity: 1 }], 250, E.sineOut, 40);
-      anim($('.det__grad', el), [{ opacity: 0 }, { opacity: 1 }], 250, E.sineOut, 55);
-      layerIn($('.det__tabs', el), -42, 270, 55);
-      layerIn($('.det__title', el), 48, 280, 80);
-      layerIn($('.det__foot', el), 26, 210, 190);
-    }
-    const dbtn = (label, box, act) => `<button type="button" class="dbtn" data-nav data-act="${act}" style="${px(box)}">${esc(label)}</button>`;
-    function paint(first) {
-      $$('.det__tabs button', el).forEach((b, i) => b.classList.toggle('sel', i === tab));
-      const body = $('.det__body', el), g = game;
-      $('.det__title', el).style.display = '';
-      if (tab === 0) {
-        const pinLabel = pins().includes(g.id) ? 'Unpin' : 'Pin';
-        body.innerHTML = `<div class="det__panel det__over" style="left:160px;top:184px;width:760px;height:382px">
-            ${dbtn(g.launch.label, { left: 0, top: 0, width: 165, height: 100 }, 'launch')}
-            ${dbtn(g.second ? g.second.label : 'Details', { left: 169, top: 0, width: 161, height: 100 }, g.second ? 'second' : 'details')}
-            ${g.second ? dbtn('Details', { left: 0, top: 104, width: 165, height: 96 }, 'details') : ''}
-            ${dbtn(pinLabel, g.second ? { left: 169, top: 104, width: 161, height: 96 } : { left: 0, top: 104, width: 165, height: 96 }, 'pin')}
-            <div class="det__cover"><img src="${g.wide}" alt=""></div>
-            <div class="det__meta">${g.meta.map((m, i) => `<div style="font-size:${[15, 16, 14, 14][i] || 14}px;margin-top:${i ? 5 : 0}px">${esc(m)}</div>`).join('')}</div>
-          </div>
-          <div class="det__info"><div class="rate"><b>${esc(g.rating[0])}</b><span>${esc(g.rating[1])}</span></div>
-            <dl><dt>Source</dt><dd>${esc(g.source)}</dd><dt>Genre</dt><dd>${esc(g.genre)}</dd><dt>Last played</dt><dd class="small">${esc(lastPlayed(g))}</dd></dl></div>`;
-        if (first && !reduced.matches) { layerIn($('.det__over', el), 118, 340, 95); layerIn($('.det__info', el), 58, 285, 145); }
-      } else if (tab === 1) {
-        body.innerHTML = `<div class="det__panel det__details" style="left:198px;top:188px;width:850px;height:370px">
-          <div><h4>Developer</h4><p>${esc(g.developer)}</p><h4>Publisher</h4><p>${esc(g.publisher)}</p><h4>Genre</h4><p>${esc(g.genre)}</p></div>
-          <div class="cap"><h4>Local Capabilities</h4><p>${esc(g.local).replace(/\n/g, '<br>')}</p><h4 class="on">Online Capabilities</h4><p>${esc(g.online)}</p></div>
-          <p class="note" data-nav tabindex="-1">${esc(g.note)}</p></div>`;
-      } else if (tab === 2) {
-        body.innerHTML = `<div class="det__panel det__extras" style="left:228px;top:184px;width:810px;height:312px">${g.extras.map(([t, u, p], i) => `<button type="button" class="dbtn" data-nav data-act="extra" data-i="${i}"><img src="${A}icons/${i ? 'apps-marketplace' : 'game-marketplace'}.webp" alt=""><span class="x-p">${esc(p)}</span><span class="x-t">${esc(t)}</span></button>`).join('')}</div>`;
-      } else {
-        const n = g.gallery.length;
-        body.innerHTML = `<div class="det__count">${galleryI + 1} of ${n}</div><div class="det__panel" style="left:240px;top:182px"><div class="det__gallery" data-nav tabindex="-1"><img src="${g.gallery[galleryI]}" alt=""></div></div>`;
-      }
-      $$('[data-nav]', body).forEach((b) => {
-        b.addEventListener('mouseenter', () => setActive(b));
-        b.addEventListener('mouseleave', () => { if (activeEl === b) setActive(null); });
-        b.addEventListener('click', () => act(b));
-      });
-      const firstBtn = $('[data-nav]', body);
-      if (firstBtn) focusEl(firstBtn);
-    }
-    function lastPlayed(g) {
-      const t = store.get('played', {})[g.id];
-      return t ? new Date(t).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Never';
-    }
-    function setTab(i) {
-      i = clamp(i, 0, TABS_D.length - 1);
-      if (i === tab) return;
-      sfx(i < tab ? 'page-left' : 'page-right');
-      const dir = i > tab ? 1 : -1;
-      tab = i;
-      paint();
-      const panel = $('.det__panel', el);
-      if (panel && !reduced.matches) layerIn(panel, dir * 90, 260, 0);
-    }
-    function act(b) {
-      const a = b.dataset.act;
-      if (a === 'launch') launch(game);
-      else if (a === 'second') openLink(game.second.url, 'source');
-      else if (a === 'details') setTab(1);
-      else if (a === 'pin') { togglePin(game); paint(); }
-      else if (a === 'extra') {
-        const [, u] = game.extras[+b.dataset.i];
-        if (u === '#details') setTab(1); else openLink(u, 'source');
-      }
-    }
-    function close() {
-      if (!el) return;
-      const node = el;
-      el = null;
-      sfx('menu-out');
-      Overlays.pop('details');
-      refocusUnder();
-      overlayOut(node);
-    }
-    const api = {
-      handle(a) {
-        if (!el) return true;
-        if (a === 'lb' || a === 'rb') { setTab(tab + (a === 'lb' ? -1 : 1)); return true; }
-        if (tab === 3 && (a === 'left' || a === 'right')) {
-          const n = game.gallery.length, i = clamp(galleryI + (a === 'left' ? -1 : 1), 0, n - 1);
-          if (i !== galleryI) { galleryI = i; sfx('focus'); paint(); }
-          return true;
-        }
-        if (['left', 'right', 'up', 'down'].includes(a)) {
-          const n = bestInDirection(rectCands(el), activeEl, a);
-          if (n) { focusEl(n); sfx('focus'); }
-          return true;
-        }
-        if (a === 'a') { if (activeEl && el.contains(activeEl) && activeEl.dataset.act) act(activeEl); return true; }
-        if (a === 'b') { close(); return true; }
-        if (a === 'y') { togglePin(game); if (tab === 0) paint(); return true; }
-        return true;
-      },
-      refocus() { if (!el) return; const f = $('.det__body [data-nav]', el); if (f) focusEl(f); },
-      dismiss() { overlayOut(el, 'fade'); el = null; },
-    };
-    return { open, close };
-  })();
 
   /* ================= System Settings ================= */
   const Settings = (() => {
@@ -1086,9 +792,10 @@
         el = overlayEl('set');
         el.innerHTML = `<div class="set__title">System Settings</div>
           <div class="set__frame"><div class="set__left"><div class="set__scroll"><div></div></div></div><div class="set__right"><h3></h3><p></p></div></div>
-          <div class="foot-row set__foot" style="left:92px;bottom:45px;font-size:15px">${G('A')} Select   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back</span></div>`;
+          <div class="hints ofoot set__foot"><span class="h" data-act="a">${G('A')} Select   </span><span class="h" data-act="b">${G('B')} Back   </span></div>`;
         Overlays.push('settings', api);
         sfx('menu-in');
+        achieve('sysset');
         if (!reduced.matches) {
           layerIn(el, 0, 120, 0);
           layerIn($('.set__title', el), 36, 250, 35);
@@ -1144,19 +851,17 @@
       } else if (k === 'audio') {
         list([
           '<div class="opt"><label>Dashboard Volume</label></div>',
-          `<div class="oslider" data-nav tabindex="-1" data-slider="volume" data-tip="Dashboard Volume|Change only this dashboard’s sounds and music volume."><span class="track"><i style="width:${S.volume * 100}%"></i><b style="left:${S.volume * 100}%"></b></span><span>${Math.round(S.volume * 100)}%</span></div>`,
-          btn('music', 'Music Player', 'Open the Music Player and play songs from this device.'),
+          `<div class="oslider" data-nav tabindex="-1" data-slider="volume" data-tip="Dashboard Volume|Change how loud the dashboard sounds are."><span class="track"><i style="width:${S.volume * 100}%"></i><b style="left:${S.volume * 100}%"></b></span><span>${Math.round(S.volume * 100)}%</span></div>`,
         ]);
       } else if (k === 'data') {
         list([
           btn('reset-ach', 'Reset Achievements', 'Lock every achievement again. Your gamerscore goes back to 0.'),
-          btn('reset-lib', 'Reset Pins and Recent', 'Clear My Pins and the Recent list.'),
           btn('reset-all', 'Reset Everything', 'Clear all dashboard data saved in this browser, including settings.'),
         ]);
       } else if (k === 'about') {
         list([
           btn('l:dashx360', 'DashX360 by ZivvoZ', 'The Windows dashboard this site is ported from. Layouts, animations, sounds and artwork come from DashX360.'),
-          btn('l:source', 'Source Code', 'byhamza.dev on GitHub.'),
+          btn('l:source', 'Source Code', 'byhamza.dev on GitHub. Built after the Xbox 360, my first console.'),
           btn('l:selawik', 'Selawik Font', 'Microsoft’s open-source stand-in for Segoe UI, under the SIL Open Font License.'),
           '<p class="otext">Unofficial non-commercial fan project. Xbox and related names, logos, and imagery are property of Microsoft. Not affiliated with or endorsed by Microsoft.</p>',
         ]);
@@ -1176,14 +881,12 @@
       if (b.dataset.btn) {
         const id = b.dataset.btn;
         if (id === 'themes') { Themes.open(); return; }
-        if (id === 'music') { close(true); Music.open(); return; }
         if (id.startsWith('l:')) {
           openLink({ dashx360: LINKS.dashx360, source: LINKS.source, selawik: 'https://github.com/microsoft/Selawik' }[id.slice(2)], id === 'l:source' ? 'source' : null);
           return;
         }
         if (id === 'reset-ach') { store.del('achievements'); refreshScore(); sfx('select'); toast('Achievements', 'Reset'); }
-        if (id === 'reset-lib') { store.del('pins'); store.del('recentList'); store.del('played'); sfx('select'); toast('My Pins', 'Reset'); }
-        if (id === 'reset-all') { ['achievements', 'pins', 'recentList', 'played', 'capitalBest', 'read', 'visited', 'settings', 'days'].forEach(store.del); sfx('select'); setTimeout(() => location.reload(), 400); }
+        if (id === 'reset-all') { ['achievements', 'visited', 'settings', 'days'].forEach(store.del); sfx('select'); setTimeout(() => location.reload(), 400); }
       }
     }
     // DashboardInputRouter.TryAdjustFocusedSetting: left and right change values in place.
@@ -1267,7 +970,7 @@
       Overlays.clear();
       el = overlayEl('themes');
       el.innerHTML = `<div class="themes__back"></div><div class="themes__panel"><div class="themes__head">Select Theme</div>${THEMES.map((t) => `<button type="button" class="tbtn" data-nav data-theme="${t.id}">${esc(t.name)}${t.id === S.theme ? '<small>Current</small>' : ''}</button>`).join('')}</div>
-        <div class="foot-row themes__foot" style="left:92px;bottom:45px;font-size:15px">${G('A')} Select   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back</span></div>`;
+        <div class="hints ofoot themes__foot"><span class="h" data-act="a">${G('A')} Select   </span><span class="h" data-act="b">${G('B')} Back   </span></div>`;
       $$('.tbtn', el).forEach((b) => {
         b.addEventListener('mouseenter', () => setActive(b));
         b.addEventListener('click', () => pick(b));
@@ -1318,613 +1021,189 @@
     return { open };
   })();
 
-  /* ================= Profile: Hamza's about page ================= */
-  // The left list picks a section; the right pane shows it under the gamercard.
-  const Profile = (() => {
-    let el = null, sel = 0;
-    const useTheme = () => {
-      if (S.theme !== 'batman_arkham_asylum') { S.theme = 'batman_arkham_asylum'; saveSettings(); achieve('themes'); updateBackgrounds(); }
-      sfx('select');
-      toast('Batman: Arkham Asylum', 'Theme applied');
-      paintView(false);
-    };
-    const SECTIONS = [
-      { id: 'about', t: 'About Me' },
-      { id: 'stack', t: 'Tech Stack', ach: 'stack' },
-      { id: 'games', t: 'Games I Play' },
-      { id: 'origin', t: 'Where It Began', ach: 'origin', act: () => (S.theme === 'batman_arkham_asylum' ? null : 'Use Theme'), run: useTheme },
-      { id: 'timeline', t: 'Timeline' },
-      { id: 'achievements', t: 'Achievements', act: () => 'View Achievements', run: () => Guide.open('achievements') },
-      { id: 'contact', t: 'Send Message', act: () => 'Send Message', run: () => openLink(LINKS.mail, 'messenger') },
-    ];
-    const rows = (pairs) => `<dl class="pv__rows">${pairs.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`;
-    function view(id) {
-      if (id === 'stack') return `<h3>Tech Stack</h3><div class="pv__chips">${ABOUT.stack.map(([n, d]) => `<div><b>${esc(n)}</b><span>${esc(d)}</span></div>`).join('')}</div>`;
-      if (id === 'games') return `<h3>Games I Play</h3><ul class="pv__games">${ABOUT.games.map(([t, y], i) => `<li${i ? '' : ' class="fav"'}><span>${esc(t)}</span><small>${y}</small></li>`).join('')}</ul>`;
-      if (id === 'origin') return `<div class="pv__art"><img src="${ORIGIN_ART}" alt=""></div><h3>Batman: Arkham Asylum <small>2009</small></h3><p>${esc(ABOUT.origin)}</p>`;
-      if (id === 'timeline') return `<h3>Timeline</h3><ol class="pv__time">${ABOUT.timeline.map(([d, t, s]) => `<li><time>${esc(d)}</time><b>${esc(t)}</b><span>${esc(s)}</span></li>`).join('')}</ol>`;
-      if (id === 'achievements') {
-        const g = got(), n = ACHIEVEMENTS.filter((a) => g[a.id]).length, gs = gamerscore();
-        return `<h3>Achievements</h3><p>${n} of ${ACHIEVEMENTS.length} unlocked, ${gs} of 1000 gamerscore.</p><div class="pv__meter"><i style="width:${gs / 10}%"></i></div><p class="pv__dim">Every one is earned on this site. Some are secret.</p>`;
-      }
-      if (id === 'contact') return `<h3>Say hello</h3><p>Message me about projects, uni or games.</p>${rows([['Email', 'hello@byhamza.dev'], ['GitHub', 'hamzaaaaaf'], ['LinkedIn', 'Hamza Faisal'], ['LeetCode', 'hamza57']])}`;
-      return `<h3>Hi, I’m Hamza.</h3><p>${esc(ABOUT.intro)}</p>${rows(ABOUT.facts)}`;
-    }
-    function open(section = 'about') {
-      if (el) { show(Math.max(0, SECTIONS.findIndex((s) => s.id === section)), true); return; }
-      Overlays.clear();
-      sel = Math.max(0, SECTIONS.findIndex((s) => s.id === section));
-      el = overlayEl('prof');
-      el.innerHTML = `<div class="prof__title">Profile</div>
-        <div class="prof__pic"><img src="${ME.pic}" alt=""></div>
-        <div class="prof__clock" data-clock24></div>
-        <div class="prof__frame">
-          <div class="prof__left">${SECTIONS.map((s, i) => `<button type="button" class="pbtn" data-nav data-i="${i}">${esc(s.t)}</button>`).join('')}</div>
-          <div class="prof__right">
-            <div class="gc"><div class="gc__tag">${esc(ME.tag)}</div><div class="gc__pic"><img src="${ME.pic}" alt=""></div>
-              <div class="gc__rows"><div><span>Rep</span><span class="rep">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div><div><span>Gamerscore</span><span><span data-gs>${gamerscore()}</span> G</span></div><div><span>Zone</span><span>${esc(ME.zone)}</span></div></div>
-              <div class="gc__motto">${esc(ME.motto)}</div></div>
-            <div class="pv"></div>
-          </div>
-        </div>
-        <div class="foot-row prof__foot" style="left:138px;bottom:38px;font-size:15px"></div>`;
-      $$('.pbtn', el).forEach((b, i) => {
-        b.addEventListener('mouseenter', () => { if (i !== sel) show(i); });
-        b.addEventListener('click', () => { show(i); run(); });
-      });
-      Overlays.push('profile', api);
-      tickClock();
-      show(sel, true);
-      sfx('menu-in');
-      achieve('profile');
-      if (!reduced.matches) {
-        anim(el, [{ opacity: 0 }, { opacity: 1 }], 95, E.sineOut);
-        layerIn($('.prof__title', el), 34, 240, 35);
-        layerIn($('.prof__pic', el), 0, 210, 45);
-        layerIn($('.prof__clock', el), 34, 240, 55);
-        layerIn($('.prof__frame', el), 118, 340, 20);
-        layerIn($('.prof__foot', el), 24, 205, 145);
-      }
-    }
-    function paintView(animate) {
-      const s = SECTIONS[sel], label = s.act && s.act();
-      const pv = $('.pv', el);
-      pv.innerHTML = view(s.id);
-      pv.dataset.view = s.id;
-      $('.prof__foot', el).innerHTML = `${label ? `<span data-act="a" style="display:flex;align-items:center;cursor:pointer">${G('A')} ${esc(label)}   </span>` : ''}<span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back</span>`;
-      if (animate && !reduced.matches) layerIn(pv, 28, 220, 0);
-    }
-    function show(i, quiet) {
-      const changed = i !== sel;
-      sel = clamp(i, 0, SECTIONS.length - 1);
-      focusEl($$('.pbtn', el)[sel]);
-      if (SECTIONS[sel].ach) achieve(SECTIONS[sel].ach);
-      paintView(changed || quiet);
-      if (changed && !quiet) sfx('focus');
-    }
-    function run() {
-      const s = SECTIONS[sel];
-      if (s.run && (!s.act || s.act())) s.run();
-    }
-    function close() {
-      if (!el) return;
-      const node = el;
-      el = null;
-      sfx('menu-out');
-      Overlays.pop('profile');
-      refocusUnder();
-      if (!reduced.matches) layerOut($('.prof__frame', node), 118, 210);
-      overlayOut(node);
-    }
-    const api = {
-      handle(a) {
-        if (!el) return true;
-        if (a === 'up' || a === 'down') show(sel + (a === 'up' ? -1 : 1));
-        else if (a === 'a') run();
-        else if (a === 'b') close();
-        return true;
-      },
-      refocus() { if (!el) return; show(sel, true); },
-      dismiss() { overlayOut(el, 'fade'); el = null; },
-    };
-    return { open };
-  })();
-
-  /* ================= Bing search ================= */
-  // Bing on the 360 searched the console, not the web, so results open here.
-  function bingSearch(q) {
-    q = (q || '').trim();
-    if (!q) return false;
-    achieve('search');
-    BingResults.open(q);
-    return true;
+  /* ================= Windows: one per tile ================= */
+  // Live stats from the Worker (/api/feed); null until they arrive.
+  let FEED = null;
+  const F = (k, fn) => { try { return FEED && FEED[k] ? fn(FEED[k]) : null; } catch (e) { return null; } };
+  const stars = (r) => (r ? '★'.repeat(Math.floor(r)) + (r % 1 ? '½' : '') : '');
+  const n = (v) => Number(v || 0).toLocaleString('en-GB');
+  const when = (iso) => (iso ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '');
+  const rows = (pairs) => `<dl class="wrows">${pairs.filter((p) => p[1] !== null && p[1] !== '').map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`;
+  const waiting = (what) => `<p class="wdim">${FEED ? `${what} isn’t available right now.` : 'Loading…'}</p>`;
+  // A row you can select; its index points at the window's actions.
+  const pick = (i, title, sub = '', side = '') => `<button type="button" class="wpick" data-nav data-i="${i}"><span><b>${esc(title)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span>${side ? `<em>${esc(side)}</em>` : ''}</button>`;
+  const filmRow = (f) => `<li class="film">${f.poster ? `<img src="${esc(f.poster)}" alt="" loading="lazy">` : '<i></i>'}<span><b>${esc(f.title)}</b><small>${[f.year, f.watched ? `watched ${when(f.watched)}` : ''].filter(Boolean).join(' · ')}</small></span><em>${f.rating ? `<span class="me">${stars(f.rating)}</span>` : ''}${f.imdb ? `<span class="imdb">IMDb ${esc(f.imdb)}</span>` : ''}</em></li>`;
+  const gameRow = ([name, hrs, plat]) => `<li><span>${esc(name)}</span><small>${plat ? `${esc(plat)} · ` : ''}${n(hrs)} h</small></li>`;
+  function copyEmail() {
+    const done = () => { achieve('messenger'); sfx('select'); toast(LINKS.email, 'Copied to clipboard'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(LINKS.email).then(done, () => toast(LINKS.email, 'Copy it from here'));
+    else toast(LINKS.email, 'Copy it from here');
   }
-  function focusBingInput() {
-    const input = $('.bing__box input', pageEls.bing);
-    focusEl(input.parentElement);
-    input.focus({ preventScroll: true });
-  }
-  const Search = (() => {
-    let el = null;
-    function open() {
-      if (el) return;
-      Overlays.clear();
-      goTab('bing');
-      el = overlayEl('srch');
-      el.innerHTML = `<div class="srch__box"><h2>Bing</h2><p>Search games, help, stores, and the web.</p><input type="search" enterkeyhint="search" autocomplete="off" spellcheck="false" aria-label="Search with Bing"><div class="srch__btns"><button type="button" class="abtn" data-nav data-go>Search</button><button type="button" class="abtn" data-nav data-cancel>Cancel</button></div></div>`;
-      const input = $('input', el);
-      input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
-      $('[data-go]', el).addEventListener('click', submit);
-      $('[data-cancel]', el).addEventListener('click', () => close());
-      $$('.abtn', el).forEach((b) => b.addEventListener('mouseenter', () => setActive(b)));
-      Overlays.push('search', api);
-      sfx('menu-in');
-      setTimeout(() => { if (!el) return; setActive(null); input.focus({ preventScroll: true }); }, 30);
-    }
-    function submit() { const q = $('input', el).value.trim(); if (!q) return; close(true); bingSearch(q); }
-    function close(silent) {
-      if (!el) return;
-      const node = el;
-      el = null;
-      if (!silent) sfx('menu-out');
-      Overlays.pop('search');
-      refocusUnder();
-      overlayOut(node, 'fade');
-    }
-    const api = {
-      handle(a) {
-        if (!el) return true;
-        if (a === 'b') { close(); return true; }
-        if (a === 'left' || a === 'right' || a === 'down') {
-          const n = bestInDirection(rectCands(el), activeEl && el.contains(activeEl) ? activeEl : $('.abtn', el), a);
-          focusEl(n || $('.abtn', el));
-          return true;
-        }
-        if (a === 'up') { $('input', el).focus(); setActive(null); return true; }
-        if (a === 'a') { if (activeEl && el.contains(activeEl)) activeEl.click(); else submit(); return true; }
-        return true;
-      },
-      dismiss() { overlayOut(el, 'fade'); el = null; },
-    };
-    return { open };
-  })();
+  // Everything played on PlayStation and Steam, most hours first.
+  const mostPlayed = () => [
+    ...(F('psn', (d) => d.top.map((g) => [g.name, g.hours, g.platform])) || []),
+    ...(F('steam', (d) => (d.top || d.recent).map((g) => [g.name, g.hours, 'PC'])) || []),
+  ].sort((a, b) => b[1] - a[1]);
 
-  const BingResults = (() => {
-    let el = null, sel = 0, tiles = [];
-    const INDEX = () => [
-      ...LIBRARY.map((g) => ({ title: g.title, kw: `project ${g.type} ${g.genre} ${g.sub} ${g.meta.join(' ')} hamza`, img: g.icon || g.wide, act: () => Details.open(g) })),
-      { title: 'About Me', kw: 'hamza profile about bio student computer science aston university birmingham cv resume gamercard', img: ME.pic, act: () => Profile.open('about') },
-      { title: 'Tech Stack', kw: `skills languages tools stack ${ABOUT.stack.map((x) => x[0]).join(' ')}`, glyph: 'layers', act: () => Profile.open('stack') },
-      { title: 'Games I Play', kw: `games gaming favourite favorite ${ABOUT.games.map((x) => x[0]).join(' ')}`, glyph: 'games', act: () => Profile.open('games') },
-      { title: 'Where It Began', kw: 'batman arkham asylum first game origin rocksteady', img: ORIGIN_ART, act: () => Profile.open('origin') },
-      { title: 'Timeline', kw: 'history journey career dates', glyph: 'clock', act: () => Profile.open('timeline') },
-      { title: 'GitHub', kw: 'code source repos repositories hamzaaaaaf', glyph: 'github', act: () => openLink(LINKS.github, 'source') },
-      { title: 'LinkedIn', kw: 'cv resume work jobs contact', glyph: 'linkedin', act: () => openLink(LINKS.linkedin, 'networker') },
-      { title: 'LeetCode', kw: 'problems algorithms data structures coding hamza57', glyph: 'leetcode', act: () => openLink(LINKS.leetcode, 'leetcode') },
-      { title: 'Message Hamza', kw: 'email mail contact hello', glyph: 'mail', act: () => openLink(LINKS.mail, 'messenger') },
-      { title: 'My Projects', kw: 'library games apps work portfolio collection', glyph: 'games', act: () => Library.open('projects') },
-      { title: 'My Pins', kw: 'pinned favourites favorites', glyph: 'pin', act: () => Library.open('pins') },
-      { title: 'Recent', kw: 'history played opened', glyph: 'clock', act: () => Library.open('recent') },
-      { title: 'Achievements', kw: 'gamerscore trophies awards', glyph: 'trophy', vb: '0 0 30 32', act: () => Guide.open('achievements') },
-      { title: 'Friends', kw: 'people social contacts', glyph: 'people', act: () => Guide.open('friends') },
-      { title: 'Music Player', kw: 'songs music audio play', glyph: 'play', act: () => Music.open() },
-      { title: 'Themes', kw: 'background wallpaper halo batman resident evil stockholm', glyph: 'sliders', act: () => Themes.open() },
-      { title: 'System Settings', kw: 'settings options preferences sound volume controller startup', glyph: 'gear', act: () => Settings.open() },
-      { title: trayLabel(), kw: 'disc tray eject drive', glyph: 'eject', act: () => toggleTray() },
-    ];
-    function search(q) {
-      const words = q.toLowerCase().split(/\s+/).filter(Boolean), ql = q.toLowerCase();
-      return INDEX().map((it) => {
-        const t = it.title.toLowerCase(), hay = `${t} ${it.kw}`.toLowerCase();
-        if (!words.every((w) => hay.includes(w))) return null;
-        return { it, rank: t.startsWith(ql) ? 0 : t.includes(ql) ? 1 : 2 };
-      }).filter(Boolean).sort((a, b) => a.rank - b.rank).map((r) => r.it);
-    }
-    function open(q) {
+  const WINDOWS = {
+    about: () => ({ title: 'About Me', ach: 'about', body: `<div class="wme"><img src="${ME.pic}" alt=""><div>${ABOUT.map((p) => `<p>${esc(p)}</p>`).join('')}</div></div>${rows(FACTS)}` }),
+    education: () => ({ title: 'Education', ach: 'education', body: `<ol class="wlist">${EDUCATION.map((e) => `<li><b>${esc(e.place)}</b><span>${esc(e.what)}</span>${e.when ? `<small>${esc(e.when)}</small>` : ''}</li>`).join('')}</ol>` }),
+    stack: () => ({ title: 'Tech Stack', ach: 'stack', body: `<div class="wchips">${STACK.map(([t, d]) => `<div><b>${esc(t)}</b><span>${esc(d)}</span></div>`).join('')}</div>` }),
+    summer: () => ({ title: 'Summer of 2022', ach: 'summer', body: `<p>The best summer of my life, and the combo that made it.</p>${rows(SUMMER)}` }),
+    projects: () => ({
+      title: 'All Projects', ach: 'projects',
+      body: PROJECTS.map((p, i) => pick(i, p.title, p.line)).join('') + pick(PROJECTS.length, 'More on GitHub', 'Everything else I’ve built'),
+      run: (i) => openLink(i < PROJECTS.length ? PROJECTS[i].url : LINKS.github, 'source'),
+      a: 'Open',
+    }),
+    stats: () => {
+      const lc = F('leetcode', (d) => d), gh = F('github', (d) => d);
+      return {
+        title: 'Stats', ach: 'stats',
+        body: `<div class="wcols"><section><h3>LeetCode</h3>${lc ? `<p class="wbig">${n(lc.solved.All)}<small>problems solved</small></p>${rows([['Easy', `${lc.solved.Easy} of ${n(lc.totals.Easy)}`], ['Medium', `${lc.solved.Medium} of ${n(lc.totals.Medium)}`], ['Hard', `${lc.solved.Hard} of ${n(lc.totals.Hard)}`], ['Active days', lc.activeDays], ['Streak', lc.streak ? `${lc.streak} days` : '']])}${lc.recent.length ? `<h4>Recently solved</h4><ul class="wsmall">${lc.recent.map((r) => `<li>${esc(r.title)}</li>`).join('')}</ul>` : ''}` : waiting('LeetCode')}</section>
+          <section><h3>GitHub</h3>${gh ? `<p class="wbig">${n(gh.repos)}<small>public repos</small></p>${rows(gh.languages.map(([l, pc]) => [l, `${pc}%`]))}${gh.latest ? `<h4>Last pushed</h4><ul class="wsmall"><li>${esc(gh.latest.name)}, ${when(gh.latest.pushed)}</li></ul>` : ''}` : waiting('GitHub')}</section></div>`,
+        a: 'Open LeetCode', onA: () => openLink(LINKS.leetcode, 'leetcode'),
+        x: 'Open GitHub', onX: () => openLink(LINKS.github, 'source'),
+      };
+    },
+    message: () => ({
+      title: 'Message Me',
+      body: `<p class="wbig wbig--mail">${esc(LINKS.email)}</p><p>Message me about projects, uni or games.</p>${pick(0, 'Copy email address')}${pick(1, 'Open in your mail app')}${pick(2, 'LinkedIn')}`,
+      run: (i) => [copyEmail, () => openLink(`mailto:${LINKS.email}`, 'messenger'), () => openLink(LINKS.linkedin, 'networker')][i](),
+      a: 'Select',
+    }),
+    origin: () => ({ title: 'Where It Began', ach: 'origin', body: `<div class="wart"><img src="${ORIGIN.art}" alt=""></div><h3>${esc(ORIGIN.title)} <small>${ORIGIN.year}</small></h3><p>${esc(ORIGIN.text)}</p>` }),
+    journey: () => ({ title: 'Console Journey', ach: 'journey', body: `<ol class="wjourney">${JOURNEY.map(([c, s]) => `<li><b>${esc(c)}</b>${s ? `<small>${esc(s)}</small>` : ''}</li>`).join('')}</ol><p>The Xbox 360 came first, and it’s why this site looks the way it does.</p>` }),
+    played: () => ({ title: 'Games I Play', ach: 'gamer', body: `<ul class="wgames">${GAMES.map(([t, y]) => `<li${t === ORIGIN.title ? ' class="fav"' : ''}><span>${esc(t)}</span><small>${y}</small></li>`).join('')}</ul>` }),
+    valorant: () => {
+      const v = F('valorant', (d) => d);
+      return {
+        title: 'Valorant', ach: 'valorant',
+        body: v ? `<div class="wrank"><small>Current rank</small><b>${esc(v.rank || 'Unranked')}</b>${v.rr !== null ? `<span>${v.rr} RR</span>` : ''}</div>${rows([['Peak rank', v.peak ? `${v.peak}${v.peakSeason ? ` (${v.peakSeason})` : ''}` : ''], ['Competitive wins', v.games ? `${n(v.wins)} of ${n(v.games)} games` : ''], ['Account level', v.level || '']])}` : waiting('Valorant'),
+      };
+    },
+    psn: () => {
+      const p = F('psn', (d) => d);
+      return {
+        title: 'PlayStation', ach: 'trophies',
+        body: p ? `<div class="wcols"><section>${rows([['Trophy level', p.level], ['Platinum', p.trophies.platinum], ['Gold', p.trophies.gold], ['Silver', p.trophies.silver], ['Bronze', p.trophies.bronze], ['Games played', p.games], ['Hours played', n(p.totalHours)], ['Peak years', p.peakYears.slice(0, 2).map((y) => y.year).join(' and ')]])}</section>
+          <section><h4>Most played</h4><ul class="wgames">${p.top.slice(0, 6).map((g) => gameRow([g.name, g.hours, g.platform])).join('')}</ul></section></div>` : waiting('PlayStation'),
+      };
+    },
+    steam: () => {
+      const s = F('steam', (d) => d);
+      const list = s ? (s.top || s.recent) : [];
+      return {
+        title: 'Steam', ach: 'steam',
+        body: s ? `${rows([['Library', s.games ? `${s.games} games` : ''], ['Hours played', s.totalHours ? n(s.totalHours) : ''], ['On Steam since', s.since || '']])}${list.length ? `<h4>${s.top ? 'Most played' : 'Recently played'}</h4><ul class="wgames">${list.slice(0, 6).map((g) => gameRow([g.name, g.hours])).join('')}</ul>` : ''}` : waiting('Steam'),
+      };
+    },
+    most: () => {
+      const all = mostPlayed();
+      return { title: 'Most Played', ach: 'gamer', body: all.length ? `<ul class="wgames">${all.slice(0, 10).map(gameRow).join('')}</ul>` : waiting('Play time') };
+    },
+    favs: () => {
+      const m = F('movies', (d) => d.favourites);
+      return { title: 'Favourite Films', ach: 'cinephile', body: m && m.length ? `<ul class="wfilms">${m.map(filmRow).join('')}</ul>` : waiting('Letterboxd') };
+    },
+    recent: () => {
+      const m = F('movies', (d) => d.recent);
+      return { title: 'Recently Watched', ach: 'critic', body: m && m.length ? `<ul class="wfilms">${m.map(filmRow).join('')}</ul>` : waiting('Letterboxd') };
+    },
+  };
+
+  const Win = (() => {
+    let el = null, id = null, spec = null;
+    function open(which) {
+      if (!WINDOWS[which]) return;
       Overlays.clear();
-      const found = search(q);
-      tiles = [...found, { title: `Search the web for “${q}”`, web: q, act: () => { sfx('select'); window.open(`https://www.bing.com/search?q=${encodeURIComponent(q)}`, '_blank', 'noopener'); } }];
-      // Laid out like My Apps: 198 px tiles filling two rows, column by column.
-      tiles.forEach((t, i) => { t.x = 16 + 202 * Math.floor(i / 2); t.y = 8 + 202 * (i % 2); });
-      sel = 0;
-      el = overlayEl('lib bres');
-      el.innerHTML = `<div class="lib__back"></div>
-        <div class="lib__filter"><div style="width:auto"><small>&#x2304; bing</small><span>“${esc(q)}”</span></div></div>
-        <div class="lib__head"><b>Search Results</b><span class="lib__count"></span><em class="lib__sel"></em></div>
-        <div class="apps__view"><div class="lib__strip apps__canvas"></div></div>
-        ${found.length ? '' : `<p class="lib__empty" style="top:130px">No results on this console for “${esc(q)}”.</p>`}
-        <div class="foot-row lib__foot" style="left:75px;bottom:34px;font-size:15px">${G('A')} Select   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back</span></div>`;
-      const strip = $('.lib__strip', el);
-      strip.style.width = `${Math.max(1070, ...tiles.map((t) => t.x + 216))}px`;
-      strip.style.height = '430px';
-      strip.innerHTML = tiles.map((t, i) => {
-        const inner = t.web ? `<span class="app__glyph"><svg viewBox="0 0 50 50" style="fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round"><path d="${P.search}"/></svg></span><span class="app__t">${esc(t.title)}</span>`
-          : t.img ? `${fill(t.img)}<span class="bar" style="height:30px;background:rgba(0,0,0,.79)"></span><span class="tx" style="left:8px;right:8px;bottom:6px;font-size:16px">${esc(t.title)}</span>`
-            : t.glyph ? `<span class="app__glyph">${svg(t.glyph, t.vb)}</span><span class="app__t">${esc(t.title)}</span>`
-              : `<span class="logo" style="font-size:24px;font-weight:700">${esc(t.title)}</span>`;
-        return `<button class="t" data-nav data-i="${i}" style="${px({ left: t.x, top: t.y, width: 198, height: 198 })}" aria-label="${esc(t.title)}"><span class="f"${t.img || t.glyph || t.web ? '' : ' style="background:#fff;color:#333"'}>${inner}</span></button>`;
-      }).join('');
-      $$('.t', strip).forEach((b, i) => {
-        b.addEventListener('click', () => { sel = i; tiles[i].act(); });
-        b.addEventListener('mousemove', () => { if (activeEl !== b) { sel = i; setActive(b); paintHead(); } });
-      });
-      Overlays.push('bing', api);
-      select(0, true);
+      id = which;
+      el = overlayEl('win');
+      el.innerHTML = `<div class="win__title"></div><div class="win__panel"><div class="win__body"></div></div><div class="hints ofoot win__foot"></div>`;
+      Overlays.push('win', api);
+      paint();
       sfx('menu-in');
       if (reduced.matches) return;
       layerIn(el, 0, 120, 0);
-      anim($('.lib__back', el), [{ opacity: 0 }, { opacity: 0.26 }], 260, E.sineOut);
-      layerIn($('.lib__filter', el), -24, 240, 40);
-      layerIn($('.lib__head', el), 42, 260, 60);
-      layerIn($('.apps__view', el), 168, 360, 35);
-      layerIn($('.lib__foot', el), 28, 210, 145);
-    }
-    function paintHead() {
-      $('.lib__count', el).textContent = `${sel + 1} of ${tiles.length}`;
-      $('.lib__sel', el).textContent = tiles[sel].title;
-    }
-    function select(i, quiet) {
-      const prev = sel;
-      sel = clamp(i, 0, tiles.length - 1);
-      focusEl($$('.lib__strip .t', el)[sel]);
-      paintHead();
-      if (!quiet && prev !== sel) sfx('focus');
-      const strip = $('.lib__strip', el), vw = 1070 - 40, left = tiles[sel].x;
-      let off = -(parseFloat(strip.dataset.off) || 0);
-      if (left - off < 0) off = left;
-      if (left + 198 - off > vw) off = left + 198 - vw;
-      strip.dataset.off = -off;
-      strip.style.transform = `translateX(${-off}px)`;
-    }
-    function close() {
-      if (!el) return;
-      const node = el;
-      el = null;
-      sfx('menu-out');
-      Overlays.pop('bing');
-      refocusUnder();
-      if (!reduced.matches) layerOut($('.apps__view', node), 150, 210);
-      overlayOut(node);
-    }
-    const api = {
-      handle(a) {
-        if (!el) return true;
-        if (['left', 'right', 'up', 'down'].includes(a)) {
-          const n = bestInDirection(tiles.map((t, i) => ({ el: i, x: t.x, y: t.y, w: 198, h: 198 })), sel, a);
-          if (n !== null && n !== undefined) select(n);
-          return true;
-        }
-        if (a === 'a') { tiles[sel].act(); return true; }
-        if (a === 'b') { close(); return true; }
-        return true;
-      },
-      refocus() { if (!el) return; select(sel, true); },
-      dismiss() { overlayOut(el, 'fade'); el = null; },
-    };
-    return { open };
-  })();
-
-  /* ================= Music Player (Hard Drive = files on this device) ================= */
-  const Music = (() => {
-    let el = null, tracks = [], cur = -1, audio = null, analyser = null, raf = 0;
-    function open() {
-      if (el) return;
-      Overlays.clear();
-      el = overlayEl('mus');
-      el.innerHTML = `<div class="mus__title">Music Player</div>
-        <div class="mus__frame"><div class="mus__left">
-          <button type="button" class="mus__src" data-nav data-src="hd"><img src="${A}icons/music-hard-drive.webp" alt="">Hard Drive</button>
-          <button type="button" class="mus__src" data-nav data-src="songs"><img src="${A}icons/music-songs.webp" alt="">Songs</button>
-          <button type="button" class="mus__src" data-nav data-src="play"><img src="${A}icons/music-saved-playlists.webp" alt="">Play / Pause</button>
-        </div><div class="mus__right"><div class="mus__now"><b>Select Music</b><span>Nothing playing</span></div><canvas class="mus__viz" width="1040" height="300"></canvas><div class="mus__list"></div></div></div>
-        <div class="foot-row mus__foot" style="left:145px;bottom:58px;font-size:15px">${G('A')} Select   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back</span></div>
-        <input type="file" accept="audio/*" multiple hidden>`;
-      const input = $('input[type=file]', el);
-      input.addEventListener('change', () => { addFiles([...input.files]); input.value = ''; });
-      $$('[data-src]', el).forEach((b) => {
-        b.addEventListener('mouseenter', () => setActive(b));
-        b.addEventListener('click', () => pick(b.dataset.src));
-      });
-      Overlays.push('music', api);
-      renderList();
-      focusEl($('.mus__src', el));
-      sfx('menu-in');
-      draw();
-      if (!reduced.matches) {
-        layerIn(el, 0, 130, 0);
-        layerIn($('.mus__title', el), 34, 240, 35);
-        layerIn($('.mus__frame', el), 112, 335, 20);
-        layerIn($('.mus__foot', el), 24, 205, 170);
-      }
-    }
-    function pick(src) {
-      sfx('select');
-      if (src === 'hd') $('input[type=file]', el).click();
-      else if (src === 'songs') { const r = $('.mus__row', el); if (r) focusEl(r); }
-      else if (src === 'play') toggle();
-    }
-    function addFiles(files) {
-      files.filter((f) => f.type.startsWith('audio/') || /\.(mp3|wav|ogg|m4a|flac|aac)$/i.test(f.name)).forEach((f) => tracks.push({ name: f.name.replace(/\.[^.]+$/, ''), url: URL.createObjectURL(f) }));
-      renderList();
-      if (cur < 0 && tracks.length) play(0);
-    }
-    function renderList() {
-      const box = $('.mus__list', el);
-      $('.mus__empty', el) && $('.mus__empty', el).remove();
-      if (!tracks.length) { box.innerHTML = ''; box.insertAdjacentHTML('afterend', '<p class="mus__empty">Choose Hard Drive to play songs from this device. Nothing is uploaded: the files stay in your browser.</p>'); return; }
-      box.innerHTML = tracks.map((t, i) => `<button type="button" class="mus__row${i === cur ? ' cur' : ''}" data-nav data-i="${i}">${esc(t.name)}</button>`).join('');
-      $$('.mus__row', box).forEach((b) => {
-        b.addEventListener('mouseenter', () => setActive(b));
-        b.addEventListener('click', () => { sfx('select'); play(+b.dataset.i); });
-      });
-    }
-    function play(i) {
-      cur = i;
-      const t = tracks[i];
-      if (!audio) {
-        audio = new Audio();
-        audio.addEventListener('ended', () => { if (tracks.length) play((cur + 1) % tracks.length); });
-        if (Sound.ctx) {
-          try {
-            const src = Sound.ctx.createMediaElementSource(audio);
-            analyser = Sound.ctx.createAnalyser(); analyser.fftSize = 128;
-            src.connect(analyser); analyser.connect(Sound.ctx.destination);
-          } catch (e) { analyser = null; }
-        }
-      }
-      audio.src = t.url;
-      audio.volume = S.volume;
-      audio.play().catch(() => {});
-      achieve('music');
-      if (el) { $('.mus__now b', el).textContent = t.name; $('.mus__now span', el).textContent = 'Now Playing'; renderList(); }
-    }
-    function toggle() {
-      if (!audio || cur < 0) { if (tracks.length) play(0); return; }
-      if (audio.paused) audio.play().catch(() => {}); else audio.pause();
-    }
-    function draw() {
-      cancelAnimationFrame(raf);
-      const c = el && $('.mus__viz', el);
-      if (!c) return;
-      const g = c.getContext('2d'), w = c.width, h = c.height, n = 48;
-      const data = new Uint8Array(analyser ? analyser.frequencyBinCount : n);
-      const frame = () => {
-        if (!el) return;
-        if (analyser && audio && !audio.paused) analyser.getByteFrequencyData(data); else data.fill(0);
-        g.clearRect(0, 0, w, h);
-        const bw = w / n;
-        for (let i = 0; i < n; i++) {
-          const v = (data[i] || 0) / 255, bh = Math.max(4, v * h);
-          g.fillStyle = `rgba(155, 226, 122, ${0.35 + v * 0.65})`;
-          g.fillRect(i * bw + 2, h - bh, bw - 4, bh);
-        }
-        raf = requestAnimationFrame(frame);
-      };
-      frame();
-    }
-    function close() {
-      if (!el) return;
-      cancelAnimationFrame(raf);
-      const node = el;
-      el = null;
-      sfx('menu-out');
-      Overlays.pop('music');
-      refocusUnder();
-      if (!reduced.matches) layerOut($('.mus__frame', node), 112, 210);
-      overlayOut(node);
-    }
-    const api = {
-      handle(a) {
-        if (!el) return true;
-        if (['left', 'right', 'up', 'down'].includes(a)) {
-          const n = bestInDirection(rectCands(el), activeEl, a);
-          if (n) { focusEl(n); sfx('hover'); }
-          return true;
-        }
-        if (a === 'a') { if (activeEl && el.contains(activeEl)) activeEl.click(); return true; }
-        if (a === 'b') { close(); return true; }
-        if (a === 'x' || a === 'y') { toggle(); return true; }
-        return true;
-      },
-      refocus() { if (!el) return; focusEl($('.mus__src', el)); },
-      dismiss() { cancelAnimationFrame(raf); overlayOut(el, 'fade'); el = null; },
-    };
-    return { open, toggle, next: () => tracks.length && play((cur + 1) % tracks.length), prev: () => tracks.length && play((cur - 1 + tracks.length) % tracks.length), stop: () => { if (audio) { audio.pause(); audio.currentTime = 0; } }, label: () => (cur >= 0 && audio && !audio.paused ? tracks[cur].name : 'Select Music'), get playing() { return !!(audio && !audio.paused); } };
-  })();
-
-  /* ================= Running a game ================= */
-  let running = null, switching = false;
-  // Launching: the dashboard drops away behind the loading ring, then the game fades up.
-  async function launch(g) {
-    if (!g || switching) return;
-    pushRecent(g.id);
-    if (g.launch.kind === 'link') { openLink(g.launch.url, 'source'); return; }
-    if (running) return;
-    switching = true;
-    sfx('select');
-    const played = store.get('played', {}); played[g.id] = Date.now(); store.set('played', played);
-    const L = $('#loading');
-    L.hidden = false;
-    await anim(L, [{ opacity: 0 }, { opacity: 1 }], 240, E.sineOut).finished;
-    Overlays.clear();
-    await wait(850);
-    running = g;
-    CapitalCity.open();
-    await anim(L, [{ opacity: 1 }, { opacity: 0 }], 300, E.cubicOut).finished;
-    L.hidden = true;
-    switching = false;
-  }
-  // Quitting to Xbox Home: the game fades to black, the ring spins while the
-  // dashboard loads, then it settles in on Home.
-  async function quitGame(fromGuide) {
-    if (!running || switching) return;
-    switching = true;
-    if (fromGuide) achieve('ragequit');
-    const black = $('#blackout'), L = $('#loading');
-    black.hidden = false;
-    await anim(black, [{ opacity: 0 }, { opacity: 1 }], 340, E.sineIn).finished;
-    if (Guide.isOpen) Guide.close(false, true);
-    running = null;
-    quietReturn = true;
-    Overlays.clear();
-    jumpTab('home');
-    host.style.opacity = 0;
-    L.hidden = false; L.style.opacity = 1; $('.ring', L).style.opacity = 1;
-    await wait(80);
-    await anim(black, [{ opacity: 1 }, { opacity: 0 }], 240, E.sineOut).finished;
-    black.hidden = true;
-    quietReturn = false;
-    await wait(850);
-    await settle();
-    focusDefault();
-    switching = false;
-  }
-
-  // Capital City: Hamza's 2024 Python guessing game (github.com/hamzaaaaaf/CapitalCityGame),
-  // with four answers to choose from and a letter revealed after each wrong guess.
-  const CapitalCity = (() => {
-    const CAPITALS = {
-      China: 'Beijing', India: 'New Delhi', 'United States': 'Washington DC', Indonesia: 'Jakarta', Pakistan: 'Islamabad',
-      Brazil: 'Brasilia', Sweden: 'Stockholm', Bangladesh: 'Dhaka', Russia: 'Moscow', Mexico: 'Mexico City', Japan: 'Tokyo',
-      Norway: 'Oslo', Philippines: 'Manila', Egypt: 'Cairo', Finland: 'Helsinki', Turkey: 'Ankara', Iran: 'Tehran',
-      Thailand: 'Bangkok', 'United Kingdom': 'London', France: 'Paris', Italy: 'Rome', Denmark: 'Copenhagen',
-      'South Africa': 'Pretoria', Belgium: 'Brussels', 'South Korea': 'Seoul', Spain: 'Madrid', Argentina: 'Buenos Aires',
-    };
-    const COUNTRIES = Object.keys(CAPITALS);
-    let el = null, state = 'title', round = null, sel = 0, streak = 0, asking = false, askSel = 1, last = null;
-    const best = () => store.get('capitalBest', 0);
-    const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-    function open() {
-      state = 'title'; streak = 0; asking = false; last = null;
-      el = overlayEl('cc');
-      Overlays.push('game', api);
-      achieve('capital');
-      paint();
-      if (!reduced.matches) anim(el, [{ opacity: 0 }, { opacity: 1 }], 300, E.sineOut);
-    }
-    function newRound() {
-      let country;
-      do country = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)]; while (country === last && COUNTRIES.length > 1);
-      last = country;
-      const capital = CAPITALS[country];
-      const others = shuffle(COUNTRIES.filter((c) => c !== country).map((c) => CAPITALS[c])).slice(0, 3);
-      round = { country, capital, choices: shuffle([capital, ...others]), wrong: new Set(), hints: 1, solved: false, firstTry: true };
-      state = 'round'; sel = 0;
-      paint();
-    }
-    function letters() {
-      const cap = round.capital.toUpperCase();
-      let shown = 0;
-      return [...cap].map((ch) => {
-        if (ch === ' ') return '<i class="cc__gap"></i>';
-        shown++;
-        const open_ = round.solved || shown <= round.hints;
-        return `<b class="cc__l${open_ ? ' on' : ''}">${open_ ? esc(ch) : ''}</b>`;
-      }).join('');
+      layerIn($('.win__title', el), 36, 250, 35);
+      layerIn($('.win__panel', el), 132, 360, 20);
+      layerIn($('.win__foot', el), 26, 210, 160);
     }
     function paint() {
+      spec = WINDOWS[id]();
+      if (spec.ach) achieve(spec.ach);
+      $('.win__title', el).textContent = spec.title;
+      const body = $('.win__body', el);
+      body.innerHTML = spec.body;
+      body.scrollTop = 0;
+      $('.win__foot', el).innerHTML = [spec.a && ['a', spec.a], spec.x && ['x', spec.x], ['b', 'Back']].filter(Boolean).map(([k, t]) => `<span class="h" data-act="${k}">${G(k.toUpperCase())} ${esc(t)}   </span>`).join('');
+      $$('[data-nav]', body).forEach((b) => {
+        b.addEventListener('mouseenter', () => setActive(b));
+        b.addEventListener('click', () => spec.run(+b.dataset.i));
+      });
+      const first = $('[data-nav]', body);
+      if (first) focusEl(first);
+    }
+    function close() {
       if (!el) return;
-      const head = `<div class="cc__title">Capital City</div><div class="cc__score">Streak ${streak}<span>Best ${best()}</span></div>`;
-      if (state === 'title') {
-        el.innerHTML = `${head}<div class="cc__splash"><b>CAPITAL CITY</b><span>You get a country and the length of its capital.<br>Every wrong guess reveals another letter.</span><button type="button" class="t cc__start" data-nav><span class="f">Start</span></button></div>
-          <div class="gfoot cc__foot"><span class="h" data-act="a">${G('A')}Start</span><span class="h" data-act="b">${G('B')}Quit</span></div>`;
-        const b = $('.cc__start', el);
-        b.addEventListener('click', newRound);
-        focusEl(b);
-      } else {
-        const n = round.capital.replace(/ /g, '').length;
-        const msg = round.solved ? (round.firstTry ? 'Correct!' : `Got it. The capital of ${esc(round.country)} is ${esc(round.capital)}.`) : round.wrong.size ? `Not quite. Hint: ${esc(round.capital.slice(0, round.hints))}…` : `It has ${n} letters. Can you guess it?`;
-        el.innerHTML = `${head}<div class="cc__q"><small>The capital of</small><b>${esc(round.country)}</b></div>
-          <div class="cc__word">${letters()}</div>
-          <div class="cc__msg${round.solved ? ' ok' : ''}">${msg}</div>
-          <div class="cc__grid">${round.choices.map((c, i) => `<button type="button" class="t cc__c${round.wrong.has(c) ? ' x' : ''}${round.solved && c === round.capital ? ' ok' : ''}" data-nav data-i="${i}"${round.wrong.has(c) || round.solved ? ' disabled' : ''}><span class="f"><span class="tx" style="left:18px;bottom:14px;font-size:26px;font-weight:300">${esc(c)}</span></span></button>`).join('')}</div>
-          <div class="gfoot cc__foot"><span class="h" data-act="a">${G('A')}${round.solved ? 'Next Country' : 'Guess'}</span><span class="h" data-act="b">${G('B')}Quit</span></div>`;
-        $$('.cc__c', el).forEach((b, i) => {
-          b.addEventListener('click', () => guess(i));
-          b.addEventListener('mousemove', () => { if (!b.disabled && activeEl !== b) { sel = i; setActive(b); } });
-        });
-        if (!round.solved) { const live = $$('.cc__c', el).filter((b) => !b.disabled); const b = $$('.cc__c', el)[sel]; focusEl(b && !b.disabled ? b : live[0]); sel = +(activeEl && activeEl.dataset.i || 0); }
-        else setActive(null);
-      }
-      $$('.cc__foot .h', el).forEach((h) => h.addEventListener('click', (e) => { e.stopPropagation(); api.handle(h.dataset.act); }));
-      if (asking) paintAsk();
-    }
-    function guess(i) {
-      if (!round || round.solved) { if (round && round.solved) newRound(); return; }
-      const c = round.choices[i];
-      if (round.wrong.has(c)) return;
-      if (c === round.capital) {
-        round.solved = true;
-        sfx('select');
-        if (round.firstTry) { streak++; if (streak > best()) store.set('capitalBest', streak); if (streak >= 5) achieve('capital5'); }
-        else streak = 0;
-      } else {
-        round.wrong.add(c); round.firstTry = false;
-        round.hints = Math.min(round.capital.replace(/ /g, '').length - 1, round.hints + 1);
-        sfx('back');
-        sel = round.choices.findIndex((x) => !round.wrong.has(x));
-      }
-      paint();
-    }
-    function paintAsk() {
-      let box = $('.cc__ask', el);
-      if (!box) { el.insertAdjacentHTML('beforeend', `<div class="cc__askdim"></div><div class="ask cc__ask"><b>Capital City</b><div><p>Are you sure you want to quit? Any unsaved progress will be lost.</p><button type="button" class="grow" data-a="0"><span>Yes</span><span></span><span></span></button><button type="button" class="grow" data-a="1"><span>No</span><span></span><span></span></button></div></div>`); box = $('.cc__ask', el); $$('.grow', box).forEach((b, i) => b.addEventListener('click', () => { askSel = i; answer(); })); }
-      $$('.grow', box).forEach((b, i) => b.classList.toggle('sel', i === askSel));
-    }
-    function answer() {
-      asking = false;
-      if (askSel === 0) { sfx('select'); quitGame(false); return; }
-      sfx('back');
-      paint();
+      const node = el;
+      el = null;
+      sfx('menu-out');
+      Overlays.pop('win');
+      refocusUnder();
+      if (!reduced.matches) layerOut($('.win__panel', node), 136, 215);
+      overlayOut(node);
     }
     const api = {
       handle(a) {
         if (!el) return true;
-        if (asking) {
-          if (a === 'up' || a === 'down') { askSel = askSel ? 0 : 1; sfx('guide-hover'); paintAsk(); }
-          if (a === 'a') answer();
-          if (a === 'b') { askSel = 1; answer(); }
-          return true;
-        }
-        if (a === 'b') { asking = true; askSel = 1; setActive(null); sfx('menu-in'); paintAsk(); return true; }
-        if (state === 'title') { if (a === 'a') { sfx('select'); newRound(); } return true; }
-        if (a === 'a') { if (round.solved) { newRound(); return true; } if (activeEl && activeEl.classList.contains('cc__c')) guess(+activeEl.dataset.i); return true; }
-        if (['left', 'right', 'up', 'down'].includes(a) && !round.solved) {
-          const cands = rectCands($('.cc__grid', el));
-          const n = bestInDirection(cands, activeEl, a);
-          if (n) { focusEl(n); sel = +n.dataset.i; sfx('focus'); }
-        }
+        const body = $('.win__body', el), picks = $$('[data-nav]', body);
+        if (a === 'up' || a === 'down') {
+          if (picks.length) {
+            const i = clamp(picks.indexOf(activeEl) + (a === 'up' ? -1 : 1), 0, picks.length - 1);
+            if (picks[i] !== activeEl) { focusEl(picks[i]); picks[i].scrollIntoView({ block: 'nearest' }); sfx('focus'); }
+          } else body.scrollBy({ top: a === 'up' ? -90 : 90, behavior: reduced.matches ? 'auto' : 'smooth' });
+        } else if (a === 'a') {
+          if (spec.run && activeEl && body.contains(activeEl)) spec.run(+activeEl.dataset.i);
+          else if (spec.onA) spec.onA();
+        } else if (a === 'x' && spec.onX) spec.onX();
+        else if (a === 'b') close();
         return true;
       },
-      refocus() { if (!el) return; paint(); },
-      dismiss() { running = null; if (el) { el.remove(); el = null; } },
+      refocus() { if (el) { const f = $('.win__body [data-nav]', el); if (f) focusEl(f); } },
+      dismiss() { overlayOut(el, 'fade'); el = null; },
     };
-    return { open };
+    // Repaint when the live stats arrive while a window is open.
+    const refresh = () => { if (el) paint(); };
+    return { open, refresh };
   })();
 
   /* ================= Xbox Guide ================= */
   const Guide = (() => {
     const layer = $('#guide'), canvas = $('.canvas', layer);
-    let open_ = false, busy = false, tab = 2, sel = 0, screen = 'main', mediaFocus = 'list', transport = 1, bladeSound = 0;
-    let achSel = 0, achDetail = false, frSel = 0, status = '', returnFocus = null, askOpen = false, askSel = 0;
+    let open_ = false, busy = false, tab = 2, sel = 0, screen = 'main', bladeSound = 0;
+    let achSel = 0, achDetail = false, frSel = 0, returnFocus = null;
     const NAMES = ['Games & Apps', ME.tag, 'Xbox Home', 'Media', 'Settings'];
     const closeThen = (fn) => () => { close(false); fn(); };
+    const win = (id) => closeThen(() => Win.open(id));
     function items() {
       switch (tab) {
         case 0: return [
-          ['My Projects', 'games', closeThen(() => Library.open('projects'))],
-          ['Capital City', 'play', closeThen(() => launch(byId('capital-city')))],
-          ['My Pins', 'pin', closeThen(() => Library.open('pins'))],
-          ['Recent', 'clock', closeThen(() => Library.open('recent'))],
+          ['All Projects', 'games', win('projects')],
+          ['Stats', 'layers', win('stats')],
+          ['Games I Play', 'games', win('played')],
+          ['Valorant', '', win('valorant')],
         ];
         case 1: return [
           ['Achievements', '', () => openScreen('achievements')],
-          ['About Me', 'person', closeThen(() => Profile.open('about'))],
-          ['Tech Stack', 'layers', closeThen(() => Profile.open('stack'))],
-          ['Games I Play', 'games', closeThen(() => Profile.open('games'))],
+          ['About Me', 'person', win('about')],
+          ['Education', '', win('education')],
+          ['Tech Stack', 'layers', win('stack')],
         ];
         case 3: return [
-          ['Music Player', '', closeThen(() => Music.open())],
+          ['Favourite Films', 'film', win('favs')],
+          ['Recently Watched', 'film', win('recent')],
+          ['Summer of 2022', '', win('summer')],
         ];
         case 4: return [
           ['System Settings', 'gear', closeThen(() => Settings.open())],
@@ -1935,19 +1214,22 @@
         default: return [
           ['Xbox Home', '', xboxHome],
           ['Friends', 'contact', () => openScreen('friends'), String(FRIENDS().length)],
-          ['Messages', 'mail', () => openLink(LINKS.mail, 'messenger', true)],
+          ['Messages', 'mail', win('message')],
           ['Minimize', 'minimize', () => close(false)],
           [trayLabel(), 'eject', () => { toggleTray(); paint(); }],
         ];
       }
     }
     const FRIENDS = () => [
-      { tag: 'GitHub', sub: 'github.com/hamzaaaaaf', status: 'Online: Shipping code', pic: 'github', url: LINKS.github, ach: 'source' },
-      { tag: 'LeetCode', sub: 'leetcode.com/u/hamza57', status: `Online: ${lcSolved !== null ? `${lcSolved} problems solved` : 'Solving problems'}`, pic: 'leetcode', url: LINKS.leetcode, ach: 'leetcode' },
-      { tag: 'LinkedIn', sub: 'Hamza Faisal', status: 'Online: Networking', pic: 'linkedin', url: LINKS.linkedin, ach: 'networker' },
-      { tag: 'Message Hamza', sub: 'hello@byhamza.dev', status: 'Send a message', pic: 'mail', url: LINKS.mail, ach: 'messenger' },
+      { tag: 'GitHub', sub: 'Projects and code', status: 'Online: Shipping code', pic: 'github', go: () => openLink(LINKS.github, 'source', true) },
+      { tag: 'LeetCode', sub: 'Problem solving', status: `Online: ${F('leetcode', (d) => `${d.solved.All} problems solved`) || 'Solving problems'}`, pic: 'leetcode', go: () => { close(false); Win.open('stats'); } },
+      { tag: 'LinkedIn', sub: 'Hamza Faisal', status: 'Online: Networking', pic: 'linkedin', go: () => openLink(LINKS.linkedin, 'networker', true) },
+      { tag: 'Message Hamza', sub: LINKS.email, status: 'Send a message', pic: 'mail', go: () => { close(false); Win.open('message'); } },
     ];
     function clockText() { const d = new Date(); let h = d.getHours(); const ap = h < 12 ? 'AM' : 'PM'; h = h % 12 || 12; return `${h}:${String(d.getMinutes()).padStart(2, '0')}  ${ap}`; }
+    // The button bar sits where it does on every other screen.
+    const hints = (list) => list.map(([k, t]) => `<span class="h" data-act="${k}">${G(k.toUpperCase())} ${esc(t)}   </span>`).join('');
+    function setFoot(list) { $('.gd__foot', canvas).innerHTML = hints(list); }
     function build() {
       canvas.innerHTML = `<div class="gd">
         <div class="gd__title">Xbox Guide</div>
@@ -1956,16 +1238,15 @@
         <div class="gd__wrap"><div class="gd__blade">
           <div class="gd__side gd__s0" data-rel="-2"><span></span></div>
           <div class="gd__side gd__s1" data-rel="-1"><span></span></div>
-          <div class="gd__center"><div class="gd__list" role="menu"></div><div class="gd__media" hidden><button type="button" class="gd__song"></button><div class="gd__transport"></div></div></div>
+          <div class="gd__center"><div class="gd__list" role="menu"></div></div>
           <div class="gd__side gd__s3" data-rel="1"><span></span></div>
           <div class="gd__side gd__s4" data-rel="2"><span></span></div>
-        </div>
-        <div class="gfoot gd__foot"><span class="h" data-act="a">${G('A')}Select</span><span class="h" data-act="b">${G('B')}Back</span><span class="h" data-act="y">${G('Y')}Xbox Home</span></div></div>
-        <div class="gd__status"></div>
+        </div></div>
         <div class="gd__over"></div>
+        <div class="hints ofoot gd__foot"></div>
       </div>`;
       $$('.gd__side', canvas).forEach((s) => s.addEventListener('click', () => moveTab(+s.dataset.rel)));
-      $$('.gfoot .h', canvas).forEach((h) => h.addEventListener('click', () => handle(h.dataset.act)));
+      $('.gd__foot', canvas).addEventListener('click', (e) => { const h = e.target.closest('[data-act]'); if (h) handle(h.dataset.act); });
     }
     function paint(nudge) {
       $('.gd__clock', canvas).textContent = clockText();
@@ -1974,45 +1255,34 @@
       $('.gd__s1 span', canvas).textContent = tabText(tab - 1);
       $('.gd__s3 span', canvas).textContent = tabText(tab + 1);
       $('.gd__s4 span', canvas).textContent = tabText(tab + 2);
-      const list = $('.gd__list', canvas), its = items();
-      list.innerHTML = its.map(([t, icon, , count], i) => `<button type="button" class="grow${i === sel && (tab !== 3 || mediaFocus === 'list') ? ' sel' : ''}" role="menuitem" data-i="${i}"><span>${esc(t)}</span><span class="cnt">${count ? esc(count) : ''}</span>${icon ? svg(icon) : '<span></span>'}</button>`).join('');
+      const list = $('.gd__list', canvas);
+      list.innerHTML = items().map(([t, icon, , count], i) => `<button type="button" class="grow${i === sel ? ' sel' : ''}" role="menuitem" data-i="${i}"><span>${esc(t)}</span><span class="cnt">${count ? esc(count) : ''}</span>${icon ? svg(icon) : '<span></span>'}</button>`).join('');
       $$('.grow', list).forEach((r) => {
-        r.addEventListener('mouseenter', () => { if (+r.dataset.i !== sel || mediaFocus !== 'list') { sel = +r.dataset.i; mediaFocus = 'list'; paint(true); } });
-        r.addEventListener('click', () => { sel = +r.dataset.i; mediaFocus = 'list'; activate(); });
+        r.addEventListener('mouseenter', () => { if (+r.dataset.i !== sel) { sel = +r.dataset.i; paint(true); } });
+        r.addEventListener('click', () => { sel = +r.dataset.i; activate(); });
       });
       if (nudge) { const s = $('.grow.sel', list); if (s) { s.classList.remove('nudge'); void s.offsetWidth; s.classList.add('nudge'); } }
-      const media = $('.gd__media', canvas);
-      media.hidden = tab !== 3;
-      if (tab === 3) {
-        const song = $('.gd__song', media);
-        song.textContent = Music.label();
-        song.classList.toggle('sel', mediaFocus === 'song');
-        song.onclick = () => { mediaFocus = 'song'; activate(); };
-        const ctrls = [['prev', () => Music.prev()], [Music.playing ? 'pause' : 'play', () => Music.toggle()], ['stop', () => Music.stop()], ['next', () => Music.next()], ['shuffle', () => {}], ['volume', () => {}]];
-        $('.gd__transport', media).innerHTML = ctrls.map(([icon], i) => `<button type="button" class="${mediaFocus === 'transport' && i === transport ? 'sel' : ''}" data-i="${i}" aria-label="${icon}">${svg(icon)}</button>`).join('');
-        $$('.gd__transport button', media).forEach((b) => b.addEventListener('click', () => { transport = +b.dataset.i; ctrls[transport][1](); sfx('guide-select'); setTimeout(() => paint(), 50); }));
-      }
-      $('.gd__status', canvas).textContent = status;
+      if (screen === 'main') setFoot([['a', 'Select'], ['b', 'Back'], ['y', 'Xbox Home']]);
     }
     // GuideWindow.Open + BeginOpenAnimation.
     async function open(sub) {
       if (open_ || busy || booting) return;
       busy = true; open_ = true;
       returnFocus = activeEl;
-      tab = 2; sel = 0; screen = 'main'; mediaFocus = 'list'; status = ''; askOpen = false;
+      tab = 2; sel = 0; screen = 'main';
       build(); paint();
       layer.hidden = false;
       if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
       sfx('guide-open');
       achieve('guide');
-      const gd = $('.gd', canvas), center = [$('.gd__list', canvas), $('.gd__media', canvas)];
+      const gd = $('.gd', canvas);
       const sides = $$('.gd__s0, .gd__s3, .gd__s4', canvas), user = $$('.gd__s1 span', canvas);
       anim(layer, [{ opacity: 0 }, { opacity: 1 }], 70, E.cubicOut);
       anim(gd, [{ transform: 'scale(.84)' }, { transform: 'scale(1)' }], 210, E.cubicOut);
-      center.forEach((c) => anim(c, [{ opacity: 0 }, { opacity: 1 }], 145, E.sineOut, 285));
+      anim($('.gd__list', canvas), [{ opacity: 0 }, { opacity: 1 }], 145, E.sineOut, 285);
       user.forEach((u) => anim(u, [{ opacity: 0 }, { opacity: 1 }], 120, E.sineOut, 250));
       const last = sides.map((s) => anim(s, [{ opacity: 0 }, { opacity: 1 }], 145, E.sineOut, 430));
-      if (sub) { busy = false; openScreen(sub, true); }
+      if (sub) { busy = false; openScreen(sub); }
       await (last[0] ? last[0].finished : Promise.resolve());
       busy = false;
       if (open_) sfx('guide-blade-open');
@@ -2035,28 +1305,16 @@
       anim($('.gd__blade', canvas), [{ opacity: 1 }, { opacity: 0.72 }], 115, E.sineIn);
       anim(layer, [{ opacity: 1 }, { opacity: 0 }], 165, E.sineIn).finished.then(done);
     }
-    // Xbox Home: back to the Home tab, asking first if a game is running.
+    // Xbox Home: back to the Home tab from wherever you are.
     function xboxHome() {
-      if (running) { ask(); return; }
       close(false);
       if (overlayOpen()) { jumpTab('home'); Overlays.clear(); } else goTab('home');
-    }
-    function ask() {
-      askOpen = true; askSel = 0;
-      const over = $('.gd__over', canvas);
-      over.innerHTML = `<div class="ask"><b>Xbox Home</b><div><p>Are you sure you want to quit? Any unsaved progress will be lost.</p><button type="button" class="grow sel" data-a="1"><span>Yes</span><span></span><span></span></button><button type="button" class="grow" data-a="0"><span>No</span><span></span><span></span></button></div></div>`;
-      $$('.ask .grow', over).forEach((b, i) => b.addEventListener('click', () => { askSel = i; answer(); }));
-    }
-    function answer() {
-      askOpen = false;
-      $('.gd__over', canvas).innerHTML = '';
-      if (askSel === 0) { sfx('guide-select'); quitGame(true); } else sfx('guide-back');
     }
     function moveTab(d) {
       if (screen !== 'main') return;
       const n = clamp(tab + d, 0, NAMES.length - 1);
       if (n === tab) return;
-      tab = n; sel = 0; mediaFocus = 'list'; status = '';
+      tab = n; sel = 0;
       bladeSound = bladeSound % 4 + 1;
       sfx(`guide-blade-switch-${bladeSound}`);
       paint();
@@ -2065,18 +1323,10 @@
       anim(blade, [{ translate: `${d > 0 ? 26 : -26}px 0` }, { translate: '0 0' }], 155, E.cubicOut);
     }
     function move(d) {
-      const its = items();
-      if (tab === 3) {
-        if (mediaFocus === 'transport') { if (d < 0) { mediaFocus = 'song'; sfx('guide-hover'); paint(); } return; }
-        if (mediaFocus === 'song') { mediaFocus = d > 0 ? 'transport' : 'list'; if (d < 0) sel = its.length - 1; sfx('guide-hover'); paint(); return; }
-        if (d > 0 && sel >= its.length - 1) { mediaFocus = 'song'; sfx('guide-hover'); paint(); return; }
-      }
-      const n = clamp(sel + d, 0, its.length - 1);
+      const n = clamp(sel + d, 0, items().length - 1);
       if (n !== sel) { sel = n; sfx('guide-hover'); paint(true); }
     }
     function activate() {
-      if (tab === 3 && mediaFocus === 'song') { sfx('guide-select'); close(false); Music.open(); return; }
-      if (tab === 3 && mediaFocus === 'transport') { const b = $$('.gd__transport button', canvas)[transport]; if (b) b.click(); return; }
       const it = items()[sel];
       if (!it || !it[2]) return;
       sfx('guide-select');
@@ -2084,12 +1334,12 @@
     }
 
     /* ----- Achievements and Friends (community overlays) ----- */
-    function openScreen(name, fromDashboard) {
+    function openScreen(name) {
       screen = name;
       if (name === 'achievements') { achDetail = false; achSel = 0; }
-      if (name === 'friends') frSel = 0;
+      if (name === 'friends') { frSel = 0; achieve('friends'); }
       const over = $('.gd__over', canvas);
-      over.innerHTML = `<div class="gx__dim"></div><div class="gx gx--${name}"><div class="gx__head"></div><div class="gx__body"></div><div class="gfoot"></div></div>`;
+      over.innerHTML = `<div class="gx__dim"></div><div class="gx gx--${name}"><div class="gx__head"></div><div class="gx__body"></div></div>`;
       paintScreen();
       const gx = $('.gx', over);
       if (!reduced.matches) {
@@ -2097,9 +1347,7 @@
         anim(gx, [{ transform: 'translateY(-30px) scale(.93,.86)' }, { transform: 'translateY(0) scale(1)' }], 275, E.cubicOut);
         anim($('.gx__head', gx), [{ opacity: 0 }, { opacity: 1 }], 115, E.sineOut, 105);
         anim($('.gx__body', gx), [{ opacity: 0 }, { opacity: 1 }], 115, E.sineOut, 155);
-        anim($('.gfoot', gx), [{ opacity: 0 }, { opacity: 1 }], 115, E.sineOut, 190);
       }
-      void fromDashboard;
     }
     function closeScreen() {
       screen = 'main';
@@ -2110,17 +1358,16 @@
     function paintScreen() {
       const gx = $('.gx', canvas);
       if (!gx) return;
-      const head = $('.gx__head', gx), body = $('.gx__body', gx), foot = $('.gfoot', gx);
+      const head = $('.gx__head', gx), body = $('.gx__body', gx);
       if (screen === 'achievements') {
         head.innerHTML = `<span>Achievements</span><img src="${ME.pic}" alt=""><span>${clockText()}</span>`;
-        const g = got(), n = ACHIEVEMENTS.filter((a) => g[a.id]).length;
+        const g = got(), unlocked = ACHIEVEMENTS.filter((a) => g[a.id]).length;
         if (!achDetail) {
-          body.innerHTML = `<button type="button" class="ach-game sel"><img src="${ME.pic}" alt=""><span><b>byhamza.dev</b><span>${n} of ${ACHIEVEMENTS.length} Achievements</span></span></button><div class="ach__foot"><span></span></div>`;
+          body.innerHTML = `<button type="button" class="ach-game sel"><img src="${ME.pic}" alt=""><span><b>byhamza.dev</b><span>${unlocked} of ${ACHIEVEMENTS.length} Achievements</span></span></button><div class="ach__foot"><span></span></div>`;
           $('.ach-game', body).addEventListener('click', () => { achDetail = true; achSel = 0; sfx('guide-select'); paintScreen(); });
-          foot.innerHTML = `<span class="h" data-act="a">${G('A')}Select</span><span class="h" data-act="b">${G('B')}Back</span>`;
         } else {
           const a = ACHIEVEMENTS[achSel], on = !!g[a.id];
-          body.innerHTML = `<div class="ach__top"><div><b>byhamza.dev</b><div class="a-t">${esc(on ? a.t : `${a.t}`)}</div><div class="a-d">${esc(a.d)}</div></div><div class="a-r">${on ? 'Unlocked' : 'Locked'} · ${a.g}G<span>${on ? new Date(g[a.id]).toLocaleDateString('en-US') : ''}</span></div></div>
+          body.innerHTML = `<div class="ach__top"><div><b>byhamza.dev</b><div class="a-t">${esc(a.t)}</div><div class="a-d">${esc(a.d)}</div></div><div class="a-r">${on ? 'Unlocked' : 'Locked'} · ${a.g}G<span>${on ? new Date(g[a.id]).toLocaleDateString('en-GB') : ''}</span></div></div>
             <div class="ach__grid"><div>${ACHIEVEMENTS.map((x, i) => `<button type="button" class="ach${g[x.id] ? '' : ' locked'}${i === achSel ? ' sel' : ''}" data-i="${i}" aria-label="${esc(x.t)}"><i>${g[x.id] ? svg('trophy', '0 0 30 32') : svg('lock', '0 0 36 32')}</i></button>`).join('')}</div></div>
             <div class="ach__foot"><b style="font-weight:400">${achSel + 1} of ${ACHIEVEMENTS.length} ${on ? 'unlocked' : 'locked'}</b><span>${gamerscore()} of 1000G</span></div>`;
           $$('.ach', body).forEach((b) => {
@@ -2128,8 +1375,8 @@
           });
           const row = Math.floor(achSel / 7), grid = $('.ach__grid > div', body);
           grid.style.transform = `translateY(${-Math.max(0, row - 2) * 104}px)`;
-          foot.innerHTML = `<span class="h" data-act="a">${G('A')}Select</span><span class="h" data-act="b">${G('B')}Back</span>`;
         }
+        setFoot([['a', 'Select'], ['b', 'Back']]);
       } else if (screen === 'friends') {
         const fr = FRIENDS();
         head.innerHTML = `<span>Friends</span><img src="${ME.pic}" alt=""><span>${clockText()}</span>`;
@@ -2140,9 +1387,8 @@
           r.addEventListener('mouseenter', () => { if (+r.dataset.i !== frSel) { frSel = +r.dataset.i; paintScreen(); } });
           r.addEventListener('click', () => { frSel = +r.dataset.i; handle('a'); });
         });
-        foot.innerHTML = `<span class="h" data-act="a">${G('A')}Select</span><span class="h" data-act="b">${G('B')}Back</span><span class="h" data-act="y">${G('Y')}Change Sort</span>`;
+        setFoot([['a', 'Select'], ['b', 'Back']]);
       }
-      $$('.h', foot).forEach((h) => h.addEventListener('click', () => handle(h.dataset.act)));
     }
     function handleScreen(a) {
       if (screen === 'achievements') {
@@ -2151,12 +1397,12 @@
           else if (a === 'b') closeScreen();
           return true;
         }
-        const n = ACHIEVEMENTS.length, col = achSel % 7;
+        const total = ACHIEVEMENTS.length, col = achSel % 7;
         let i = achSel;
         if (a === 'left') i = Math.max(0, achSel - 1);
-        if (a === 'right') i = Math.min(n - 1, achSel + 1);
+        if (a === 'right') i = Math.min(total - 1, achSel + 1);
         if (a === 'up') i = achSel - 7 < 0 ? col : achSel - 7;
-        if (a === 'down') i = achSel + 7 >= n ? Math.min(Math.floor((n - 1) / 7) * 7 + col, n - 1) : achSel + 7;
+        if (a === 'down') i = achSel + 7 >= total ? Math.min(Math.floor((total - 1) / 7) * 7 + col, total - 1) : achSel + 7;
         if (i !== achSel) { achSel = i; sfx('guide-hover'); paintScreen(); }
         if (a === 'b') { achDetail = false; sfx('guide-back'); paintScreen(); }
         return true;
@@ -2164,8 +1410,7 @@
       if (screen === 'friends') {
         const fr = FRIENDS();
         if (a === 'up' || a === 'down') { const i = clamp(frSel + (a === 'up' ? -1 : 1), 0, fr.length - 1); if (i !== frSel) { frSel = i; sfx('guide-hover'); paintScreen(); } }
-        if (a === 'a') { const f = fr[frSel]; sfx('guide-select'); if (f.ach) achieve(f.ach); if (f.url.startsWith('mailto:')) location.href = f.url; else window.open(f.url, '_blank', 'noopener'); }
-        if (a === 'y') sfx('guide-select');
+        if (a === 'a') { sfx('guide-select'); fr[frSel].go(); }
         if (a === 'b') closeScreen();
         return true;
       }
@@ -2173,21 +1418,12 @@
     }
     function handle(a) {
       if (busy && a !== 'guide') return true;
-      if (askOpen) {
-        if (a === 'up' || a === 'down') { askSel = askSel ? 0 : 1; $$('.ask .grow', canvas).forEach((b, i) => b.classList.toggle('sel', i === askSel)); sfx('guide-hover'); }
-        if (a === 'a') answer();
-        if (a === 'b') { askSel = 1; answer(); }
-        return true;
-      }
       if (a === 'guide') { close(); return true; }
       if (screen !== 'main') return handleScreen(a);
       if (a === 'up') move(-1);
       else if (a === 'down') move(1);
-      else if (a === 'left' || a === 'right') {
-        if (tab === 3 && mediaFocus === 'transport') { transport = clamp(transport + (a === 'left' ? -1 : 1), 0, 5); sfx('guide-hover'); paint(); }
-        else moveTab(a === 'left' ? -1 : 1);
-      } else if (a === 'lb') moveTab(-1);
-      else if (a === 'rb') moveTab(1);
+      else if (a === 'left' || a === 'lb') moveTab(-1);
+      else if (a === 'right' || a === 'rb') moveTab(1);
       else if (a === 'a') activate();
       else if (a === 'b') close();
       else if (a === 'y') { sfx('guide-select'); xboxHome(); }
@@ -2205,7 +1441,6 @@
     sfx('select');
     setTimeout(() => {
       if (Guide.isOpen) Guide.close(false, true);
-      running = null;
       Overlays.clear();
       jumpTab('home');
       booting = true;
@@ -2223,7 +1458,7 @@
   function act(a) {
     if (gateWaiting) { startFromGate(); return; }
     if (bootSkippable) { skipBoot(); return; }
-    if (booting || switching) return;
+    if (booting) return;
     if (a === 'guide') { Guide.toggle(); return; }
     if (Guide.isOpen) { Guide.handle(a); return; }
     const top = Overlays.api();
@@ -2251,7 +1486,6 @@
       if (cur && curPage().contains(cur)) activateTile(cur); else focusDefault();
       return;
     }
-    if (a === 'y') { Search.open(); return; }
     if (a === 'b') {
       bCount++; clearTimeout(bTimer); bTimer = setTimeout(() => { bCount = 0; }, 1500);
       if (bCount >= 3) achieve('persistent');
@@ -2263,22 +1497,13 @@
     ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down',
     KeyA: 'left', KeyD: 'right', KeyW: 'up', KeyS: 'down',
     Enter: 'a', Space: 'a', Escape: 'b', Backspace: 'b', KeyB: 'b',
-    KeyX: 'x', KeyY: 'y', KeyF: 'y', KeyQ: 'lb', PageUp: 'lb', KeyE: 'rb', PageDown: 'rb',
+    KeyX: 'x', KeyY: 'y', KeyQ: 'lb', PageUp: 'lb', KeyE: 'rb', PageDown: 'rb',
     Home: 'guide', KeyG: 'guide', F1: 'guide',
   };
   addEventListener('keydown', (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const t = e.target, typing = t && t.tagName === 'INPUT' && t.type !== 'file';
-    if (typing) {
-      if (e.key === 'Escape') { e.preventDefault(); t.blur(); if (t.closest('.bing__box')) focusEl(t.closest('.bing__box')); else act('b'); }
-      if (e.key === 'Enter' && t.closest('.bing__box')) { e.preventDefault(); if (bingSearch(t.value)) t.value = ''; }
-      if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && t.closest('.bing__box')) { e.preventDefault(); t.blur(); act(e.key === 'ArrowDown' ? 'down' : 'up'); }
-      if (['PageUp', 'PageDown', 'F1', 'Tab'].includes(e.code) && t.closest('.bing__box')) { e.preventDefault(); t.blur(); act(e.code === 'Tab' ? (e.shiftKey ? 'lb' : 'rb') : KEYS[e.code]); }
-      return;
-    }
-    // Typing on the bing tab goes straight into the search box.
-    // Q/E still switch tabs and G opens the Guide; every other letter starts a search.
-    if (!gateWaiting && !booting && curTab() === 'bing' && !overlayOpen() && !Guide.isOpen && e.key.length === 1 && /\S/.test(e.key) && !['KeyQ', 'KeyE', 'KeyG'].includes(e.code)) { focusBingInput(); return; }
+    if (typing) { if (e.key === 'Escape') { e.preventDefault(); t.blur(); act('b'); } return; }
     if (e.key === 'Tab') { e.preventDefault(); if (!gateWaiting && !bootSkippable) { inputMode = 'key'; setPadMode(true); act(e.shiftKey ? 'lb' : 'rb'); } return; }
     const a = KEYS[e.code];
     if (gateWaiting || bootSkippable) { e.preventDefault(); act('a'); return; }
@@ -2296,11 +1521,6 @@
       b.addEventListener('mouseleave', () => { if (activeEl === b && inputMode === 'mouse') setActive(null); });
       b.addEventListener('click', () => { if (animatingTab) return; focusEl(b); lastFocus[curTab()] = b; activateTile(b); });
     });
-    const box = $('.bing__box', page);
-    if (box) {
-      box.addEventListener('mousedown', (e) => { if (e.target.tagName !== 'INPUT') { e.preventDefault(); focusBingInput(); } });
-      $('input', box).addEventListener('focus', () => setActive(box));
-    }
   }
   Object.values(pageEls).forEach(wirePage);
   tabBtns.forEach((b) => b.addEventListener('click', () => { if (!overlayOpen()) moveTab(+b.dataset.i - tabIndex); }));
@@ -2313,7 +1533,7 @@
   // Wheel and swipe change tabs.
   let wheelAt = 0;
   addEventListener('wheel', (e) => {
-    if (booting || Guide.isOpen || overlayOpen() || running) return;
+    if (booting || Guide.isOpen || overlayOpen()) return;
     const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
     if (Math.abs(d) < 12 || performance.now() - wheelAt < 450) return;
     wheelAt = performance.now();
@@ -2322,7 +1542,7 @@
   let touch = null;
   addEventListener('touchstart', (e) => { touch = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() } : null; }, { passive: true });
   addEventListener('touchend', (e) => {
-    if (!touch || booting || Guide.isOpen || running) return;
+    if (!touch || booting || Guide.isOpen) return;
     const p = e.changedTouches[0], dx = p.clientX - touch.x, dy = p.clientY - touch.y;
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.4 && Date.now() - touch.t < 600) {
       const top = Overlays.api();
@@ -2413,15 +1633,41 @@
   if (navigator.getGamepads && [...navigator.getGamepads()].some(Boolean)) startPad();
 
   /* ================= Live data ================= */
-  let lcSolved = null;
-  function fillLive() {
-    $$('[data-live="lc"]').forEach((el) => { el.textContent = lcSolved === null ? '·' : lcSolved; });
+  // Tile text and pictures that fill in from the feed.
+  const LIVE = {
+    lc: () => F('leetcode', (d) => n(d.solved.All)),
+    lcDays: () => F('leetcode', (d) => n(d.activeDays)),
+    gh: () => F('github', (d) => `${d.repos} public repos`),
+    ghRepos: () => F('github', (d) => n(d.repos)),
+    valRank: () => F('valorant', (d) => d.rank),
+    valPeak: () => F('valorant', (d) => d.peak && `Peak ${d.peak}`),
+    psnLevel: () => F('psn', (d) => d.level && `Trophy level ${d.level}`),
+    psnSub: () => F('psn', (d) => `${d.trophies.platinum} platinum · ${n(d.totalHours)} hours`),
+    steamBig: () => F('steam', (d) => (d.totalHours ? `${n(d.totalHours)} hours` : null)),
+    steamSub: () => F('steam', (d) => (d.games ? `${d.games} games` : d.recent[0] ? `Lately: ${d.recent[0].name}` : null)),
+    film0: () => F('movies', (d) => d.recent[0] && d.recent[0].title),
+  };
+  const LIVE_SRC = { film0: () => F('movies', (d) => d.recent[0] && d.recent[0].poster) };
+  for (let i = 0; i < 4; i++) {
+    LIVE[`recent${i}`] = () => F('movies', (d) => d.recent[i] && `${d.recent[i].title}   ${stars(d.recent[i].rating)}`);
+    LIVE_SRC[`fav${i}`] = () => F('movies', (d) => d.favourites[i] && d.favourites[i].poster);
   }
-  getJSON('/api/leetcode').catch(() => getJSON('/leetcode.json')).then((d) => { lcSolved = d && d.solved ? d.solved.All : null; fillLive(); }).catch(() => {});
-  getJSON('/api/github').catch(() => getJSON('/github.json')).then((d) => {
-    const n = d && d.repos ? d.repos.length : 0;
-    if (n) $$('[data-live="gh"]').forEach((el) => { el.textContent = `${n} public repos`; });
-  }).catch(() => {});
+  for (let i = 0; i < 3; i++) LIVE[`most${i}`] = () => { const g = mostPlayed()[i]; return g ? `${g[0]} · ${n(g[1])} h` : null; };
+  function fillLive() {
+    $$('[data-live]').forEach((el) => {
+      const v = LIVE[el.dataset.live] && LIVE[el.dataset.live]();
+      if (v !== null && v !== undefined && v !== '') el.textContent = v;
+    });
+    $$('[data-live-src]').forEach((im) => {
+      const u = LIVE_SRC[im.dataset.liveSrc] && LIVE_SRC[im.dataset.liveSrc]();
+      if (u && im.getAttribute('src') !== u) { im.onload = () => { im.hidden = false; }; im.src = u; }
+    });
+  }
+  // The Worker refreshes the feed every few hours; this just reads the latest.
+  fetch('/api/feed', { signal: AbortSignal.timeout(25000) })
+    .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+    .then((d) => { FEED = d; }, () => { FEED = {}; })
+    .then(() => { fillLive(); renderPeeks(); Win.refresh(); });
 
   /* ================= Clocks ================= */
   function tickClock() {
@@ -2516,7 +1762,7 @@
 
   /* ================= Deep links ================= */
   function route() {
-    // /?to=<screen> and #<screen> both open a tab or a screen.
+    // /?to=<screen> and #<screen> both open a tab or a window.
     const q = new URLSearchParams(location.search).get('to');
     if (q) history.replaceState(null, '', `/#${q}`);
     const h = location.hash.slice(1).toLowerCase();
@@ -2524,11 +1770,10 @@
     const tabI = TABS.findIndex((t) => t.k === h);
     if (tabI >= 0) { tabIndex = tabI; return; }
     const after = () => {
-      if (h === 'profile' || h === 'me') Profile.open('about');
-      else if (['stack', 'games-i-play', 'origin', 'timeline', 'contact'].includes(h)) Profile.open(h === 'games-i-play' ? 'games' : h);
-      else if (['games', 'mygames', 'apps', 'myapps', 'work'].includes(h)) Library.open('projects');
-      else if (h === 'achievements') Guide.open('achievements');
-      else if (byId(h)) Details.open(byId(h));
+      if (h === 'achievements') Guide.open('achievements');
+      else if (WINDOWS[h]) Win.open(h);
+      else if (['profile', 'me'].includes(h)) Win.open('about');
+      else if (['work', 'apps'].includes(h)) Win.open('projects');
     };
     const wait_ = setInterval(() => { if (!booting) { clearInterval(wait_); setTimeout(after, 400); } }, 100);
   }
