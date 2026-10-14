@@ -15,6 +15,8 @@ import { DurableObject } from 'cloudflare:workers';
 //   OMDB_API_KEY     OMDb key, for IMDb ratings
 //   STEAM_API_KEY    Steam Web API key, for full library hours
 //   GITHUB_TOKEN     optional; GitHub limits anonymous requests from shared IPs
+//   FORTNITE_API_KEY fortnite-api.com key, for Fortnite stats
+//   FORTNITE_NAME    Epic (or PSN) display name, kept out of the repo and the page
 //
 // /api/feed?refresh pulls everything again, at most once every ten minutes.
 
@@ -105,55 +107,66 @@ async function letterboxd(env, imdb) {
     year: Number(tag(it, 'letterboxd:filmYear')) || null,
     rating: Number(tag(it, 'letterboxd:memberRating')) || null,
     liked: tag(it, 'letterboxd:memberLike') === 'Yes',
-    rewatch: tag(it, 'letterboxd:rewatch') === 'Yes',
     watched: tag(it, 'letterboxd:watchedDate') || null,
     poster: (it.match(/<img src="([^"]+)"/) || [])[1] || null,
   })).filter((f) => f.title);
-
+  const key = (f) => `${f.title}|${f.year}`;
   const seen = new Set();
-  const recent = diary.filter((f) => !seen.has(`${f.title}|${f.year}`) && seen.add(`${f.title}|${f.year}`)).slice(0, 12);
+  const logged = diary.filter((f) => !seen.has(key(f)) && seen.add(key(f)));
 
-  // The four favourites on the profile, when Letterboxd lets the Worker read
-  // it; otherwise the best-rated films in the diary.
-  let favourites = await profileFavourites().catch(() => []);
-  if (!favourites.length) {
-    favourites = recent.filter((f) => f.rating >= 4.5 || f.liked).sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 4);
-  }
-  favourites = favourites.map((f) => ({ ...f, poster: f.poster || (recent.find((r) => r.title === f.title && r.year === f.year) || {}).poster || null }));
+  // The RSS feed only has diary entries. Films that are just rated live on
+  // the site, which Letterboxd sometimes lets the Worker read.
+  const site = await letterboxdSite().catch((err) => ({ error: String(err.message || err).slice(0, 80) }));
+  const fromDiary = (f) => logged.find((d) => key(d) === key(f)) || {};
+  const recent = (site.rated && site.rated.length ? site.rated.map((f) => ({ ...fromDiary(f), ...f })) : logged).slice(0, 12);
+  let favourites = site.favourites && site.favourites.length ? site.favourites.map((f) => ({ ...fromDiary(f), ...f }))
+    : logged.filter((f) => f.rating >= 4.5 || f.liked).sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 4);
+  favourites = favourites.map((f) => ({ ...f, poster: f.poster || fromDiary(f).poster || null }));
 
   // Without an OMDb key there's nothing to look up, so the lookups stop there.
   let lookups = env.OMDB_API_KEY ? 0 : Infinity;
-  const src = 'omdb';
   const rate = async (f) => {
-    const key = `${f.title}|${f.year}`;
-    const hit = imdb[key];
+    const k = key(f), hit = imdb[k];
     // Ratings keep for a month; misses are tried again the next day.
-    const fresh = hit && hit.src === src && Date.now() - hit.t < (hit.rating ? 30 : 1) * 864e5;
-    if (!fresh && lookups++ < 10) {
+    const fresh = hit && hit.src === 'omdb' && Date.now() - hit.t < (hit.rating ? 30 : 1) * 864e5;
+    if (!fresh && lookups++ < 12) {
       let r = null;
       try { r = await imdbRating(env, f); } catch (err) { imdbError = imdbError || String(err.message || err).slice(0, 100); }
-      imdb[key] = { ...r, src, t: Date.now() };
+      imdb[k] = { ...r, src: 'omdb', t: Date.now() };
     }
-    const r = imdb[key] || {};
+    const r = imdb[k] || {};
     return { ...f, imdb: r.rating || null, poster: f.poster || r.poster || null };
   };
   const out = {
     favourites: await Promise.all(favourites.map(rate)),
     recent: await Promise.all(recent.map(rate)),
+    films: site.films || null,
+    thisYear: site.thisYear || null,
+    source: site.error ? `RSS only (${site.error})` : 'letterboxd.com',
   };
   out.ratings = !env.OMDB_API_KEY ? 'OMDB_API_KEY not set' : imdbError || `${[...out.favourites, ...out.recent].filter((f) => f.imdb).length} films rated`;
   return out;
 }
 
-async function profileFavourites() {
-  const html = await get(`https://letterboxd.com/${LETTERBOXD_USER}/`, { headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36' } }, 'text');
-  const section = (html.match(/<section[^>]*id="favourites"[\s\S]*?<\/section>/) || [])[0] || '';
-  const names = [...section.matchAll(/data-item-name="([^"]+)"/g)].map((m) => entities(m[1]));
-  const alts = [...section.matchAll(/<img[^>]+alt="([^"]+)"/g)].map((m) => entities(m[1]));
-  return (names.length ? names : alts).slice(0, 4).map((n) => {
-    const m = n.match(/^(.*) \((\d{4})\)$/);
-    return { title: m ? m[1] : n, year: m ? Number(m[2]) : null };
+// Letterboxd's own pages: the four profile favourites, the film counts, and
+// every rated film, newest rating first.
+async function letterboxdSite() {
+  const page = (path) => get(`https://letterboxd.com/${LETTERBOXD_USER}/${path}`, { headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36', accept: 'text/html' } }, 'text');
+  const [profile, rated] = await Promise.all([page(''), page('films/by/rated-date/')]);
+  const films = (html) => html.split(/data-item-name="/).slice(1).map((chunk) => {
+    const name = entities(chunk.slice(0, chunk.indexOf('"')));
+    const m = name.match(/^(.*) \((\d{4})\)$/);
+    const stars = chunk.match(/rated-(\d+)/);
+    return { title: m ? m[1] : name, year: m ? Number(m[2]) : null, rating: stars ? Number(stars[1]) / 2 : null };
   });
+  const stat = (label) => Number(((profile.match(new RegExp(`<span class="value">([\\d,]+)</span>\\s*<span class="definition[^"]*">${label}</span>`)) || [])[1] || '').replace(/,/g, '')) || null;
+  const favSection = (profile.match(/<section[^>]*id="favourites"[\s\S]*?<\/section>/) || [])[0] || '';
+  return {
+    favourites: films(favSection).slice(0, 4),
+    rated: films(rated).filter((f) => f.rating),
+    films: stat('Films'),
+    thisYear: stat('This year'),
+  };
 }
 
 // IMDb's own site blocks servers, so ratings come from OMDb.
@@ -284,9 +297,10 @@ async function valorant(env) {
   const [name, tagLine] = env.VALORANT_ID.split('#').map((s) => encodeURIComponent(s.trim()));
   const region = (env.VALORANT_REGION || 'eu').toLowerCase();
   const headers = { authorization: env.HENRIK_API_KEY };
-  const [mmr, account] = await Promise.all([
+  const [mmr, account, matches] = await Promise.all([
     get(`https://api.henrikdev.xyz/valorant/v3/mmr/${region}/pc/${name}/${tagLine}`, { headers }),
     get(`https://api.henrikdev.xyz/valorant/v2/account/${name}/${tagLine}`, { headers }).catch(() => null),
+    get(`https://api.henrikdev.xyz/valorant/v4/matches/${region}/pc/${name}/${tagLine}?mode=competitive&size=10`, { headers }).catch(() => null),
   ]);
   const d = mmr.data || {};
   const seasons = d.seasonal || [];
@@ -299,6 +313,36 @@ async function valorant(env) {
     wins: seasons.reduce((n, s) => n + (s.wins || 0), 0),
     games: seasons.reduce((n, s) => n + (s.games || 0), 0),
     level: (account && account.data && account.data.account_level) || null,
+    // Riot doesn't publish play time, so ranked hours are estimated from the
+    // average length of the latest ranked games.
+    hours: estimateHours(seasons.reduce((n, s) => n + (s.games || 0), 0), matches),
+  };
+}
+function estimateHours(games, matches) {
+  const lengths = ((matches && matches.data) || []).map((m) => m.metadata && m.metadata.game_length_in_ms).filter((ms) => ms > 5 * 60000);
+  if (!games || !lengths.length) return null;
+  return Math.round((games * lengths.reduce((a, b) => a + b, 0)) / lengths.length / 3600000);
+}
+
+/* ---------- Fortnite (fortnite-api.com) ---------- */
+
+async function fortnite(env) {
+  if (!env.FORTNITE_API_KEY || !env.FORTNITE_NAME) throw new Skip('FORTNITE_API_KEY or FORTNITE_NAME not set');
+  const headers = { authorization: env.FORTNITE_API_KEY };
+  let d = null, failed = null;
+  for (const type of ['epic', 'psn']) {
+    try {
+      d = await get(`https://fortnite-api.com/v2/stats/br/v2?${new URLSearchParams({ name: env.FORTNITE_NAME, accountType: type })}`, { headers });
+      break;
+    } catch (err) { failed = failed || err; }
+  }
+  if (!d) throw failed;
+  const o = d.data.stats.all.overall;
+  // Only the numbers go out: the account name stays in the secret.
+  return {
+    wins: o.wins, kills: o.kills, matches: o.matches, kd: o.kd, winRate: o.winRate, top10: o.top10,
+    hours: Math.round((o.minutesPlayed || 0) / 60),
+    level: (d.data.battlePass && d.data.battlePass.level) || null,
   };
 }
 
@@ -314,6 +358,7 @@ async function refresh(env) {
     steam: () => steam(env),
     psn: () => psn(env),
     valorant: () => valorant(env),
+    fortnite: () => fortnite(env),
   };
   const out = { updated: Date.now(), status: {} };
   await Promise.all(Object.entries(jobs).map(async ([k, job]) => {
