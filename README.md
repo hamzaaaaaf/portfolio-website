@@ -33,7 +33,7 @@ Xbox, PlayStation and Nintendo controllers are mapped by button position, so the
 | --- | --- | --- |
 | LeetCode | LeetCode's GraphQL API | nothing |
 | GitHub | GitHub's REST API | nothing (`GITHUB_TOKEN` if Cloudflare's shared IPs hit the rate limit) |
-| Films | my Letterboxd profile (favourites and counts), films by date rated, and the diary RSS feed. Letterboxd puts a browser check in front of Cloudflare, so the pages go through the r.jina.ai reader and the last good read is kept | nothing |
+| Films | my Letterboxd profile (favourites and counts), films by date rated, and the diary RSS feed. Letterboxd puts a browser check in front of Cloudflare, so the pages go through the r.jina.ai reader and the last good read is kept | nothing (`JINA_API_KEY` if the reader's shared limit gets in the way) |
 | IMDb ratings | OMDb | `OMDB_API_KEY` |
 | Steam | the public profile, and the Web API for full library hours | `STEAM_API_KEY`, with "Game details" set to public |
 | PlayStation | PSN's mobile API: trophies and play time | `PSN_NPSSO` |

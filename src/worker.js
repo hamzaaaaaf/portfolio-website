@@ -17,6 +17,7 @@ import { DurableObject } from 'cloudflare:workers';
 //   GITHUB_TOKEN     optional; GitHub limits anonymous requests from shared IPs
 //   FORTNITE_API_KEY fortnite-api.com key, for Fortnite stats
 //   FORTNITE_NAME    Epic (or PSN) display name, kept out of the repo and the page
+//   JINA_API_KEY     optional; a jina.ai key, so reading Letterboxd isn't rate limited
 //
 // /api/feed?refresh pulls everything again, at most once every ten minutes.
 
@@ -159,11 +160,27 @@ async function letterboxd(env, imdb) {
 
 // Letterboxd puts a browser check in front of requests from Cloudflare, so a
 // page that gets turned away is fetched through the r.jina.ai reader instead.
-async function letterboxdPage(path) {
+// The reader limits busy addresses (Cloudflare's are shared), so a 429 waits
+// as long as it asks and goes again; JINA_API_KEY gets a limit of its own.
+async function reader(url, env) {
+  const headers = { 'user-agent': UA, 'x-return-format': 'html' };
+  if (env.JINA_API_KEY) headers.authorization = `Bearer ${env.JINA_API_KEY}`;
+  for (let i = 0; ; i++) {
+    const res = await fetch(`https://r.jina.ai/${url}`, { headers, signal: AbortSignal.timeout(30000) });
+    if (res.status === 429 && i < 4) {
+      const wait = Number((await res.json().catch(() => ({}))).retryAfter) || 3;
+      await new Promise((r) => setTimeout(r, Math.min(wait, 10) * 1000 + 500));
+      continue;
+    }
+    if (!res.ok) throw new Error(`r.jina.ai responded ${res.status}`);
+    return res.text();
+  }
+}
+async function letterboxdPage(path, env) {
   const url = `https://letterboxd.com/${LETTERBOXD_USER}/${path}`;
   const tries = [
     () => get(url, { headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36', accept: 'text/html' } }, 'text'),
-    () => get(`https://r.jina.ai/${url}`, { headers: { 'x-return-format': 'html' } }, 'text', 30000),
+    () => reader(url, env),
   ];
   let why = null;
   for (const t of tries) {
@@ -188,7 +205,10 @@ async function letterboxdSite(env) {
   const saved = JSON.parse((await env.FEED.get('letterboxd')) || '{}');
   const site = { ...saved };
   const errors = [];
-  const [profile, rated] = await Promise.allSettled([letterboxdPage(''), letterboxdPage('films/by/rated-date/')]);
+  // One after the other, to stay under the reader's limit.
+  const settle = (p) => p.then((value) => ({ status: 'fulfilled', value }), (reason) => ({ status: 'rejected', reason }));
+  const profile = await settle(letterboxdPage('', env));
+  const rated = await settle(letterboxdPage('films/by/rated-date/', env));
   if (profile.status === 'fulfilled') {
     const html = profile.value;
     const stat = (label) => Number(((html.match(new RegExp(`<span class="value">([\\d,]+)</span>\\s*<span class="definition[^"]*">${label}</span>`)) || [])[1] || '').replace(/,/g, '')) || null;
