@@ -1033,6 +1033,8 @@
   // A row you can select; its index points at the window's actions.
   const pick = (i, title, sub = '', side = '') => `<button type="button" class="wpick" data-nav data-i="${i}"><span><b>${esc(title)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span>${side ? `<em>${esc(side)}</em>` : ''}</button>`;
   const filmRow = (f) => `<li class="film">${f.poster ? `<img src="${esc(f.poster)}" alt="" loading="lazy">` : '<i></i>'}<span><b>${esc(f.title)}</b><small>${[f.year, f.watched ? `watched ${when(f.watched)}` : ''].filter(Boolean).join(' · ')}</small></span><em>${f.rating ? `<span class="me">${stars(f.rating)}</span>` : ''}${f.imdb ? `<span class="imdb">IMDb ${esc(f.imdb)}</span>` : ''}</em></li>`;
+  // Riot's short season names: e9a2 is Episode 9 Act 2.
+  const season = (s) => String(s).replace(/^e(\d+)a(\d+)$/i, 'Episode $1 Act $2');
   const gameRow = ([name, hrs, plat]) => `<li><span>${esc(name)}</span><small>${plat ? `${esc(plat)} · ` : ''}${n(Math.round(hrs))} h</small></li>`;
   function copyEmail() {
     const done = () => { achieve('messenger'); sfx('select'); toast(LINKS.email, 'Copied to clipboard'); };
@@ -1079,7 +1081,7 @@
       const v = F('valorant', (d) => d);
       return {
         title: 'Valorant', ach: 'valorant',
-        body: v ? `<div class="wrank"><small>Current rank</small><b>${esc(v.rank || 'Unranked')}</b>${v.rr !== null ? `<span>${v.rr} RR</span>` : ''}</div>${rows([['Peak rank', v.peak ? `${v.peak}${v.peakSeason ? ` (${v.peakSeason})` : ''}` : ''], ['Competitive wins', v.games ? `${n(v.wins)} of ${n(v.games)} games` : ''], ['Account level', v.level || '']])}` : waiting('Valorant'),
+        body: v ? `<div class="wrank"><small>Current rank</small><b>${esc(v.rank || 'Unranked')}</b>${v.rr !== null ? `<span>${v.rr} RR</span>` : ''}</div>${rows([['Peak rank', v.peak ? `${v.peak}${v.peakSeason ? `, ${season(v.peakSeason)}` : ''}` : ''], ['Competitive wins', v.games ? `${n(v.wins)} of ${n(v.games)} games` : ''], ['Account level', v.level || '']])}` : waiting('Valorant'),
       };
     },
     psn: () => {
