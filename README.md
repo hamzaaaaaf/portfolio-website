@@ -4,11 +4,10 @@ My personal site, built like the Xbox 360 dashboard because the 360 was my first
 
 Every screen is DashX360's 1280×720 canvas scaled to fit the window, so tile positions, colours, fonts, animation timings and sound cues come straight from its XAML and C#. The content is mine.
 
-- **Tabs**: home, about, projects, games, movies, social and settings. Each tile opens its own window, or goes straight to the project's page.
-- **About**: about me, education, tech stack and the summer of 2022.
+- **Tabs**: home, about, projects, games, social and settings. Each tile opens its own window, or goes straight to the project's page.
+- **About**: about me, education, tech stack, and my favourite and latest films from Letterboxd with IMDb ratings.
 - **Projects**: Panic Pack!, Instagram Unliker and this site, plus live LeetCode and GitHub stats.
-- **Games**: where it began (Batman: Arkham Asylum), my console journey, the games I play, and live Valorant, PlayStation and Steam stats.
-- **Movies**: favourite and recently watched films from Letterboxd, with IMDb ratings.
+- **Games**: where it began (Batman: Arkham Asylum), my console journey, the games I play, and live Valorant, Fortnite, PlayStation and Steam stats.
 - **Open Tray** behaves like a console with no disc in it: it opens and closes the tray.
 - **Xbox Guide**: Games & Apps, profile, Xbox Home, Media and Settings blades, plus Achievements and Friends. Y goes to Xbox Home.
 - **Achievements**: 33 of them worth 1000 gamerscore, saved in your browser.
@@ -34,11 +33,12 @@ Xbox, PlayStation and Nintendo controllers are mapped by button position, so the
 | --- | --- | --- |
 | LeetCode | LeetCode's GraphQL API | nothing |
 | GitHub | GitHub's REST API | nothing (`GITHUB_TOKEN` if Cloudflare's shared IPs hit the rate limit) |
-| Films | the Letterboxd RSS feed | nothing |
+| Films | my Letterboxd profile and rated films, or the RSS feed if Letterboxd blocks Cloudflare | nothing |
 | IMDb ratings | OMDb | `OMDB_API_KEY` |
 | Steam | the public profile, and the Web API for full library hours | `STEAM_API_KEY`, with "Game details" set to public |
 | PlayStation | PSN's mobile API: trophies and play time | `PSN_NPSSO` |
-| Valorant | the HenrikDev API | `HENRIK_API_KEY` and `VALORANT_ID` (`name#tag`, kept out of the repo and the page) |
+| Valorant | the HenrikDev API (ranked hours are estimated from games played and match length) | `HENRIK_API_KEY` and `VALORANT_ID` (`name#tag`, kept out of the repo and the page) |
+| Fortnite | fortnite-api.com, with PlayStation hours as a fallback | `FORTNITE_API_KEY` and `FORTNITE_NAME` (Epic display name) |
 
 Add the secrets under Workers & Pages → portfolio-website → Settings → Variables and Secrets. A section with no secret just stays hidden. After adding one, open `byhamza.dev/api/feed?refresh` to pull everything straight away (it works at most once every ten minutes); `status` in the reply says how each source went.
 
@@ -46,6 +46,7 @@ Add the secrets under Workers & Pages → portfolio-website → Settings → Var
 - **Steam**: a key from steamcommunity.com/dev/apikey, then Profile → Edit Profile → Privacy Settings → Game details: Public.
 - **PlayStation**: sign in at playstation.com, then open ca.account.sony.com/api/v1/ssocookie and copy the `npsso` value. The Worker swaps it for a refresh token and keeps that renewed; if PlayStation stats ever stop updating, paste a fresh one.
 - **Valorant**: a free key from the HenrikDev Discord (docs.henrikdev.xyz). Set `VALORANT_REGION` too if you're not on `eu`.
+- **Fortnite**: a free key from dash.fortnite-api.com, your Epic display name, and Fortnite → Settings → Account and Privacy → Show on career leaderboard: On.
 
 ## Stack
 

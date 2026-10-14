@@ -210,6 +210,7 @@ img { display: block; -webkit-user-drag: none; }
 .wme { display: flex; gap: 26px; margin-bottom: 10px; }
 .wme img { width: 112px; height: 112px; flex: none; object-fit: cover; }
 .wrows { margin: 8px 0 0; }
+.wrows + p { margin-top: 18px; }
 .wrows div { display: flex; min-height: 38px; align-items: center; border-top: 1px solid rgba(255, 255, 255, .15); font-size: 19px; }
 .wrows dt { width: 210px; flex: none; color: rgba(255, 255, 255, .7); }
 .wrows dd { margin: 0; }
@@ -260,7 +261,7 @@ img { display: block; -webkit-user-drag: none; }
 .film b { display: block; font-size: 20px; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .film small { display: block; font-size: 15px; color: rgba(255, 255, 255, .7); }
 .film em { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; font-style: normal; }
-.film .me { font-size: 17px; color: #9be27a; letter-spacing: 1px; }
+.film .mine { font-size: 17px; color: #9be27a; letter-spacing: 1px; }
 .film .imdb { padding: 1px 7px; font-size: 14px; font-weight: 600; color: #111; background: #f5c518; border-radius: 3px; }
 
 /* System Settings and the Theme menu share DashX360's light menu style. */
