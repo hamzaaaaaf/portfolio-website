@@ -171,10 +171,17 @@ img { display: block; -webkit-user-drag: none; }
 .statcol { position: absolute; left: 14px; right: 12px; top: 18px; }
 .statcol b { display: block; font-size: 40px; font-weight: 300; line-height: 1; }
 .statcol span { display: block; margin: 3px 0 18px; font-size: 14px; color: rgba(255, 255, 255, .8); }
-.journey { position: absolute; left: 12px; right: 12px; top: 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-size: 18px; }
-.journey i { font-style: normal; }
+.journey { position: absolute; left: 12px; right: 12px; top: 16px; height: 48px; display: flex; align-items: center; justify-content: space-between; font-size: 20px; }
 .journey em { font-style: normal; color: rgba(255, 255, 255, .55); }
+.journey .jx { width: 30px; height: 30px; }
+.journey .jl { display: block; height: 48px; }
+.journey .jl--psp, .journey .jl--ps4 { width: 48px; }
+.journey .jl--pc { width: 28px; }
+.journey svg { display: block; width: 100%; height: 100%; fill: #fff; }
 .poster { position: absolute; top: 18px; width: 102px; height: 153px; overflow: hidden; background: rgba(255, 255, 255, .08); box-shadow: 0 4px 12px rgba(0, 0, 0, .35); }
+.poster img { width: 100%; height: 100%; object-fit: cover; }
+.brand { position: absolute; right: 11px; bottom: 9px; pointer-events: none; }
+.brand svg { display: block; width: 100%; height: 100%; fill: rgba(255, 255, 255, .95); }
 
 /* ---------- Sign-in and notification toast ---------- */
 .toast { position: absolute; left: 479.33px; top: 581.33px; width: 319.33px; height: 78.67px; z-index: 1000; opacity: 0; pointer-events: none; filter: drop-shadow(0 2px 7px rgba(0, 0, 0, .48)); }
@@ -198,7 +205,10 @@ img { display: block; -webkit-user-drag: none; }
 .ov { position: absolute; inset: 0; z-index: 200; }
 
 /* Windows: one per tile, on the System Settings layout. */
-.win { background: linear-gradient(rgba(6, 7, 8, .94) 0%, rgba(22, 26, 28, .92) 55%, rgba(2, 2, 3, .94) 100%); }
+/* The backdrop runs 4000 px past the canvas each way, so a 16:10 or ultrawide
+   screen gets no strips of dashboard around it. The stops keep the gradient
+   where it was on the canvas itself. */
+.win::before { content: ""; position: absolute; inset: -4000px; z-index: -1; background: linear-gradient(rgba(6, 7, 8, .94) 45.87%, rgba(22, 26, 28, .92) 50.41%, rgba(2, 2, 3, .94) 54.13%); }
 .win__title { position: absolute; left: 138px; top: 62px; font-size: 32px; font-weight: 300; line-height: 1.33; }
 .win__panel { position: absolute; left: 200px; top: 119px; width: 880px; height: 482px; background: rgba(95, 102, 104, .85); border: 1px solid rgba(174, 179, 181, .5); }
 .win__body { position: absolute; inset: 0; padding: 30px 40px; overflow-y: auto; white-space: normal; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .35) transparent; }
@@ -247,6 +257,8 @@ img { display: block; -webkit-user-drag: none; }
 .wgames { margin: 0; padding: 0; list-style: none; columns: 2; column-gap: 34px; }
 .wgames li { display: flex; justify-content: space-between; gap: 10px; min-height: 36px; align-items: center; border-top: 1px solid rgba(255, 255, 255, .15); font-size: 18px; break-inside: avoid; }
 .wgames li span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wgames li img, .wgames li > i { width: 54px; height: 30px; flex: none; object-fit: cover; background: rgba(255, 255, 255, .1); }
+.wgames li img + span, .wgames li > i + span { flex: 1; min-width: 0; }
 .wgames small { flex: none; font-size: 15px; color: rgba(255, 255, 255, .65); }
 .wgames li.fav span { color: #ffd34d; }
 .wcols .wgames { columns: 1; }
@@ -295,7 +307,7 @@ img { display: block; -webkit-user-drag: none; }
 .set__scroll { position: absolute; inset: 0; overflow: hidden; }
 .set__scroll > div { padding-bottom: 18px; transition: transform .2s var(--cubic-out); }
 
-.themes__back { position: absolute; inset: 0; background: rgba(0, 0, 0, .533); }
+.themes__back { position: absolute; inset: -4000px; background: rgba(0, 0, 0, .533); }
 .themes__panel { position: absolute; left: 182px; top: 120px; width: 420px; height: 430px; background: rgba(247, 247, 247, .965); border: 1px solid rgba(255, 255, 255, .4); overflow: hidden; }
 .themes__head { height: 68px; padding-left: 24px; display: flex; align-items: center; background: #fdfdfd; color: #666; font-size: 25px; }
 .tbtn { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 58px; padding: 0 24px; font-size: 24px; color: #2b2b2b; background: #f4f4f4; border-bottom: 1px solid #d5d5d5; }
