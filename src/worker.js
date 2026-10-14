@@ -162,8 +162,9 @@ async function letterboxd(env, imdb) {
 // page that gets turned away is fetched through the r.jina.ai reader instead.
 // The reader limits busy addresses (Cloudflare's are shared), so a 429 waits
 // as long as it asks and goes again; JINA_API_KEY gets a limit of its own.
-async function reader(url, env) {
-  const headers = { 'user-agent': UA, 'x-return-format': 'html' };
+// The selector keeps the reply to the parts that get used.
+async function reader(url, env, selector) {
+  const headers = { 'user-agent': UA, 'x-return-format': 'html', 'x-target-selector': selector };
   if (env.JINA_API_KEY) headers.authorization = `Bearer ${env.JINA_API_KEY}`;
   for (let i = 0; ; i++) {
     const res = await fetch(`https://r.jina.ai/${url}`, { headers, signal: AbortSignal.timeout(30000) });
@@ -176,11 +177,11 @@ async function reader(url, env) {
     return res.text();
   }
 }
-async function letterboxdPage(path, env) {
+async function letterboxdPage(path, env, selector) {
   const url = `https://letterboxd.com/${LETTERBOXD_USER}/${path}`;
   const tries = [
     () => get(url, { headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36', accept: 'text/html' } }, 'text'),
-    () => reader(url, env),
+    () => reader(url, env, selector),
   ];
   let why = null;
   for (const t of tries) {
@@ -207,8 +208,8 @@ async function letterboxdSite(env) {
   const errors = [];
   // One after the other, to stay under the reader's limit.
   const settle = (p) => p.then((value) => ({ status: 'fulfilled', value }), (reason) => ({ status: 'rejected', reason }));
-  const profile = await settle(letterboxdPage('', env));
-  const rated = await settle(letterboxdPage('films/by/rated-date/', env));
+  const profile = await settle(letterboxdPage('', env, '.profile-stats, #favourites'));
+  const rated = await settle(letterboxdPage('films/by/rated-date/', env, '.poster-grid li.griditem:nth-child(-n+12)'));
   if (profile.status === 'fulfilled') {
     const html = profile.value;
     const stat = (label) => Number(((html.match(new RegExp(`<span class="value">([\\d,]+)</span>\\s*<span class="definition[^"]*">${label}</span>`)) || [])[1] || '').replace(/,/g, '')) || null;
