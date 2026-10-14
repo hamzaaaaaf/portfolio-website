@@ -87,7 +87,6 @@
     ['Call of Duty: Warzone', 2020], ['Valorant', 2020],
   ].sort((a, b) => a[1] - b[1] || a[0].localeCompare(b[0]));
   const JOURNEY = [['Xbox 360', 'Where it started'], ['PSP', ''], ['PS4', ''], ['PC', 'Now']];
-  const SUMMER = [['Played', 'Valorant'], ['Watched', 'Stranger Things'], ['Listened to', 'SOUR by Olivia Rodrigo']];
   const ORIGIN = { title: 'Batman: Arkham Asylum', year: 2009, art: `${A}themes/batman_arkham_asylum/home.webp`, text: 'The game that got me into gaming. I’ve played every Arkham game since: City, Origins and Knight.' };
 
   const THEMES = [
@@ -118,9 +117,9 @@
     ['valorant', 'Ranked', 'Check Hamza’s Valorant rank.', 30],
     ['trophies', 'Trophy hunter', 'Open PlayStation.', 30],
     ['steam', 'Full steam ahead', 'Open Steam.', 30],
-    ['summer', 'Summer of 2022', 'Find Hamza’s best summer.', 40],
-    ['critic', 'Critic', 'Open Recently Watched.', 20],
-    ['cinephile', 'Cinephile', 'Open Favourite Films.', 30],
+    ['fortnite', 'Victory royale', 'Check Hamza’s Fortnite stats.', 20],
+    ['critic', 'Critic', 'Open Hamza’s latest films.', 30],
+    ['cinephile', 'Cinephile', 'Open Favourite Films.', 40],
     ['tray', 'No disc', 'Open the disc tray.', 15],
     ['colour', 'Paint job', 'Change the tile color.', 30],
     ['themes', 'Interior designer', 'Change the dashboard theme.', 30],
@@ -234,8 +233,8 @@
   const G = (letter) => { const l = letter.toLowerCase(); return `<i class="g g--${l}" role="img" aria-label="${letter}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="${GLYPHS[l]}"/></svg></i>`; };
 
   /* ================= Dashboard markup ================= */
-  // The 2011 dashboard had eight tabs; this one keeps the seven a portfolio needs.
-  const TABS = ['home', 'about', 'projects', 'games', 'movies', 'social', 'settings'].map((k) => ({ k }));
+  // The 2011 dashboard had eight tabs; this one keeps the six a portfolio needs.
+  const TABS = ['home', 'about', 'projects', 'games', 'social', 'settings'].map((k) => ({ k }));
 
   const px = (o) => Object.entries(o).map(([k, v]) => `${k}:${typeof v === 'number' ? `${v}px` : v}`).join(';');
   const tile = (id, x, y, w, h, inner, { label = '', bg = '', cls = '', def = false } = {}) =>
@@ -285,13 +284,17 @@
     return `<span class="abs" style="left:0;right:0;top:0;height:${top}px;background:#1b1f23"></span><span class="logo" style="top:${top * 0.42}px;width:44px;height:44px;fill:#fff">${svg('github')}</span><span class="big-n" style="top:${top * 0.42 + 28}px;font-size:13px;opacity:.8">${live('gh', 'hamzaaaaaf')}</span><span class="bar" style="height:33px;background:#2b3137"></span>${tx('GitHub', { left: 8, bottom: 6, 'font-size': 16 })}`;
   }
 
+  // About: who I am on the left, films in the middle, the latest film and achievements on the right.
   function pageAbout() {
+    const favs = [0, 1, 2, 3].map((i) => `<span class="poster" style="left:${14 + i * 82}px;top:46px;width:76px;height:114px">${livePic(`fav${i}`)}</span>`).join('');
     return `<div class="page" data-tab="about">
       ${tile('about.me', 224, 31, 300, 263, `<span class="mecard"><img src="${ME.pic}" alt=""><b>About Me</b><span>${esc(ME.short)}</span></span>`, { label: 'About Me', bg: grad('#3f7f97 0%,#1d4656 50%,#0c1d25 100%'), def: true })}
-      ${tile('about.education', 224, 296, 300, 132, `${glyph('cap', 300, 132, 44)}<span class="tile__note">Aston University · LACAS</span>${label('Education')}`, { label: 'Education' })}
-      ${tile('about.stack', 526, 31, 354, 131, `<span class="chips">${STACK.slice(0, 5).map(([n]) => `<i>${esc(n)}</i>`).join('')}</span>${label('Tech Stack')}`, { label: 'Tech Stack', bg: grad('#2b3a44 0%,#1a252c 100%') })}
-      ${tile('about.summer', 526, 164, 354, 130, `<span class="lines">${SUMMER.map(([, v]) => `<i>${esc(v)}</i>`).join('')}</span>${label('Summer of 2022')}`, { label: 'Summer of 2022', bg: grad('#f2a64b 0%,#c4553a 55%,#5d1c33 100%') })}
-      ${tile('about.achievements', 526, 296, 354, 132, `${glyph('trophy', 354, 132, 42, '0 0 30 32')}<span class="tile__note"><span data-gs>0</span> of 1000G</span>${label('Achievements')}`, { label: 'Achievements' })}
+      ${tile('about.education', 224, 296, 149, 132, glyph('cap', 149, 132, 40) + label('Education'), { label: 'Education' })}
+      ${tile('about.stack', 375, 296, 149, 132, glyph('layers', 149, 132, 40) + label('Tech Stack'), { label: 'Tech Stack' })}
+      ${tile('about.favs', 526, 31, 354, 263, `${favs}<span class="tile__note" style="bottom:40px">${live('filmCount', '')}</span>${bar(30, 'rgba(0,0,0,.6)')}${tx('Favourite Films', { left: 8, bottom: 6, 'font-size': 17 })}`, { label: 'Favourite Films', bg: grad('#3a2f45 0%,#1c1724 100%') })}
+      ${tile('about.recent', 526, 296, 354, 132, `<span class="lines">${live('recent0', '', 'li')}${live('recent1', '', 'li')}${live('recent2', '', 'li')}</span>${tx('Latest Films', { left: 12, right: 10, bottom: 10, 'font-size': 17 })}`, { label: 'Latest Films', bg: grad('#2e3438 0%,#1a1e21 100%') })}
+      ${tile('about.latest', 882, 31, 176, 263, `${glyph('film', 176, 263, 50)}${livePic('film0')}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.1) 55%,rgba(0,0,0,.78) 100%')}<span class="tile__note" style="bottom:34px">${live('film0', '')}</span>${label('Last Watched')}`, { label: 'Last Watched', bg: '#2a2d30' })}
+      ${tile('about.achievements', 882, 296, 176, 132, `${glyph('trophy', 176, 132, 40, '0 0 30 32')}<span class="tile__note"><span data-gs>0</span> of 1000G</span>${label('Achievements')}`, { label: 'Achievements' })}
     </div>`;
   }
 
@@ -309,21 +312,13 @@
   function pageGames() {
     return `<div class="page" data-tab="games">
       ${tile('games.origin', 224, 31, 354, 263, picture(ORIGIN.art, 'Where It Began', `${ORIGIN.title}, ${ORIGIN.year}`), { label: 'Where it began', bg: '#1a120c', def: true })}
-      ${tile('games.valorant', 580, 31, 232, 263, valorantArt(), { label: 'Valorant', bg: VAL_BG })}
+      ${tile('games.valorant', 580, 31, 232, 131, valorantArt(), { label: 'Valorant', bg: VAL_BG })}
+      ${tile('games.fortnite', 580, 164, 232, 130, `<span class="tile__big">${live('fnBig', 'Fortnite')}</span><span class="tile__note">${live('fnSub', '')}</span>${label('Fortnite')}`, { label: 'Fortnite', bg: grad('#6a3fd6 0%,#3a1f8f 55%,#160b3d 100%') })}
       ${tile('games.played', 814, 31, 232, 131, glyph('games', 232, 131, 46) + label('Games I Play'), { label: 'Games I Play' })}
       ${tile('games.journey', 814, 164, 232, 130, `<span class="journey">${JOURNEY.map(([n]) => `<i>${esc(n)}</i>`).join('<em>›</em>')}</span>${label('Console Journey')}`, { label: 'Console Journey', bg: grad('#4c5a62 0%,#2a3338 100%') })}
       ${tile('games.psn', 224, 296, 354, 132, `<span class="tile__big">${live('psnLevel', 'Trophies')}</span><span class="tile__note">${live('psnSub', '')}</span>${label('PlayStation')}`, { label: 'PlayStation', bg: grad('#2b6fd6 0%,#0f3f8f 55%,#081d45 100%') })}
       ${tile('games.steam', 580, 296, 232, 132, `<span class="tile__big">${live('steamBig', 'Steam')}</span><span class="tile__note">${live('steamSub', '')}</span>${label('Steam')}`, { label: 'Steam', bg: grad('#2a475e 0%,#1b2838 60%,#0e141b 100%') })}
       ${tile('games.most', 814, 296, 232, 132, `<span class="lines">${live('most0', '', 'li')}${live('most1', '', 'li')}${live('most2', '', 'li')}</span>${label('Most Played')}`, { label: 'Most Played', bg: grad('#3d4a52 0%,#20282d 100%') })}
-    </div>`;
-  }
-
-  function pageMovies() {
-    const favs = [0, 1, 2, 3].map((i) => `<span class="poster" style="left:${14 + i * 112}px">${livePic(`fav${i}`)}</span>`).join('');
-    return `<div class="page" data-tab="movies">
-      ${tile('movies.latest', 224, 31, 175, 263, `${glyph('film', 175, 263, 50)}${livePic('film0')}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.1) 55%,rgba(0,0,0,.78) 100%')}<span class="tile__note" style="bottom:34px">${live('film0', '')}</span>${label('Last Watched')}`, { label: 'Last Watched', bg: '#2a2d30' })}
-      ${tile('movies.favs', 401, 31, 466, 263, `${favs}${bar(30, 'rgba(0,0,0,.6)')}${tx('Favourite Films', { left: 8, bottom: 6, 'font-size': 17 })}`, { label: 'Favourite Films', bg: grad('#3a2f45 0%,#1c1724 100%'), def: true })}
-      ${tile('movies.recent', 224, 296, 643, 132, `<span class="lines lines--2">${live('recent0', '', 'li')}${live('recent1', '', 'li')}${live('recent2', '', 'li')}${live('recent3', '', 'li')}</span>${label('Recently Watched')}`, { label: 'Recently Watched', bg: grad('#2e3438 0%,#1a1e21 100%') })}
     </div>`;
   }
 
@@ -355,7 +350,7 @@
     </div>`;
   }
 
-  const PAGES = { home: pageHome, about: pageAbout, projects: pageProjects, games: pageGames, movies: pageMovies, social: pageSocial, settings: pageSettings };
+  const PAGES = { home: pageHome, about: pageAbout, projects: pageProjects, games: pageGames, social: pageSocial, settings: pageSettings };
   // The side previews show the end of the previous tab and the start of the next one.
   function pageSpan(k) {
     const els = $$('[data-x]', pageEls[k]);
@@ -651,7 +646,9 @@
     'about.me': () => Win.open('about'),
     'about.education': () => Win.open('education'),
     'about.stack': () => Win.open('stack'),
-    'about.summer': () => Win.open('summer'),
+    'about.favs': () => Win.open('favs'),
+    'about.recent': () => Win.open('recent'),
+    'about.latest': () => Win.open('recent'),
     'about.achievements': () => Guide.open('achievements'),
     'projects.list': () => Win.open('projects'),
     'projects.github': () => openLink(LINKS.github, 'source'),
@@ -666,9 +663,7 @@
     'games.psn': () => Win.open('psn'),
     'games.steam': () => Win.open('steam'),
     'games.most': () => Win.open('most'),
-    'movies.latest': () => Win.open('recent'),
-    'movies.favs': () => Win.open('favs'),
-    'movies.recent': () => Win.open('recent'),
+    'games.fortnite': () => Win.open('fortnite'),
     'social.friends': () => Guide.open('friends'),
     'social.message': () => Win.open('message'),
     'social.linkedin': () => openLink(LINKS.linkedin, 'networker'),
@@ -1032,9 +1027,10 @@
   const waiting = (what) => `<p class="wdim">${FEED ? `${what} isn’t available right now.` : 'Loading…'}</p>`;
   // A row you can select; its index points at the window's actions.
   const pick = (i, title, sub = '', side = '') => `<button type="button" class="wpick" data-nav data-i="${i}"><span><b>${esc(title)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span>${side ? `<em>${esc(side)}</em>` : ''}</button>`;
-  const filmRow = (f) => `<li class="film">${f.poster ? `<img src="${esc(f.poster)}" alt="" loading="lazy">` : '<i></i>'}<span><b>${esc(f.title)}</b><small>${[f.year, f.watched ? `watched ${when(f.watched)}` : ''].filter(Boolean).join(' · ')}</small></span><em>${f.rating ? `<span class="me">${stars(f.rating)}</span>` : ''}${f.imdb ? `<span class="imdb">IMDb ${esc(f.imdb)}</span>` : ''}</em></li>`;
+  const filmRow = (f) => `<li class="film">${f.poster ? `<img src="${esc(f.poster)}" alt="" loading="lazy" onerror="this.replaceWith(document.createElement('i'))">` : '<i></i>'}<span><b>${esc(f.title)}</b><small>${[f.year, f.watched ? `watched ${when(f.watched)}` : ''].filter(Boolean).join(' · ')}</small></span><em>${f.rating ? `<span class="mine">${stars(f.rating)}</span>` : ''}${f.imdb ? `<span class="imdb">IMDb ${esc(f.imdb)}</span>` : ''}</em></li>`;
   // Riot's short season names: e9a2 is Episode 9 Act 2.
   const season = (s) => String(s).replace(/^e(\d+)a(\d+)$/i, 'Episode $1 Act $2');
+  const filmCounts = (m) => (m.films ? `<p class="wdim">${n(m.films)} films watched${m.thisYear ? `, ${n(m.thisYear)} this year` : ''}.</p>` : '');
   const gameRow = ([name, hrs, plat]) => `<li><span>${esc(name)}</span><small>${plat ? `${esc(plat)} · ` : ''}${n(Math.round(hrs))} h</small></li>`;
   function copyEmail() {
     const done = () => { achieve('messenger'); sfx('select'); toast(LINKS.email, 'Copied to clipboard'); };
@@ -1051,7 +1047,6 @@
     about: () => ({ title: 'About Me', ach: 'about', body: `<div class="wme"><img src="${ME.pic}" alt=""><div>${ABOUT.map((p) => `<p>${esc(p)}</p>`).join('')}</div></div>${rows(FACTS)}` }),
     education: () => ({ title: 'Education', ach: 'education', body: `<ol class="wlist">${EDUCATION.map((e) => `<li><b>${esc(e.place)}</b><span>${esc(e.what)}</span>${e.when ? `<small>${esc(e.when)}</small>` : ''}</li>`).join('')}</ol>` }),
     stack: () => ({ title: 'Tech Stack', ach: 'stack', body: `<div class="wchips">${STACK.map(([t, d]) => `<div><b>${esc(t)}</b><span>${esc(d)}</span></div>`).join('')}</div>` }),
-    summer: () => ({ title: 'Summer of 2022', ach: 'summer', body: `<p>The best summer of my life, and the combo that made it.</p>${rows(SUMMER)}` }),
     projects: () => ({
       title: 'All Projects', ach: 'projects',
       body: PROJECTS.map((p, i) => pick(i, p.title, p.line)).join('') + pick(PROJECTS.length, 'More on GitHub', 'Everything else I’ve built'),
@@ -1081,7 +1076,7 @@
       const v = F('valorant', (d) => d);
       return {
         title: 'Valorant', ach: 'valorant',
-        body: v ? `<div class="wrank"><small>Current rank</small><b>${esc(v.rank || 'Unranked')}</b>${v.rr !== null ? `<span>${v.rr} RR</span>` : ''}</div>${rows([['Peak rank', v.peak ? `${v.peak}${v.peakSeason ? `, ${season(v.peakSeason)}` : ''}` : ''], ['Competitive wins', v.games ? `${n(v.wins)} of ${n(v.games)} games` : ''], ['Account level', v.level || '']])}` : waiting('Valorant'),
+        body: v ? `<div class="wrank"><small>Current rank</small><b>${esc(v.rank || 'Unranked')}</b>${v.rr !== null ? `<span>${v.rr} RR</span>` : ''}</div>${rows([['Peak rank', v.peak ? `${v.peak}${v.peakSeason ? `, ${season(v.peakSeason)}` : ''}` : ''], ['Competitive wins', v.games ? `${n(v.wins)} of ${n(v.games)} games` : ''], ['Ranked hours', v.hours ? `About ${n(v.hours)}` : ''], ['Account level', v.level || '']])}${v.hours ? '<p class="wdim">Riot doesn’t publish play time, so ranked hours are worked out from the number of ranked games and how long the latest ones lasted.</p>' : ''}` : waiting('Valorant'),
       };
     },
     psn: () => {
@@ -1105,12 +1100,21 @@
       return { title: 'Most Played', ach: 'gamer', body: all.length ? `<ul class="wgames">${all.slice(0, 10).map(gameRow).join('')}</ul>` : waiting('Play time') };
     },
     favs: () => {
-      const m = F('movies', (d) => d.favourites);
-      return { title: 'Favourite Films', ach: 'cinephile', body: m && m.length ? `<ul class="wfilms">${m.map(filmRow).join('')}</ul>` : waiting('Letterboxd') };
+      const m = F('movies', (d) => d);
+      return { title: 'Favourite Films', ach: 'cinephile', body: m && m.favourites.length ? `${filmCounts(m)}<ul class="wfilms">${m.favourites.map(filmRow).join('')}</ul>` : waiting('Letterboxd') };
     },
     recent: () => {
-      const m = F('movies', (d) => d.recent);
-      return { title: 'Recently Watched', ach: 'critic', body: m && m.length ? `<ul class="wfilms">${m.map(filmRow).join('')}</ul>` : waiting('Letterboxd') };
+      const m = F('movies', (d) => d);
+      return { title: 'Latest Films', ach: 'critic', body: m && m.recent.length ? `${filmCounts(m)}<ul class="wfilms">${m.recent.map(filmRow).join('')}</ul>` : waiting('Letterboxd') };
+    },
+    fortnite: () => {
+      const f = F('fortnite', (d) => d);
+      const ps = F('psn', (d) => d.top.find((g) => /^fortnite$/i.test(g.name)));
+      return {
+        title: 'Fortnite', ach: 'fortnite',
+        body: f ? rows([['Wins', n(f.wins)], ['Matches', n(f.matches)], ['Win rate', `${f.winRate}%`], ['Kills', n(f.kills)], ['K/D', f.kd], ['Top 10s', n(f.top10)], ['Hours played', n(f.hours)], ['Battle Pass level', f.level || '']])
+          : ps ? `<div class="wrank"><small>On PlayStation</small><b>${n(ps.hours)} hours</b></div><p>My most played game by a long way.</p>` : waiting('Fortnite'),
+      };
     },
   };
 
@@ -1195,6 +1199,7 @@
           ['Stats', 'layers', win('stats')],
           ['Games I Play', 'games', win('played')],
           ['Valorant', '', win('valorant')],
+          ['Fortnite', '', win('fortnite')],
         ];
         case 1: return [
           ['Achievements', '', () => openScreen('achievements')],
@@ -1204,8 +1209,7 @@
         ];
         case 3: return [
           ['Favourite Films', 'film', win('favs')],
-          ['Recently Watched', 'film', win('recent')],
-          ['Summer of 2022', '', win('summer')],
+          ['Latest Films', 'film', win('recent')],
         ];
         case 4: return [
           ['System Settings', 'gear', closeThen(() => Settings.open())],
@@ -1648,6 +1652,9 @@
     steamBig: () => F('steam', (d) => (d.totalHours ? `${n(d.totalHours)} hours` : null)),
     steamSub: () => F('steam', (d) => (d.games ? `${d.games} games` : d.recent[0] ? `Lately: ${d.recent[0].name}` : null)),
     film0: () => F('movies', (d) => d.recent[0] && d.recent[0].title),
+    filmCount: () => F('movies', (d) => d.films && `${n(d.films)} films watched`),
+    fnBig: () => F('fortnite', (d) => `${n(d.wins)} wins`) || F('psn', (d) => { const g = d.top.find((x) => /^fortnite$/i.test(x.name)); return g && `${n(g.hours)} hours`; }),
+    fnSub: () => F('fortnite', (d) => `${n(d.kills)} kills · ${n(d.hours)} hours`) || (F('psn', (d) => d.top.some((x) => /^fortnite$/i.test(x.name))) ? 'On PlayStation' : null),
   };
   const LIVE_SRC = { film0: () => F('movies', (d) => d.recent[0] && d.recent[0].poster) };
   for (let i = 0; i < 4; i++) {
@@ -1769,7 +1776,7 @@
     if (q) history.replaceState(null, '', `/#${q}`);
     const h = location.hash.slice(1).toLowerCase();
     if (!h) return;
-    const tabI = TABS.findIndex((t) => t.k === h);
+    const tabI = TABS.findIndex((t) => t.k === (h === 'movies' ? 'about' : h));
     if (tabI >= 0) { tabIndex = tabI; return; }
     const after = () => {
       if (h === 'achievements') Guide.open('achievements');
