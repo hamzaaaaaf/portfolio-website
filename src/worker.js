@@ -249,13 +249,18 @@ async function psn(env) {
     get(`${api}/trophy/v1/users/me/trophySummary`, { headers: auth }),
     get(`${api}/gamelist/v2/users/me/titles?categories=ps4_game,ps5_native_game&limit=200&offset=0`, { headers: auth }),
   ]);
-  const titles = (played.titles || []).map((g) => ({
-    name: clean(g.localizedName || g.name),
-    platform: /ps5/i.test(g.category) ? 'PS5' : 'PS4',
-    hours: Math.round(duration(g.playDuration)),
-    first: g.firstPlayedDateTime,
-    last: g.lastPlayedDateTime,
-  }));
+  // One entry per game: the PS4 and PS5 versions of a game count together.
+  // PSN reports many titles' platform as "unknown", so they're all just PlayStation.
+  const byName = new Map();
+  for (const g of played.titles || []) {
+    const name = clean(g.localizedName || g.name).replace(/\s*\((?:PlayStation|PS)\s*[45]\)$/i, '');
+    const t = byName.get(name) || { name, platform: 'PlayStation', hours: 0, first: null, last: null };
+    t.hours += duration(g.playDuration);
+    if (g.firstPlayedDateTime && (!t.first || g.firstPlayedDateTime < t.first)) t.first = g.firstPlayedDateTime;
+    if (g.lastPlayedDateTime && (!t.last || g.lastPlayedDateTime > t.last)) t.last = g.lastPlayedDateTime;
+    byName.set(name, t);
+  }
+  const titles = [...byName.values()].map((t) => ({ ...t, hours: Math.round(t.hours) }));
   // Peak years: the years the most-played hours started in.
   const byYear = {};
   for (const g of titles) if (g.first) byYear[g.first.slice(0, 4)] = (byYear[g.first.slice(0, 4)] || 0) + g.hours;
@@ -264,7 +269,7 @@ async function psn(env) {
     level: Number(summary.trophyLevel) || null,
     progress: summary.progress || null,
     trophies: { platinum: t.platinum || 0, gold: t.gold || 0, silver: t.silver || 0, bronze: t.bronze || 0 },
-    games: played.totalItemCount || titles.length,
+    games: titles.length,
     totalHours: Math.round(titles.reduce((n, g) => n + g.hours, 0)),
     top: [...titles].sort((a, b) => b.hours - a.hours).slice(0, 6).map(({ name, platform, hours: h }) => ({ name, platform, hours: h })),
     recent: [...titles].sort((a, b) => String(b.last).localeCompare(String(a.last))).slice(0, 4).map(({ name, platform, last }) => ({ name, platform, last })),
