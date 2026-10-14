@@ -72,52 +72,23 @@ def fit(rel, w, h, crop=None, name=None):
 # ---------- DashX360 artwork ----------
 T = 'Tiles/'
 M = 'Misc/'
-cover(T + 'halo4home.jpg', 466, 263, name='tiles/halo4.webp')
-cover(T + 'dexterhome.jpg', 231, 133, name='tiles/dexter.webp')
-cover(T + 'maroon5home.jpg', 233, 133, name='tiles/maroon5.webp')
-cover(T + 'dancecentralhome.jpg', 179, 131, name='tiles/dancecentral.webp')
-cover(T + 'espn.jpg', 179, 131, name='tiles/espn.webp')
-cover(T + 'youtubehome.jpg', 179, 131, name='tiles/youtube-home.webp')
-cover(T + 'forzahorizongames.jpg', 400, 303, name='tiles/forza.webp')
-cover(T + 'minecraftgames.jpg', 200, 151, name='tiles/minecraft.webp')
-cover(T + 'blackops2games.jpg', 200, 150, name='tiles/blackops2.webp')
-cover(T + 'thedarkkightvideo.jpg', 308, 301, name='tiles/darkknight.webp')
-cover(T + 'cloudywithachanceofmeatballsvideo.jpg', 148, 150, name='tiles/cloudy.webp')
-cover(T + 'kungfupanda2video.jpg', 148, 149, name='tiles/kungfupanda2.webp')
-cover(T + 'hbogovideo.jpg', 198, 149, name='tiles/hbogo-video.webp')
-cover(T + 'overexposedmusic.jpg', 306, 298, name='tiles/overexposed.webp')
-cover(T + 'evanescencerecent.png', 158, 148, name='tiles/evanescence.webp')
-cover(T + 'panchikomusic.jpg', 348, 148, name='tiles/panchiko.webp')
-cover(T + 'hbogoapps.jpg', 306, 298, name='tiles/hbogo-apps.webp')
-cover(T + 'netflixapps.png', 158, 148, name='tiles/netflix.webp')
-cover(T + 'youtubeapps.jpg', 188, 148, name='tiles/youtube-apps.webp')
-for k in ['windows-media-center', 'system-music-player', 'internet-explorer', 'movies-and-tv']:
-    cover(T + f'myapps-{k}.png', 198, 198, name=f'apps/{k}.webp')
-cover(T + 'youtube-icon.png', 198, 198, name='apps/youtube.webp')
-
 fit(M + 'disc-tray.png', 74, 74, name='icons/disc-tray.webp')
 fit(M + 'pin.png', 38, 38, crop=(574, 274, 392, 392), name='icons/pin.webp')
 fit(M + 'music.png', 58, 58, crop=(250, 210, 460, 540), name='icons/music.webp')
-fit(M + 'myapps.png', 72, 72, crop=(535, 295, 455, 330), name='icons/myapps.webp')
 fit(T + 'Marketplace/mygames.png', 72, 72, name='icons/mygames.webp')
-for k in ['game', 'video', 'music', 'apps']:
+for k in ['game', 'apps']:
     fit(T + f'Marketplace/{k}_marketplace.png', 58, 58, name=f'icons/{k}-marketplace.webp')
-fit(T + 'Marketplace/my_video_apps_custom.png', 144, 102, name='icons/my-video-apps.webp')
-for k in ['friends', 'sign_in_or_out', 'avatar_store']:
-    fit(T + f'Social/{k}.png', 58, 58, name=f'icons/{k.replace("_", "-")}.webp')
-fit(T + 'Social/join_the_fun_text.png', 230, 168, crop=(294, 102, 782, 594), name='tiles/join-the-fun.webp')
+fit(T + 'Social/friends.png', 58, 58, name='icons/friends.webp')
 fit(T + 'Social/transparent_avatars.png', 300, 256, name='tiles/avatars.webp')
-for k in ['system', 'preferences', 'account', 'kinect', 'privacy', 'family', 'turnoff']:
+for k in ['system', 'preferences', 'account', 'privacy', 'turnoff']:
     fit(M + f'SettingsIcons/{k}.png', 85, 85, name=f'icons/settings-{k}.webp')
 fit(M + 'SignIn/xbox-orb.png', 64, 64, name='ui/xbox-orb.webp')
 fit(M + 'SignIn/live-alert.png', 64, 64, name='ui/live-alert.webp')
 for k in ['Hard Drive', 'songs', 'saved playlists']:
     fit(M + f'MusicBrowserIcons/{k}.png', 96, 96, name=f'icons/music-{k.lower().replace(" ", "-")}.webp')
 cover('References/penguin_bing_background.png', 960, 540, name='ui/bing-background.webp')
-for f in sorted(os.listdir(os.path.join(SRC, 'Profile', 'FriendPool'))):
-    shutil.copy(os.path.join(SRC, 'Profile', 'FriendPool', f), out(f'gamerpics/{f}'))
 for theme in sorted(t for t in os.listdir(os.path.join(SRC, 'Custom Files', 'Themes')) if not t.startswith('.')):
-    for part in ['home', 'games', 'apps', 'settings']:
+    for part in ['home', 'games', 'settings']:
         im = load(f'Custom Files/Themes/{theme}/{part}.png').convert('RGB')
         save(im.resize((1280, 720), Image.LANCZOS), f'themes/{theme.lower()}/{part}.webp', quality=80)
 

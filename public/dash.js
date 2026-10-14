@@ -58,13 +58,48 @@
     tag: 'Hamza',
     pic: '/assets/gamerpics/hamza.webp',
     motto: 'Turning curious ideas into real software.',
-    name: 'Hamza',
-    location: 'Birmingham, UK',
-    bio: 'Computer Science student at Aston University. Java for uni, Python for everything else, and this console one tile at a time.',
+    short: 'Second-year Computer Science student at Aston University in Birmingham.',
     zone: 'Recreation',
   };
   const A = '/assets/';
-  // Everything in My Games and My Apps. "kind" decides what Launch does.
+  // The About section of the profile.
+  const ABOUT = {
+    intro: 'I’m a second-year Computer Science student at Aston University in Birmingham. I like turning curious ideas into real software: games, browser tools and this Xbox 360 dashboard.',
+    facts: [
+      ['Studying', 'BSc Computer Science, second year'],
+      ['University', 'Aston University'],
+      ['Based in', 'Birmingham, UK'],
+      ['Modules', 'Data structures, algorithms, OOP'],
+      ['Off the clock', 'Games and found-footage horror films'],
+    ],
+    stack: [
+      ['Python', 'Capital City and side projects'],
+      ['Java', 'Uni modules and OOP'],
+      ['JavaScript', 'This site and the Unliker'],
+      ['HTML & CSS', 'Hand-built, no framework'],
+      ['Godot 4', 'Panic Pack!, in GDScript'],
+      ['Cloudflare Workers', 'Hosting and the stats API'],
+      ['SQL', 'Databases'],
+      ['Git & GitHub', 'Every project'],
+    ],
+    games: [
+      ['Batman: Arkham Asylum', 2009], ['Batman: Arkham City', 2011], ['Batman: Arkham Origins', 2013], ['Batman: Arkham Knight', 2015],
+      ['Minecraft', 2011], ['Grand Theft Auto V', 2013], ['Uncharted 4', 2016], ['Rocket League', 2015],
+      ['Fortnite', 2017], ['Call of Duty: Warzone', 2020], ['Friday the 13th', 2017], ['Spider-Man 3', 2007],
+      ['The Amazing Spider-Man', 2012], ['The Amazing Spider-Man 2', 2014], ['Crash of the Titans', 2007],
+    ],
+    origin: 'Rocksteady’s Arkham Asylum is the game that got me into gaming. I’ve played every Arkham game since: City, Origins and Knight.',
+    timeline: [
+      ['2024', 'Capital City', 'My first game, written in Python'],
+      ['2025', 'Aston University', 'Started BSc Computer Science'],
+      ['Aug 2026', 'Instagram Unliker', 'Clears old likes in bulk'],
+      ['Sep 2026', 'Panic Pack!', 'A first-person packing race in Godot'],
+      ['Sep 2026', 'byhamza.dev', 'This site goes live'],
+      ['Now', 'Second year', 'More modules, more projects'],
+    ],
+  };
+  const ORIGIN_ART = `${A}themes/batman_arkham_asylum/home.webp`;
+  // Every project in My Projects. "kind" decides what Launch does.
   const LIBRARY = [
     {
       id: 'capital-city', type: 'game', title: 'Capital City', sub: 'Python · Playable here', cover: `${A}covers/capital-city.webp`, wide: `${A}tiles/capital-city.webp`,
@@ -120,9 +155,7 @@
     },
   ];
   const byId = (id) => LIBRARY.find((g) => g.id === id);
-  const GAMES = () => LIBRARY.filter((g) => g.type === 'game').sort((a, b) => a.title.localeCompare(b.title));
-  // The game in the disc tray (DashX360's TrayGame); S is read when the tray is used.
-  const trayGame = () => byId(S.tray) || byId('capital-city');
+  const pins = () => store.get('pins', []);
 
   const THEMES = [
     { id: 'default', name: 'Default' },
@@ -137,9 +170,9 @@
     ['hello', 'Signed in', 'Turn on the console.', 10],
     ['guide', 'Guide me', 'Open the Xbox Guide.', 20],
     ['profile', 'Gamercard', 'View Hamza’s profile.', 10],
-    ['library', 'Collector', 'Open My Games.', 10],
-    ['apps', 'App happy', 'Open My Apps.', 10],
-    ['reader', 'Case study', 'Open the details of every game and app Hamza made.', 80],
+    ['library', 'Collector', 'Open My Projects.', 10],
+    ['stack', 'Full stack', 'Look at Hamza’s tech stack.', 10],
+    ['reader', 'Case study', 'Open the details of every project Hamza made.', 80],
     ['capital', 'Geography class', 'Play Capital City.', 20],
     ['capital5', 'Capital idea', 'Get five capitals right in a row.', 50],
     ['ragequit', 'Any unsaved progress will be lost', 'Quit a game from the Guide.', 30],
@@ -147,9 +180,9 @@
     ['colour', 'Paint job', 'Change the tile color.', 30],
     ['lookback', 'Look back', 'Open Recent.', 20],
     ['sysset', 'Under the hood', 'Open System Settings.', 20],
-    ['region', 'Region locked', 'Try to open something this console can’t play.', 20],
-    ['tray', 'Disc swap', 'Pin a game to the tray.', 15],
-    ['pinned', 'Pinned', 'Pin a game to My Pins.', 15],
+    ['origin', 'Where it all began', 'Find the game that got Hamza into gaming.', 20],
+    ['tray', 'No disc', 'Open the disc tray.', 15],
+    ['pinned', 'Pinned', 'Pin a project to My Pins.', 15],
     ['search', 'Decision engine', 'Search with Bing.', 20],
     ['themes', 'Interior designer', 'Change the dashboard theme.', 30],
     ['tidy', 'Plug and play', 'Navigate with a controller.', 75],
@@ -168,7 +201,7 @@
   ].map(([id, t, d, g]) => ({ id, t, d, g }));
 
   /* ================= Settings ================= */
-  const DEFAULTS = { sounds: true, pad: true, startup: 'video', loading: true, volume: 1, theme: 'default', colour: '#028d02', tray: 'capital-city' };
+  const DEFAULTS = { sounds: true, pad: true, startup: 'video', loading: true, volume: 1, theme: 'default', colour: '#028d02' };
   const S = Object.assign({}, DEFAULTS, store.get('settings', {}));
   const saveSettings = () => store.set('settings', S);
 
@@ -260,28 +293,28 @@
     leetcode: 'M13.5 2 5.7 10.3a3.4 3.4 0 0 0 0 4.7l4.3 4.6a3.4 3.4 0 0 0 4.8.2l2.4-2.3-1.4-1.5-2.4 2.3a1.4 1.4 0 0 1-2-.1L7.2 13.6a1.4 1.4 0 0 1 0-1.9l7.8-8.3ZM10 12.5h10v2H10Z',
     linkedin: 'M4 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM2.3 8.5h3.4V21H2.3Zm6 0h3.3v1.7c.5-.9 1.7-2 3.6-2 3.8 0 4.5 2.5 4.5 5.8V21h-3.4v-6.2c0-1.5 0-3.3-2-3.3s-2.3 1.6-2.3 3.2V21H8.3Z',
     search: 'M17,17 A14,14 0 1 1 36,36M34,34 L47,47',
+    layers: 'M12 2 22 7l-10 5L2 7Zm-7.6 8.3L12 14l7.6-3.7L22 11.5 12 16.5 2 11.5Zm0 4.5L12 18.5l7.6-3.7L22 16 12 21 2 16Z',
+    clock: 'M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20Zm0 2.2a7.8 7.8 0 1 0 0 15.6 7.8 7.8 0 0 0 0-15.6ZM11 6h2v5.6l3.8 2.2-1 1.7-4.8-2.8Z',
+    pin: 'M14.5 2 22 9.5l-1.4 1.4-1.3-.6-4.1 4.1.5 4.2-1.4 1.4-3.6-3.6L4.4 22.7 3 21.3l6.4-6.4-3.6-3.6 1.4-1.4 4.2.5 4.1-4.1-.6-1.3Z',
   };
   const svg = (name, vb = '0 0 24 24', cls = '') => `<svg viewBox="${vb}"${cls ? ` class="${cls}"` : ''} aria-hidden="true"><path d="${P[name]}"/></svg>`;
-  const G = (letter) => `<i class="g g--${letter.toLowerCase()}">${letter}</i>`;
+  // Controller button glyphs: a glossy disc with the letter drawn as strokes,
+  // so it sits dead centre whatever font the browser picks.
+  const GLYPHS = {
+    a: 'M6.5 14.9 10 5.1l3.5 9.8M7.7 11.6h4.6',
+    b: 'M7.4 14.9V5.1h3a2.4 2.4 0 0 1 0 4.8H7.4h3.4a2.5 2.5 0 0 1 0 5Z',
+    x: 'M6.8 5.1l6.4 9.8M13.2 5.1l-6.4 9.8',
+    y: 'M6.6 5.1 10 10.1l3.4-5M10 10.1v4.8',
+  };
+  const G = (letter) => { const l = letter.toLowerCase(); return `<i class="g g--${l}" role="img" aria-label="${letter}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="${GLYPHS[l]}"/></svg></i>`; };
 
   /* ================= Dashboard markup ================= */
-  const TABS = [
-    { k: 'bing', x: 180, w: 58 }, { k: 'home', x: 274, w: 78 }, { k: 'social', x: 388, w: 86 }, { k: 'video', x: 512, w: 82 },
-    { k: 'games', x: 634, w: 94 }, { k: 'music', x: 776, w: 88 }, { k: 'apps', x: 896, w: 68 }, { k: 'settings', x: 994, w: 128 },
-  ];
-  // MainWindow's adjacent preview crops (DashboardViewModel.GetLeftPreviewCrop / GetRightPreviewCrop).
-  const leftCrop = (k) => ({ settings: 954, video: 938, music: 938, apps: 938, games: 913 }[k] || 910);
-  function rightCrop(cur, k) {
-    if (cur === 'video' && k === 'games') return 198;
-    if (cur === 'social' && k === 'video') return 198;
-    if (cur === 'games' && k === 'music') return 206;
-    if (cur === 'music' && k === 'apps') return 206;
-    return { bing: 198, home: 224, social: 224, settings: 224, games: 258, video: 236, music: 236, apps: 236 }[k] || 224;
-  }
+  // The 2011 dashboard had eight tabs; this one keeps the six a portfolio needs.
+  const TABS = ['bing', 'home', 'about', 'projects', 'social', 'settings'].map((k) => ({ k }));
 
   const px = (o) => Object.entries(o).map(([k, v]) => `${k}:${typeof v === 'number' ? `${v}px` : v}`).join(';');
-  const tile = (id, x, y, w, h, inner, { label = '', bg = '', cls = '' } = {}) =>
-    `<button class="t${cls ? ` ${cls}` : ''}" data-t="${id}" data-x="${x}" data-y="${y}" data-w="${w}" data-h="${h}" style="${px({ left: x, top: y, width: w, height: h })}" aria-label="${esc(label)}"><span class="f"${bg ? ` style="background:${bg}"` : ''}>${inner}</span></button>`;
+  const tile = (id, x, y, w, h, inner, { label = '', bg = '', cls = '', def = false } = {}) =>
+    `<button class="t${cls ? ` ${cls}` : ''}" data-t="${id}"${def ? ' data-default' : ''} data-x="${x}" data-y="${y}" data-w="${w}" data-h="${h}" style="${px({ left: x, top: y, width: w, height: h })}" aria-label="${esc(label)}"><span class="f"${bg ? ` style="background:${bg}"` : ''}>${inner}</span></button>`;
   const img = (src, box, cls = 'ico') => `<img class="${cls}" src="${src}" alt=""${box ? ` style="${px(box)}"` : ''} draggable="false">`;
   const fill = (src) => `<img class="fill" src="${src}" alt="" draggable="false">`;
   const tx = (text, box, extra = '') => `<span class="tx${extra}" style="${px(box)}">${esc(text)}</span>`;
@@ -292,10 +325,14 @@
   function icoBox(w, h, iw, ih, { top, mt = 0 }) {
     return { left: (w - iw) / 2, top: top !== undefined ? top : mt + (h - mt - ih) / 2, width: iw, height: ih };
   }
+  // A white glyph centred above the label, for tiles without artwork.
+  const glyph = (name, w, h, size = 50, vb) => `<span class="abs tile__glyph" style="${px(icoBox(w, h, size, size, { mt: -24 }))}">${svg(name, vb)}</span>`;
+  // Picture tile: artwork, a darkening gradient and a title bar.
+  const picture = (src, title, sub = '') => `${fill(src)}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.12) 55%,rgba(0,0,0,.7) 100%')}${bar(sub ? 48 : 30, 'rgba(0,0,0,.79)')}${sub ? tx(title, { left: 10, right: 10, bottom: 22, 'font-size': 18 }) + tx(sub, { left: 10, right: 10, bottom: 5, 'font-size': 13, color: 'rgba(255,255,255,.78)' }) : tx(title, { left: 8, right: 8, bottom: 6, 'font-size': 17 })}`;
 
   function pageBing() {
-    return `<div class="page" data-tab="bing">
-      ${tx('Search Xbox for games, movies, music and apps', { left: 378, top: 104, 'font-size': 19, 'font-weight': 300, color: 'rgba(255,255,255,.75)' })}
+    return `<div class="page" data-tab="bing" data-l="198">
+      ${tx('Search Hamza’s projects, profile and settings', { left: 378, top: 104, 'font-size': 19, 'font-weight': 300, color: 'rgba(255,255,255,.75)' })}
       ${tx('bing', { left: 198, top: 148, 'font-size': 44, 'font-weight': 300, color: 'rgba(255,255,255,.95)' })}
       <div class="bing__box t-like" data-nav data-x="377" data-y="134" data-w="585" data-h="92" tabindex="-1">
         <input type="search" enterkeyhint="search" autocomplete="off" spellcheck="false" aria-label="Search with Bing">
@@ -304,104 +341,97 @@
     </div>`;
   }
 
+  // The Open Tray tile, as on a console with no disc in the drive.
+  let trayOpen = false;
+  const trayLabel = () => (trayOpen ? 'Close Tray' : 'Open Tray');
   function pageHome() {
-    const fx = 224, fy = 31, tray = trayGame();
+    const fx = 224, fy = 31;
     return `<div class="page" data-tab="home">
-      ${tile('home.open-tray', fx, fy, 185, 131, `${fill(tray.wide)}${img(`${A}icons/disc-tray.webp`, { left: 55.5, top: 17, width: 74, height: 74 })}${tx('Open Tray', { left: 13, right: 8, bottom: 10, 'font-size': 18 })}`, { label: `Open Tray: ${tray.title}` })}
+      ${tile('home.tray', fx, fy, 185, 131, `${img(`${A}icons/disc-tray.webp`, { left: 55.5, top: 14, width: 74, height: 74 }, 'ico tray__ico')}${tx(trayLabel(), { left: 13, bottom: 10, 'font-size': 18 }, ' tray__t')}`, { label: trayLabel() })}
       ${tile('home.pins', fx, fy + 133, 185, 131, `${img(`${A}icons/pin.webp`, icoBox(185, 131, 38, 38, { mt: -20 }))}${tx('My Pins', { left: 12, bottom: 12, 'font-size': 17 })}`, { label: 'My Pins' })}
       ${tile('home.recent', fx, fy + 266, 185, 131, `<svg class="ico" viewBox="0 0 36 36" style="${px(icoBox(185, 131, 36, 36, { mt: -20 }))};position:absolute;fill:none;stroke:rgba(255,255,255,.91);stroke-width:4;stroke-linecap:round"><circle cx="18" cy="18" r="16"/><path d="M18,8 L18,20 L27,20"/></svg>${tx('Recent', { left: 12, bottom: 12, 'font-size': 17 })}`, { label: 'Recent' })}
-      ${tile('home.hero', fx + 187, fy, 466, 263, `<span class="hero"><img src="${ME.pic}" alt=""><span><b>${esc(ME.tag)}</b><span>${esc(ME.motto)}</span></span></span>${shade('rgba(0,0,0,.14) 0%,rgba(0,0,0,0) 48%,rgba(0,0,0,.66) 100%')}${bar(30, 'rgba(0,0,0,.79)')}${tx('Hamza · Computer Science at Aston University', { left: 8, right: 8, bottom: 6, 'font-size': 17 })}`, { label: 'Hamza’s profile', bg: grad('#bfd5d8 0%,#3b5e65 34%,#111a1d 78%,#9eaeb0 100%') })}
-      ${tile('home.panic', fx + 187, fy + 265, 231, 133, `${fill(`${A}tiles/panic-pack.webp`)}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.16) 55%,rgba(0,0,0,.69) 100%')}${bar(30, 'rgba(0,0,0,.79)')}${tx('Panic Pack!', { left: 8, right: 8, bottom: 6, 'font-size': 17 })}`, { label: 'Panic Pack!', bg: grad('#2d100d 0%,#e27522 50%,#321a16 100%') })}
-      ${tile('home.unliker', fx + 420, fy + 265, 233, 133, `${fill(`${A}tiles/instagram-unliker.webp`)}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.19) 62%,rgba(0,0,0,.69) 100%')}${bar(30, 'rgba(0,0,0,.79)')}${tx('Instagram Unliker', { left: 8, right: 8, bottom: 6, 'font-size': 17 })}`, { label: 'Instagram Unliker', bg: 'linear-gradient(to right,#cfcfcf,#50606f)' })}
+      ${tile('home.hero', fx + 187, fy, 466, 263, `<span class="hero"><img src="${ME.pic}" alt=""><span><b>${esc(ME.tag)}</b><span>${esc(ME.motto)}</span></span></span>${shade('rgba(0,0,0,.14) 0%,rgba(0,0,0,0) 48%,rgba(0,0,0,.66) 100%')}${bar(30, 'rgba(0,0,0,.79)')}${tx('About Me · Computer Science at Aston University', { left: 8, right: 8, bottom: 6, 'font-size': 17 })}`, { label: 'About Hamza', bg: grad('#bfd5d8 0%,#3b5e65 34%,#111a1d 78%,#9eaeb0 100%'), def: true })}
+      ${tile('home.capital', fx + 187, fy + 265, 231, 133, `${picture(`${A}tiles/capital-city.webp`, 'Capital City')}<span class="badge">Play</span>`, { label: 'Capital City', bg: '#145a96' })}
+      ${tile('home.panic', fx + 420, fy + 265, 233, 133, picture(`${A}tiles/panic-pack.webp`, 'Panic Pack!'), { label: 'Panic Pack!', bg: grad('#2d100d 0%,#e27522 50%,#321a16 100%') })}
       ${tile('home.leetcode', fx + 655, fy, 179, 131, `<span class="big-n" style="top:16px;font-size:50px" data-live="lc">&middot;</span><span class="big-n" style="top:70px;font-size:15px;opacity:.85">solved</span>${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.14) 58%,rgba(0,0,0,.69) 100%')}${bar(30, 'rgba(0,0,0,.79)')}${tx('LeetCode', { left: 8, right: 8, bottom: 6, 'font-size': 16 })}`, { label: 'LeetCode', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}
-      ${tile('home.github', fx + 655, fy + 133, 179, 131, `<span class="abs" style="left:0;right:0;top:0;height:98px;background:#1b1f23"></span><span class="logo" style="top:40px;width:44px;height:44px;fill:#fff">${svg('github')}</span><span class="big-n" style="top:68px;font-size:13px;opacity:.8" data-live="gh">hamzaaaaaf</span>${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.06) 58%,rgba(0,0,0,.69) 100%')}<span class="bar" style="height:33px;background:#2b3137"></span>${tx('GitHub', { left: 8, bottom: 6, 'font-size': 16 })}`, { label: 'GitHub', bg: '#1b1f23' })}
+      ${tile('home.github', fx + 655, fy + 133, 179, 131, githubArt(179, 131), { label: 'GitHub', bg: '#1b1f23' })}
       ${tile('home.linkedin', fx + 655, fy + 266, 179, 131, `<span class="logo" style="display:flex;align-items:center;gap:3px;font-size:30px;font-weight:700;color:#0a66c2;letter-spacing:-.5px">Linked<span style="display:grid;place-items:center;width:34px;height:34px;border-radius:5px;background:#0a66c2;color:#fff;font-size:26px">in</span></span>${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,0) 58%,rgba(0,0,0,.47) 100%')}`, { label: 'LinkedIn', bg: '#fff' })}
+    </div>`;
+  }
+  function githubArt(w, h) {
+    const top = h - 33;
+    return `<span class="abs" style="left:0;right:0;top:0;height:${top}px;background:#1b1f23"></span><span class="logo" style="top:${top * 0.42}px;width:44px;height:44px;fill:#fff">${svg('github')}</span><span class="big-n" style="top:${top * 0.42 + 28}px;font-size:13px;opacity:.8" data-live="gh">hamzaaaaaf</span>${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.06) 58%,rgba(0,0,0,.69) 100%')}<span class="bar" style="height:33px;background:#2b3137"></span>${tx('GitHub', { left: 8, bottom: 6, 'font-size': 16 })}`;
+  }
+
+  function pageAbout() {
+    const games = ABOUT.games.slice(0, 8).map(([t]) => t.replace(/^Batman: /, ''));
+    return `<div class="page" data-tab="about">
+      ${tile('about.me', 224, 31, 300, 263, `<span class="mecard"><img src="${ME.pic}" alt=""><b>About Me</b><span>${esc(ME.short)}</span></span>`, { label: 'About Me', bg: grad('#3f7f97 0%,#1d4656 50%,#0c1d25 100%'), def: true })}
+      ${tile('about.stack', 224, 296, 300, 132, `<span class="chips">${ABOUT.stack.slice(0, 5).map(([n]) => `<i>${esc(n)}</i>`).join('')}</span>${tx('Tech Stack', { left: 12, bottom: 10, 'font-size': 18 })}`, { label: 'Tech Stack', bg: grad('#2b3a44 0%,#1a252c 100%') })}
+      ${tile('about.origin', 526, 31, 354, 263, picture(ORIGIN_ART, 'Where It Began', 'Batman: Arkham Asylum, 2009'), { label: 'Where it began: Batman: Arkham Asylum', bg: '#1a120c' })}
+      ${tile('about.games', 526, 296, 354, 132, `<span class="glist">${games.map((t) => `<i>${esc(t)}</i>`).join('')}</span>${tx('Games I Play', { left: 12, bottom: 10, 'font-size': 18 })}`, { label: 'Games I Play', bg: grad('#5a2a7a 0%,#34174a 55%,#1b0b28 100%') })}
+      ${tile('about.achievements', 882, 31, 179, 263, `${glyph('trophy', 179, 263, 62, '0 0 30 32')}<span class="big-n" style="top:158px;font-size:30px"><span data-gs>0</span>G</span>${tx('Achievements', { left: 12, bottom: 12, 'font-size': 17 })}`, { label: 'Achievements' })}
+      ${tile('about.timeline', 882, 296, 179, 132, `${glyph('clock', 179, 132, 40)}${tx('Timeline', { left: 12, bottom: 10, 'font-size': 17 })}`, { label: 'Timeline' })}
+    </div>`;
+  }
+
+  function pageProjects() {
+    return `<div class="page" data-tab="projects">
+      ${tile('projects.all', 224, 31, 185, 197, `${img(`${A}icons/mygames.webp`, icoBox(185, 197, 72, 72, { mt: -24 }))}${tx('My Projects', { left: 12, bottom: 12, 'font-size': 20 })}`, { label: 'My Projects' })}
+      ${tile('projects.github', 224, 230, 185, 198, githubArt(185, 198), { label: 'GitHub', bg: '#1b1f23' })}
+      ${tile('projects.panic', 411, 31, 466, 263, `${picture(`${A}tiles/panic-pack.webp`, 'Panic Pack!', 'Godot 4 · Free download for Windows')}`, { label: 'Panic Pack!', bg: grad('#2d100d 0%,#e27522 50%,#321a16 100%'), def: true })}
+      ${tile('projects.capital', 411, 296, 232, 132, `${picture(`${A}tiles/capital-city.webp`, 'Capital City')}<span class="badge">Play</span>`, { label: 'Capital City', bg: '#145a96' })}
+      ${tile('projects.unliker', 645, 296, 232, 132, picture(`${A}tiles/instagram-unliker.webp`, 'Instagram Unliker'), { label: 'Instagram Unliker', bg: grad('#ff78aa 0%,#d62976 50%,#4f0c4a 100%') })}
+      ${tile('projects.site', 879, 31, 179, 263, `<img class="ico" src="/favicon.svg" alt="" style="${px(icoBox(179, 263, 96, 96, { mt: -40 }))}">${bar(48, 'rgba(0,0,0,.5)')}${tx('byhamza.dev', { left: 10, bottom: 22, 'font-size': 17 })}${tx('This site', { left: 10, bottom: 5, 'font-size': 13, color: 'rgba(255,255,255,.78)' })}`, { label: 'byhamza.dev', bg: grad('#4a4f52 0%,#2a2e30 60%,#151718 100%') })}
+      ${tile('projects.leetcode', 879, 296, 179, 132, `<span class="big-n" style="top:14px;font-size:44px" data-live="lc">&middot;</span><span class="big-n" style="top:62px;font-size:14px;opacity:.85">problems solved</span>${bar(30, 'rgba(0,0,0,.6)')}${tx('LeetCode', { left: 8, bottom: 6, 'font-size': 16 })}`, { label: 'LeetCode', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}
     </div>`;
   }
 
   function pageSocial() {
-    const fx = 224, fy = 31, ico = (src) => img(src, icoBox(177, 122, 58, 58, { mt: -15 })), lab = (t) => tx(t, { left: 6, bottom: 8, 'font-size': 13 });
+    const fx = 224, fy = 31, lab = (t) => tx(t, { left: 8, bottom: 8, 'font-size': 15 });
     return `<div class="page" data-tab="social">
-      ${img(`${A}tiles/join-the-fun.webp`, { left: fx + 535, top: fy + 78, width: 230, height: 168, opacity: 0.82, 'object-fit': 'contain' }, 'abs')}
       ${img(`${A}tiles/avatars.webp`, { left: fx + 219, top: fy + 87, width: 300, height: 256, opacity: 0.96, 'object-fit': 'contain' }, 'abs')}
-      ${tile('social.friends', fx, fy, 177, 122, ico(`${A}icons/friends.webp`) + lab('Friends'), { label: 'Friends' })}
-      ${tile('social.themes', fx, fy + 123, 177, 122, ico(`${A}icons/settings-preferences.webp`) + lab('Themes'), { label: 'Themes' })}
-      ${tile('social.signin', fx, fy + 246, 177, 122, ico(`${A}icons/sign-in-or-out.webp`) + lab('Sign in or Out'), { label: 'Sign in or Out' })}
-    </div>`;
-  }
-
-  function pageVideo() {
-    return `<div class="page" data-tab="video">
-      ${tile('video.apps', 236, 76, 146, 148, `${img(`${A}icons/my-video-apps.webp`, { left: 1, top: 4, width: 144, height: 102 })}${tx('My Video Apps', { left: 12, right: 0, bottom: 12, 'font-size': 22 }, ' wrap')}`, { label: 'My Video Apps' })}
-      ${tile('video.marketplace', 236, 226, 146, 148, `${img(`${A}icons/video-marketplace.webp`, icoBox(146, 148, 58, 58, { top: 26 }))}${tx('Video Marketplace', { left: 12, right: 0, bottom: 12, 'font-size': 22 }, ' wrap')}`, { label: 'Video Marketplace' })}
-      ${tile('video.feature', 384, 73, 308, 301, `${fill(`${A}tiles/darkknight.webp`)}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.09) 54%,rgba(0,0,0,.66) 100%')}${bar(46, 'rgba(0,0,0,.51)')}${tx('The Dark Knight', { left: 12, bottom: 12, 'font-size': 19 })}`, { label: 'The Dark Knight', bg: grad('#f2f0e8 0%,#b59f80 50%,#201712 100%') })}
-      ${tile('video.cloudy', 694, 73, 148, 150, `${fill(`${A}tiles/cloudy.webp`)}<span class="sh" style="background:rgba(0,0,0,.33)"></span>${tx('Cloudy with a Chance of Meatballs', { left: 10, right: 8, bottom: 12, 'font-size': 16 }, ' wrap')}`, { label: 'Cloudy with a Chance of Meatballs', bg: '#33434a' })}
-      ${tile('video.recent', 844, 73, 198, 150, `<svg class="abs" viewBox="0 0 198 150" style="inset:0;width:198px;height:150px"><path d="M0,115 C70,28 132,82 198,4 L198,150 L0,150" fill="#59b631"/></svg>${tx('Recent', { left: 20, top: 48, 'font-size': 30, color: '#2b2b2b' })}`, { label: 'Recent videos', bg: '#fff' })}
-      ${tile('video.kungfu', 694, 225, 148, 149, `${fill(`${A}tiles/kungfupanda2.webp`)}<span class="sh" style="background:rgba(0,0,0,.27)"></span><span class="logo" style="font-size:28px;font-weight:700;color:rgba(255,255,255,.67)">HD</span>${tx('Kung Fu Panda 2', { left: 10, right: 0, bottom: 12, 'font-size': 21 }, ' wrap')}`, { label: 'Kung Fu Panda 2', bg: '#e9c330' })}
-      ${tile('video.hbogo', 844, 225, 198, 149, `${fill(`${A}tiles/hbogo-video.webp`)}`, { label: 'HBO GO' })}
-      <span class="advert" style="left:844px;top:374px;margin-top:4px">ADVERTISEMENT</span>
-    </div>`;
-  }
-
-  function pageGames() {
-    return `<div class="page" data-tab="games">
-      ${tile('games.mygames', 258, 74, 155, 153, `${img(`${A}icons/mygames.webp`, icoBox(155, 153, 72, 72, { mt: -18 }))}${tx('My Games', { left: 15, bottom: 12, 'font-size': 22 })}`, { label: 'My Games' })}
-      ${tile('games.marketplace', 258, 229, 155, 149, `${img(`${A}icons/game-marketplace.webp`, icoBox(155, 149, 58, 58, { top: 24 }))}${tx('Game Marketplace', { left: 15, right: 0, bottom: 12, 'font-size': 22 }, ' wrap')}`, { label: 'Game Marketplace' })}
-      ${tile('games.forza', 415, 74, 400, 303, `${fill(`${A}tiles/forza.webp`)}<span class="sh" style="background:rgba(0,0,0,.27)"></span>${bar(78, 'rgba(0,0,0,.56)')}${tx('Forza Horizon', { left: 10, bottom: 42, 'font-size': 24 })}${tx('December IGN Pack', { left: 10, bottom: 12, 'font-size': 24, color: 'rgba(255,255,255,.87)' })}`, { label: 'Forza Horizon', bg: grad('#e9f0ea 0%,#7e968c 32%,#17201c 100%') })}
-      ${tile('games.minecraft', 817, 74, 200, 151, `${fill(`${A}tiles/minecraft.webp`)}<span class="sh" style="background:rgba(0,0,0,.2)"></span>${tx('Minecraft', { left: 10, bottom: 14, 'font-size': 20 })}`, { label: 'Minecraft', bg: grad('#0f2719 0%,#6a8d36 60%,#131814 100%') })}
-      ${tile('games.blackops', 817, 227, 200, 150, `${fill(`${A}tiles/blackops2.webp`)}<span class="sh" style="background:rgba(0,0,0,.2)"></span>${tx('Black Ops II', { left: 10, bottom: 14, 'font-size': 20 })}`, { label: 'Black Ops II', bg: grad('#1b1b1f 0%,#376b7b 52%,#111 100%') })}
-      <span class="advert" style="left:820px;top:387px">ADVERTISEMENT</span>
-    </div>`;
-  }
-
-  function pageMusic() {
-    return `<div class="page" data-tab="music">
-      ${tile('music.player', 236, 76, 148, 148, `${img(`${A}icons/music.webp`, icoBox(148, 148, 58, 58, { mt: -12 }))}${tx('Music Player', { left: 12, bottom: 12, 'font-size': 22 })}`, { label: 'Music Player' })}
-      ${tile('music.marketplace', 236, 226, 148, 148, `${img(`${A}icons/music-marketplace.webp`, icoBox(148, 148, 58, 58, { top: 26 }))}${tx('Music Marketplace', { left: 12, right: 0, bottom: 12, 'font-size': 22 }, ' wrap')}`, { label: 'Music Marketplace' })}
-      ${tile('music.feature', 386, 76, 306, 298, `${fill(`${A}tiles/overexposed.webp`)}<span class="sh" style="background:rgba(0,0,0,.2)"></span>${bar(56, 'rgba(0,0,0,.63)')}${tx('Overexposed', { left: 12, bottom: 24, 'font-size': 23 })}${tx('Maroon 5 - Overexposed', { left: 12, bottom: 8, 'font-size': 16, color: 'rgba(255,255,255,.87)' })}`, { label: 'Overexposed', bg: grad('#232323 0%,#6e2b82 48%,#0d0d0d 100%') })}
-      ${tile('music.recent', 694, 76, 158, 148, `${fill(`${A}tiles/evanescence.webp`)}<span class="sh" style="background:rgba(0,0,0,.2)"></span>${tx('Recent Music', { left: 10, bottom: 12, 'font-size': 22 })}`, { label: 'Recent Music', bg: '#2f6f9f' })}
-      ${tile('music.search', 854, 76, 188, 148, `${tx('search', { left: 10, bottom: 12, 'font-size': 23 })}`, { label: 'Search', bg: '#191919' })}
-      ${tile('music.panchiko', 694, 226, 348, 148, `${fill(`${A}tiles/panchiko.webp`)}<span class="sh" style="background:rgba(255,255,255,.33)"></span>${tx('Panchiko', { left: 14, bottom: 12, 'font-size': 24, color: '#303030' })}`, { label: 'Panchiko', bg: '#e8e8e8' })}
-    </div>`;
-  }
-
-  function pageApps() {
-    const fx = 236, fy = 76;
-    return `<div class="page" data-tab="apps">
-      ${tile('apps.myapps', fx, fy, 148, 148, `${img(`${A}icons/myapps.webp`, icoBox(148, 148, 72, 72, { mt: -18 }))}${tx('My Apps', { left: 12, bottom: 12, 'font-size': 22 })}`, { label: 'My Apps' })}
-      ${tile('apps.browse', fx, fy + 150, 148, 148, `${img(`${A}icons/apps-marketplace.webp`, icoBox(148, 148, 58, 58, { top: 26 }))}${tx('Browse Apps', { left: 12, right: 0, bottom: 12, 'font-size': 22 }, ' wrap')}`, { label: 'Browse Apps' })}
-      ${tile('apps.hbogo', fx + 150, fy, 306, 298, `${fill(`${A}tiles/hbogo-apps.webp`)}<span class="sh" style="background:rgba(0,0,0,.2)"></span><span class="tx" style="left:0;right:0;bottom:24px;text-align:center;font-size:16px;color:rgba(255,255,255,.8)">Watch with Xbox LIVE Gold</span>`, { label: 'HBO GO', bg: '#000' })}
-      ${tile('apps.netflix', fx + 458, fy, 158, 148, `${fill(`${A}tiles/netflix.webp`)}<span class="tx" style="left:0;right:0;bottom:12px;text-align:center;font-size:10px;color:rgba(255,255,255,.8)">instant queue</span>`, { label: 'Netflix', bg: '#e3262e' })}
-      ${tile('apps.youtube', fx + 618, fy, 188, 148, fill(`${A}tiles/youtube-apps.webp`), { label: 'YouTube', bg: '#111' })}
-      ${tile('apps.hulu', fx + 458, fy + 150, 158, 148, `<span class="logo" style="margin-top:-12px;font-size:30px;font-weight:700;color:#58b22e;white-space:nowrap">hulu</span><span class="logo" style="margin-top:32px;font-size:21px;color:#2e2e2e">Plus</span>`, { label: 'Hulu Plus', bg: '#f4f4f4' })}
-      ${tile('apps.espn', fx + 618, fy + 150, 188, 148, `<span class="logo" style="font-size:39px;font-style:italic;font-weight:700;color:#e03535">ESPN</span><span class="tx" style="left:0;right:0;bottom:12px;text-align:center;font-size:11px;font-weight:700;color:#9b1515">LIVE SPORTS</span>`, { label: 'ESPN', bg: '#fff' })}
+      <div class="say" style="left:${fx + 540}px;top:${fy + 120}px"><b>Say hello</b><span>Message me about projects, uni or games.</span><em>hello@byhamza.dev</em></div>
+      ${tile('social.friends', fx, fy, 177, 122, img(`${A}icons/friends.webp`, icoBox(177, 122, 58, 58, { mt: -15 })) + lab('Friends'), { label: 'Friends' })}
+      ${tile('social.message', fx, fy + 123, 177, 122, glyph('mail', 177, 122, 46) + lab('Message Hamza'), { label: 'Message Hamza' })}
+      ${tile('social.linkedin', fx, fy + 246, 177, 122, glyph('linkedin', 177, 122, 44) + lab('LinkedIn'), { label: 'LinkedIn' })}
     </div>`;
   }
 
   function pageSettings() {
-    const fx = 224, fy = 31, cw = 97.8875, ch = 93.425;
+    const fx = 224, fy = 31, w = 270, h = 192;
     const cells = [
-      ['system', 'System', 'system', 39], ['preferences', 'Preferences', 'preferences', 39, 9], ['profile', 'Profile', 'account', 39], ['kinect', 'Kinect', 'kinect', 41],
-      ['account', 'Account', 'account', 39], ['privacy', 'Privacy', 'privacy', 39], ['family', 'Family', 'family', 39], ['turnoff', 'Turn Off', 'turnoff', 40],
+      ['system', 'System', img(`${A}icons/settings-system.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
+      ['preferences', 'Preferences', img(`${A}icons/settings-preferences.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
+      ['profile', 'Profile', img(`${A}icons/settings-account.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
+      ['audio', 'Audio', img(`${A}icons/music.webp`, icoBox(w, h, 50, 50, { mt: -30 }))],
+      ['privacy', 'Privacy', img(`${A}icons/settings-privacy.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
+      ['turnoff', 'Turn Off', img(`${A}icons/settings-turnoff.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
     ];
-    const tiles = cells.map(([id, label, icon, s, fs = 10], i) => {
-      const x = (i % 4) * cw, y = Math.floor(i / 4) * ch;
-      return `<button class="t" data-t="settings.${id}" data-sx="${x}" data-sy="${y}" style="${px({ left: x, top: y, width: cw - 1, height: ch - 1 })}" aria-label="${label}"><span class="f">${img(`${A}icons/settings-${icon}.webp`, { left: (cw - s) / 2, top: (ch + 9 - s) / 2 - 9, width: s, height: s })}${tx(label, { left: fs === 9 ? 4 : 5, bottom: 5, 'font-size': fs })}</span></button>`;
-    }).join('');
+    const tiles = cells.map(([id, label, icon], i) => tile(`settings.${id}`, fx + (i % 3) * (w + 2), fy + Math.floor(i / 3) * (h + 2), w, h, icon + tx(label, { left: 11, bottom: 10, 'font-size': 21 }), { label, def: i === 0 })).join('');
     return `<div class="page" data-tab="settings">
-      <div class="sgrid" style="left:${fx}px;top:${fy}px">${tiles}</div>
-      <p class="tx wrap" style="left:${fx}px;top:${fy + 398}px;width:650px;margin:0;font-size:12px;color:rgba(255,255,255,.53)">Unofficial non-commercial fan project. Xbox and related names, logos, and imagery are property of Microsoft. Not affiliated with or endorsed by Microsoft. Dashboard design and assets from DashX360 by ZivvoZ.</p>
+      ${tiles}
+      <p class="tx wrap" style="left:${fx}px;top:${fy + 2 * (h + 2) + 12}px;width:650px;margin:0;font-size:12px;color:rgba(255,255,255,.53)">Unofficial non-commercial fan project. Xbox and related names, logos, and imagery are property of Microsoft. Not affiliated with or endorsed by Microsoft. Dashboard design and assets from DashX360 by ZivvoZ.</p>
     </div>`;
   }
 
-  const PAGES = { bing: pageBing, home: pageHome, social: pageSocial, video: pageVideo, games: pageGames, music: pageMusic, apps: pageApps, settings: pageSettings };
+  const PAGES = { bing: pageBing, home: pageHome, about: pageAbout, projects: pageProjects, social: pageSocial, settings: pageSettings };
+  // The side previews show the end of the previous tab and the start of the next one.
+  function pageSpan(k) {
+    const page = pageEls[k], els = $$('[data-x]', page);
+    const left = Math.min(...els.map((e) => +e.dataset.x), page.dataset.l ? +page.dataset.l : Infinity);
+    const right = Math.max(...els.map((e) => +e.dataset.x + +e.dataset.w));
+    return [left, right];
+  }
+  const leftCrop = (k) => pageSpan(k)[1] - 104;
+  const rightCrop = (k) => pageSpan(k)[0];
 
   /* ================= Build the dashboard ================= */
   const dashCanvas = $('#dash .canvas');
   dashCanvas.innerHTML = `
     <div class="radial"></div>
     <div class="host">
-      <nav class="tabs" role="tablist" aria-label="Dashboard">${TABS.map((t, i) => `<button class="tab" role="tab" data-i="${i}" style="left:${t.x}px;width:${t.w}px"><span>${t.k}</span></button>`).join('')}</nav>
+      <nav class="tabs" role="tablist" aria-label="Dashboard">${TABS.map((t, i) => `<button class="tab" role="tab" data-i="${i}"><span>${t.k}</span></button>`).join('')}</nav>
       <div class="me">
         <div class="me__state me__plain"><span class="me__tag">${esc(ME.tag)}</span></div>
         <div class="me__state me__stats"><svg viewBox="0 0 24 24"><path d="${P.people}"/></svg><span class="n">4</span><span data-gs>0</span><b>G</b></div>
@@ -484,9 +514,8 @@
     await wait(320);
     await anim(toastEl, [{ opacity: 1 }, { opacity: 0 }], 80, E.cubicIn).finished;
   }
-  const unavailable = (title) => { achieve('region'); Message.open(title, 'This content isn’t available on this console.'); };
-  function openLink(url, ach) {
-    sfx('select');
+  function openLink(url, ach, quiet) {
+    if (!quiet) sfx('select');
     if (ach) achieve(ach);
     if (url.startsWith('mailto:')) location.href = url;
     else window.open(url, '_blank', 'noopener');
@@ -546,23 +575,16 @@
   const curTab = () => TABS[tabIndex].k;
   const curPage = () => pageEls[curTab()];
   function pageCands(page = curPage()) {
-    const k = page.dataset.tab;
-    const cands = [];
-    $$('.t, [data-nav]', page).forEach((el) => {
-      if (el.closest('.sgrid')) {
-        const g = el.closest('.sgrid');
-        cands.push({ el, x: parseFloat(g.style.left) + parseFloat(el.dataset.sx) * 2.08, y: parseFloat(g.style.top) + parseFloat(el.dataset.sy) * 2.08, w: 97.8875 * 2.08, h: 93.425 * 2.08 });
-      } else {
-        cands.push({ el, x: +el.dataset.x, y: +el.dataset.y, w: +el.dataset.w, h: +el.dataset.h });
-      }
-    });
-    void k;
-    return cands.filter((c) => { const cx = c.x + c.w / 2; return cx >= 64 && cx <= 1120; });
+    return $$('.t, [data-nav]', page).map((el) => ({ el, x: +el.dataset.x, y: +el.dataset.y, w: +el.dataset.w, h: +el.dataset.h }));
   }
-  // FocusDefaultButton: the remembered tile, else the one nearest y 210 then x 560.
+
+  // FocusDefaultButton: the remembered tile, else the tab's main tile, else the
+  // one nearest y 210 then x 560.
   function focusDefault() {
     const k = curTab(), cands = pageCands();
     if (lastFocus[k] && cands.some((c) => c.el === lastFocus[k])) { focusEl(lastFocus[k]); return; }
+    const main = $('[data-default]', curPage());
+    if (main) { focusEl(main); return; }
     cands.sort((a, b) => Math.abs(a.y + a.h / 2 - 210) - Math.abs(b.y + b.h / 2 - 210) || Math.abs(a.x + a.w / 2 - 560) - Math.abs(b.x + b.w / 2 - 560));
     if (cands[0]) focusEl(cands[0].el);
   }
@@ -577,7 +599,7 @@
       inner.appendChild(clone);
     };
     fillPeek(peekL, prev, prev ? leftCrop(prev.k) : 0);
-    fillPeek(peekR, next, next ? rightCrop(curTab(), next.k) : 0);
+    fillPeek(peekR, next, next ? rightCrop(next.k) : 0);
   }
   function cleanClone(page) {
     const c = page.cloneNode(true);
@@ -634,6 +656,13 @@
     const i = TABS.findIndex((t) => t.k === k);
     if (i >= 0 && i !== tabIndex) moveTab(i - tabIndex);
   }
+  // Straight to a tab with no slide, for when the dashboard is out of sight.
+  function jumpTab(k) {
+    const i = TABS.findIndex((t) => t.k === k);
+    if (i < 0) return;
+    tabIndex = i;
+    paintTabs(); renderPeeks(); updateBackgrounds(); visit(k);
+  }
   function rememberFocus() {
     const k = curTab(), el = document.activeElement;
     if (el && curPage().contains(el)) lastFocus[k] = el.closest('.t, [data-nav]');
@@ -652,7 +681,7 @@
     const bingOn = curTab() === 'bing' && !Overlays.top();
     bgBing.classList.toggle('on', bingOn);
     if (!theme || theme.id === 'default') { bgTheme.classList.remove('on'); return; }
-    themeSection = Overlays.has('settings') ? 'settings' : Overlays.has('library') ? (Library.mode === 'apps' ? 'apps' : 'games') : 'home';
+    themeSection = Overlays.has('settings') ? 'settings' : Overlays.has('library') ? 'games' : 'home';
     const url = `${A}themes/${theme.id}/${themeSection}.webp`;
     if (bgTheme.dataset.src !== url) {
       bgTheme.dataset.src = url;
@@ -675,56 +704,55 @@
 
   /* ================= Tile actions ================= */
   const ACTIONS = {
-    'home.open-tray': () => launch(trayGame()),
+    'home.tray': () => toggleTray(),
     'home.pins': () => Library.open('pins'),
     'home.recent': () => Library.open('recent'),
-    'home.hero': () => Profile.open(),
+    'home.hero': () => Profile.open('about'),
+    'home.capital': () => launch(byId('capital-city')),
     'home.panic': () => Details.open(byId('panic-pack')),
-    'home.unliker': () => Details.open(byId('instagram-unliker')),
     'home.leetcode': () => openLink(LINKS.leetcode, 'leetcode'),
     'home.github': () => openLink(LINKS.github, 'source'),
     'home.linkedin': () => openLink(LINKS.linkedin, 'networker'),
+    'about.me': () => Profile.open('about'),
+    'about.stack': () => Profile.open('stack'),
+    'about.origin': () => Profile.open('origin'),
+    'about.games': () => Profile.open('games'),
+    'about.achievements': () => Guide.open('achievements'),
+    'about.timeline': () => Profile.open('timeline'),
+    'projects.all': () => Library.open('projects'),
+    'projects.github': () => openLink(LINKS.github, 'source'),
+    'projects.panic': () => Details.open(byId('panic-pack')),
+    'projects.capital': () => launch(byId('capital-city')),
+    'projects.unliker': () => Details.open(byId('instagram-unliker')),
+    'projects.site': () => Details.open(byId('byhamza')),
+    'projects.leetcode': () => openLink(LINKS.leetcode, 'leetcode'),
     'social.friends': () => Guide.open('friends'),
-    'social.themes': () => Themes.open(),
-    'social.signin': () => { sfx('select'); toast(`${ME.tag} signed`, 'in to Xbox LIVE'); },
-    'video.apps': () => Library.open('apps'),
-    'video.marketplace': () => unavailable('Video Marketplace'),
-    'video.feature': () => unavailable('The Dark Knight'),
-    'video.cloudy': () => unavailable('Cloudy with a Chance of Meatballs'),
-    'video.recent': () => unavailable('Recent videos'),
-    'video.kungfu': () => unavailable('Kung Fu Panda 2'),
-    'video.hbogo': () => openLink('https://www.max.com'),
-    'games.mygames': () => Library.open('games'),
-    'games.marketplace': () => unavailable('Game Marketplace'),
-    'games.forza': () => unavailable('Forza Horizon'),
-    'games.minecraft': () => openLink('https://www.minecraft.net'),
-    'games.blackops': () => unavailable('Black Ops II'),
-    'music.player': () => Music.open(),
-    'music.marketplace': () => unavailable('Music Marketplace'),
-    'music.feature': () => unavailable('Overexposed'),
-    'music.recent': () => Music.open(),
-    'music.search': () => Search.open(),
-    'music.panchiko': () => unavailable('Panchiko'),
-    'apps.myapps': () => Library.open('apps'),
-    'apps.browse': () => unavailable('Browse Apps'),
-    'apps.hbogo': () => openLink('https://www.max.com'),
-    'apps.netflix': () => openLink('https://www.netflix.com'),
-    'apps.youtube': () => openLink('https://www.youtube.com'),
-    'apps.hulu': () => openLink('https://www.hulu.com'),
-    'apps.espn': () => openLink('https://www.espn.com'),
+    'social.message': () => openLink(LINKS.mail, 'messenger'),
+    'social.linkedin': () => openLink(LINKS.linkedin, 'networker'),
     'settings.system': () => Settings.open(),
     'settings.preferences': () => Settings.open('dashboard'),
-    'settings.profile': () => Profile.open(),
-    'settings.kinect': () => unavailable('Kinect'),
-    'settings.account': () => Settings.open(),
+    'settings.profile': () => Profile.open('about'),
+    'settings.audio': () => Settings.open('audio'),
     'settings.privacy': () => Settings.open('data'),
-    'settings.family': () => Settings.open(),
     'settings.turnoff': () => powerOff(),
   };
   function activateTile(el) {
     const id = el.dataset.t;
     if (el.classList.contains('bing__box')) { focusBingInput(); return; }
     if (ACTIONS[id]) ACTIONS[id]();
+  }
+
+  // With no disc in the drive the tile just opens and closes the tray, like the real thing.
+  function toggleTray() {
+    trayOpen = !trayOpen;
+    sfx('select');
+    if (trayOpen) achieve('tray');
+    $$('[data-t="home.tray"]').forEach((t) => {
+      $('.tray__t', t).textContent = trayLabel();
+      t.setAttribute('aria-label', trayLabel());
+      const ico = $('.tray__ico', t);
+      if (ico && !reduced.matches) ico.animate([{ translate: '0 0' }, { translate: `0 ${trayOpen ? 7 : -7}px` }, { translate: '0 0' }], { duration: 300, easing: E.cubicOut });
+    });
   }
 
   /* ================= Overlay stack ================= */
@@ -742,10 +770,59 @@
     };
   })();
   const overlayOpen = () => !!Overlays.top();
-  // IsDashboardContentHidden: My Games and System Settings hide the tiles and tab row.
+  // Full-screen menus hide the dashboard. Going into one, the hub slides away to
+  // the left; backing out, its tiles fly back in column by column, like the 360.
+  const FULL = ['library', 'settings', 'bing', 'game', 'details', 'profile', 'music'];
+  let dashHidden = false, leaving = null, syncQueued = false, quietReturn = false;
   function syncDash() {
-    host.style.visibility = ['library', 'settings', 'bing', 'game'].some((n) => Overlays.has(n)) ? 'hidden' : '';
-    updateBackgrounds();
+    // Stack changes made together (close one menu, open the next) settle once.
+    if (syncQueued) return;
+    syncQueued = true;
+    queueMicrotask(() => {
+      syncQueued = false;
+      const hide = FULL.some((n) => Overlays.has(n));
+      if (hide !== dashHidden) { dashHidden = hide; if (hide) dashLeave(); else dashReturn(); }
+      updateBackgrounds();
+    });
+  }
+  function dashLeave() {
+    if (leaving) leaving.cancel();
+    if (reduced.matches || booting) { host.style.visibility = 'hidden'; return; }
+    leaving = host.animate([{ opacity: 1, translate: '0 0' }, { opacity: 0, translate: '-64px 0' }], { duration: 180, easing: E.cubicIn, fill: 'forwards' });
+    leaving.finished.then(() => { if (dashHidden) host.style.visibility = 'hidden'; }, () => {});
+  }
+  function dashReturn() {
+    if (leaving) { leaving.cancel(); leaving = null; }
+    host.style.visibility = '';
+    if (quietReturn || reduced.matches || booting) return;
+    tilesIn(-96);
+  }
+  // The current hub's tiles slide in from fromX, the leftmost column first.
+  function tilesIn(fromX, delay = 0) {
+    const els = $$('.t, [data-nav]', curPage());
+    const cols = [...new Set(els.map((e) => +e.dataset.x))].sort((a, b) => a - b);
+    els.forEach((el) => el.animate([{ opacity: 0, translate: `${fromX}px 0` }, { opacity: 1, translate: '0 0' }], { duration: 400, delay: delay + cols.indexOf(+el.dataset.x) * 45, easing: E.quartOut, fill: 'backwards' }));
+    [$('.tabs', host), $('.me', host), $('.foot', host), peekL, peekR].forEach((el) => el.animate([{ opacity: 0 }, { opacity: getComputedStyle(el).opacity }], { duration: 300, delay, easing: E.sineOut, fill: 'backwards' }));
+  }
+  // AnimateOverlayOut: a menu slides 112 px right while it fades. Menus that
+  // float over the dashboard fade, and message boxes shrink away.
+  function overlayOut(node, kind = 'slide') {
+    if (!node || !node.isConnected) return;
+    node.style.pointerEvents = 'none';
+    if (reduced.matches) { node.remove(); return; }
+    let a;
+    if (kind === 'fade') a = anim(node, [{ opacity: 1 }, { opacity: 0 }], 160, E.sineIn);
+    else if (kind === 'pop') a = anim(node, [{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(.96)' }], 140, E.cubicIn);
+    else {
+      anim(node, [{ opacity: 1 }, { opacity: 0 }], 150, E.sineIn);
+      a = anim(node, [{ translate: '0 0' }, { translate: '112px 0' }], 210, E.cubicIn);
+    }
+    a.finished.then(() => node.remove());
+  }
+  // After a menu closes: the one underneath takes focus again, or the dashboard.
+  function refocusUnder() {
+    const t = Overlays.api();
+    if (t && t.refocus) t.refocus(); else if (!overlayOpen()) focusDefault();
   }
   const recentIds = () => store.get('recentList', []);
   function pushRecent(id) {
@@ -759,155 +836,105 @@
     return el;
   }
 
-  /* ================= My Games / My Apps / My Pins ================= */
+  /* ================= My Projects / My Pins / Recent ================= */
+  function togglePin(g) {
+    const p = pins(), i = p.indexOf(g.id);
+    if (i >= 0) p.splice(i, 1); else { p.push(g.id); achieve('pinned'); }
+    store.set('pins', p);
+    sfx('select');
+    toast(g.title, i >= 0 ? 'Removed from My Pins' : 'Pinned to My Pins');
+  }
+  // A on a project: play it if it runs here, otherwise show its details.
+  const openProject = (g) => (g.launch.kind === 'play' ? launch(g) : Details.open(g));
   const Library = (() => {
-    let el = null, mode = 'games', sel = 0, closing = false;
-    const pins = () => store.get('pins', []);
+    let el = null, mode = 'projects', sel = 0;
     const list = () => {
-      if (mode === 'pins') return GAMES().filter((g) => pins().includes(g.id));
+      if (mode === 'pins') return LIBRARY.filter((g) => pins().includes(g.id));
       if (mode === 'recent') return recentIds().map(byId).filter(Boolean);
-      return GAMES();
-    };
-    // RebuildAppLibraryTiles: five built-ins, then Hamza's apps filling columns from the third.
-    const APP_TILES = () => {
-      const size = 198, gap = 4, step = size + gap, x0 = 16, y0 = 8;
-      const tiles = [
-        { title: 'Windows Media Center', img: `${A}apps/windows-media-center.webp`, col: 0, row: 0, act: () => unavailable('Windows Media Center') },
-        { title: 'System Music Player', img: `${A}apps/system-music-player.webp`, col: 1, row: 0, act: () => { close(true); Music.open(); } },
-        { title: 'YouTube', img: `${A}apps/youtube.webp`, col: 2, row: 0, act: () => openLink('https://www.youtube.com') },
-        { title: 'Internet Explorer', img: `${A}apps/internet-explorer.webp`, col: 0, row: 1, act: () => openLink('https://www.bing.com') },
-        { title: 'Microsoft Movies & TV', img: `${A}apps/movies-and-tv.webp`, col: 1, row: 1, act: () => unavailable('Microsoft Movies & TV') },
-      ];
-      const mine = [
-        { title: 'byhamza.dev', img: '/favicon.svg', act: () => Details.open(byId('byhamza')) },
-        { title: 'GitHub', glyph: 'github', act: () => openLink(LINKS.github, 'source') },
-        { title: 'Instagram Unliker', img: `${A}apps/instagram-unliker.webp`, act: () => Details.open(byId('instagram-unliker')) },
-        { title: 'LeetCode', glyph: 'leetcode', act: () => openLink(LINKS.leetcode, 'leetcode') },
-        { title: 'LinkedIn', glyph: 'linkedin', act: () => openLink(LINKS.linkedin, 'networker') },
-        { title: 'Message Hamza', glyph: 'mail', act: () => openLink(LINKS.mail, 'messenger') },
-      ].sort((a, b) => a.title.localeCompare(b.title));
-      mine.forEach((t, i) => { t.row = i % 2 === 0 ? 1 : 0; t.col = 2 + Math.floor((i + 1) / 2); tiles.push(t); });
-      return tiles.map((t) => ({ ...t, x: x0 + step * t.col, y: y0 + step * t.row, w: size, h: size }));
+      return LIBRARY;
     };
     function open(m) {
       Overlays.clear();
-      mode = m; sel = 0; closing = false;
+      mode = m; sel = 0;
       el = overlayEl('lib');
-      const title = { apps: 'My Apps', pins: 'My Pins', recent: 'Recent' }[mode] || 'My Games';
-      const filter = { apps: 'all apps', pins: 'pinned games', recent: 'games and apps' }[mode] || 'all games';
-      const sort = mode === 'recent' ? 'most recent' : 'titles';
+      const title = { pins: 'My Pins', recent: 'Recent' }[mode] || 'My Projects';
+      const filter = { pins: 'pinned projects', recent: 'recently opened' }[mode] || 'all projects';
       el.innerHTML = `<div class="lib__back"></div>
-        ${mode === 'apps' ? '' : `<div class="lib__filter"><div><small>&#x2304; show me</small><span>${filter}</span></div><div><small>&#x2304; sort</small><span>${sort}</span></div></div>`}
+        <div class="lib__filter"><div><small>&#x2304; show me</small><span>${filter}</span></div><div><small>&#x2304; sort</small><span>${mode === 'recent' ? 'most recent' : 'featured'}</span></div></div>
         <div class="lib__head"><b>${title}</b><span class="lib__count"></span><em class="lib__sel"></em></div>
-        ${mode === 'apps' ? '<div class="apps__view"><div class="lib__strip apps__canvas"></div></div>' : '<div class="lib__view"><div class="lib__strip"></div></div>'}
-        <div class="foot-row lib__foot" style="left:75px;bottom:34px;font-size:15px">${G('A')} Launch   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back   </span>${mode === 'apps' ? '' : `${G('X')} Game Details   `}${G('Y')} Pin</div>`;
+        <div class="lib__view"><div class="lib__strip"></div></div>
+        <div class="foot-row lib__foot" style="left:75px;bottom:34px;font-size:15px">${G('A')} Select   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back   </span>${G('X')} Details   ${G('Y')} Pin</div>`;
       Overlays.push('library', api);
       render();
       sfx('menu-in');
-      achieve({ apps: 'apps', recent: 'lookback', pins: 'library', games: 'library' }[mode]);
+      achieve({ recent: 'lookback', pins: 'library' }[mode] || 'library');
       if (reduced.matches) return;
       layerIn(el, 0, 120, 0);
       anim($('.lib__back', el), [{ opacity: 0 }, { opacity: 0.26 }], 260, E.sineOut);
       layerIn($('.lib__filter', el), -24, 240, 40);
       layerIn($('.lib__head', el), 42, 260, 60);
-      layerIn($('.lib__view, .apps__view', el), 168, 360, 35);
+      layerIn($('.lib__view', el), 168, 360, 35);
       layerIn($('.lib__foot', el), 28, 210, 145);
     }
     function render() {
-      const strip = $('.lib__strip', el);
-      if (mode === 'apps') {
-        const tiles = APP_TILES();
-        strip.style.width = `${Math.max(1070, ...tiles.map((t) => t.x + t.w + 18))}px`;
-        strip.style.height = '430px';
-        strip.innerHTML = tiles.map((t, i) => `<button class="t" data-nav data-i="${i}" style="${px({ left: t.x, top: t.y, width: t.w, height: t.h })}" aria-label="${esc(t.title)}"><span class="f" style="background:${t.img ? '#000' : `rgb(0,154,0)`}">${t.img ? fill(t.img) : `<span class="app__glyph">${svg(t.glyph)}</span><span class="app__t">${esc(t.title)}</span>`}</span></button>`).join('');
-        $$('.t', strip).forEach((b, i) => {
-          b.addEventListener('click', () => { sel = i; tiles[i].act(); });
-          b.addEventListener('mouseenter', () => setActive(b));
-          b.addEventListener('mouseleave', () => { if (activeEl === b) setActive(null); });
-        });
-        select(0, true);
-        return;
-      }
-      const games = list();
-      strip.innerHTML = games.map((g, i) => `<button class="t card" data-nav data-i="${i}" aria-label="${esc(g.title)}"><span class="f"><span class="card__cover"><img src="${g.cover}" alt=""></span><span class="card__t">${esc(g.title)}</span><span class="card__s">${esc(g.sub)}</span>${pins().includes(g.id) ? `<span class="card__pin"><img src="${A}icons/pin.webp" alt="Pinned"></span>` : ''}</span></button>`).join('');
-      if (!games.length) strip.insertAdjacentHTML('afterend', `<p class="lib__empty">${mode === 'recent' ? 'Nothing here yet. Games and apps you open show up here.' : 'Nothing pinned yet. Press Y on a game in My Games to pin it.'}</p>`);
+      const strip = $('.lib__strip', el), items = list();
+      $$('.lib__empty', el).forEach((p) => p.remove());
+      strip.innerHTML = items.map((g, i) => `<button class="t card" data-nav data-i="${i}" aria-label="${esc(g.title)}"><span class="f"><span class="card__cover"><img src="${g.cover}" alt=""></span><span class="card__t">${esc(g.title)}</span><span class="card__s">${esc(g.sub)}</span>${pins().includes(g.id) ? `<span class="card__pin"><img src="${A}icons/pin.webp" alt="Pinned"></span>` : ''}</span></button>`).join('');
+      if (!items.length) strip.parentElement.insertAdjacentHTML('afterend', `<p class="lib__empty">${mode === 'recent' ? 'Nothing here yet. Projects you open show up here.' : 'Nothing pinned yet. Press Y on a project to pin it.'}</p>`);
       $$('.t', strip).forEach((b, i) => {
-        b.addEventListener('click', () => { select(i); if (games[i].type === 'app') Details.open(games[i]); else launch(games[i]); });
+        b.addEventListener('click', () => { select(i, true); openProject(items[i]); });
         b.addEventListener('mouseenter', () => setActive(b));
         b.addEventListener('mouseleave', () => { if (activeEl === b) setActive(null); });
       });
-      select(Math.min(sel, Math.max(0, games.length - 1)), true);
+      select(Math.min(sel, Math.max(0, items.length - 1)), true);
     }
-    function count() { return mode === 'apps' ? APP_TILES().length : list().length; }
     function select(i, quiet) {
-      const n = count();
+      const n = list().length;
       if (!n) { $('.lib__count', el).textContent = '0 of 0'; $('.lib__sel', el).textContent = ''; return; }
       const prev = sel;
       sel = clamp(i, 0, n - 1);
-      const btn = $$('.lib__strip .t', el)[sel];
-      focusEl(btn);
+      focusEl($$('.lib__strip .t', el)[sel]);
       $('.lib__count', el).textContent = `${sel + 1} of ${n}`;
-      $('.lib__sel', el).textContent = mode === 'apps' ? APP_TILES()[sel].title : list()[sel].title;
+      $('.lib__sel', el).textContent = list()[sel].title;
       if (!quiet && prev !== sel) sfx('focus');
-      // Keep the focused card or tile inside the visible strip.
-      const strip = $('.lib__strip', el), view = strip.parentElement;
-      const left = mode === 'apps' ? APP_TILES()[sel].x : sel * 196, w = mode === 'apps' ? 198 : 188;
-      const vw = view.clientWidth - 40, cur = -(parseFloat(strip.dataset.off) || 0);
-      let off = cur;
+      // Keep the focused card inside the visible strip.
+      const strip = $('.lib__strip', el), vw = strip.parentElement.clientWidth - 40, left = sel * 196;
+      let off = -(parseFloat(strip.dataset.off) || 0);
       if (left - off < 0) off = left;
-      if (left + w - off > vw) off = left + w - vw;
+      if (left + 188 - off > vw) off = left + 188 - vw;
       strip.dataset.off = -off;
       strip.style.transform = `translateX(${-off}px)`;
     }
-    function move(dir) {
-      if (mode === 'apps') {
-        const tiles = APP_TILES(), cands = tiles.map((t, i) => ({ el: i, x: t.x, y: t.y, w: t.w, h: t.h }));
-        const n = bestInDirection(cands.map((c) => ({ ...c, el: c.el })), sel, dir);
-        if (n !== null && n !== undefined) select(n);
-        return;
-      }
-      if (dir === 'left') select(sel - 1);
-      if (dir === 'right') select(sel + 1);
-    }
     function close(silent, instant) {
-      if (!el || closing) return;
+      if (!el) return;
       const node = el;
-      closing = true;
+      el = null;
       if (!silent) sfx('menu-out');
-      const finish = () => { node.remove(); if (el === node) { el = null; closing = false; } Overlays.pop('library'); if (!overlayOpen()) focusDefault(); };
-      if (instant || reduced.matches) { finish(); return; }
+      Overlays.pop('library');
+      refocusUnder();
+      if (instant || reduced.matches) { node.remove(); return; }
       layerOut($('.lib__filter', node), -34, 145);
       layerOut($('.lib__head', node), 48, 160);
-      layerOut($('.lib__view, .apps__view', node), 150, 210);
+      layerOut($('.lib__view', node), 150, 210);
       layerOut($('.lib__foot', node), 24, 130);
       layerOut($('.lib__back', node), 0, 190, 0.26);
-      anim(node, [{ opacity: 1 }, { opacity: 0 }], 150, E.sineIn);
-      anim(node, [{ translate: '0 0' }, { translate: '112px 0' }], 210, E.cubicIn).finished.then(finish);
-    }
-    function togglePin() {
-      if (mode === 'apps') return;
-      const g = list()[sel];
-      if (!g || g.type !== 'game') return;
-      const p = pins(), i = p.indexOf(g.id);
-      if (i >= 0) p.splice(i, 1); else { p.push(g.id); achieve('pinned'); }
-      store.set('pins', p);
-      sfx('select');
-      render();
+      overlayOut(node);
     }
     const api = {
       handle(a) {
         if (!el) return true;
-        if (['left', 'right', 'up', 'down'].includes(a)) { move(a); return true; }
-        if (a === 'a') { const b = $$('.lib__strip .t', el)[sel]; if (b) b.click(); return true; }
-        if (a === 'b') { close(); return true; }
-        if (a === 'x' && mode !== 'apps') { const g = list()[sel]; if (g) Details.open(g); return true; }
-        if (a === 'y') { togglePin(); return true; }
+        const g = list()[sel];
+        if (a === 'left' || a === 'right') select(sel + (a === 'left' ? -1 : 1));
+        else if (a === 'a') { if (g) openProject(g); }
+        else if (a === 'b') close();
+        else if (a === 'x') { if (g) Details.open(g); }
+        else if (a === 'y') { if (g) { togglePin(g); render(); } }
         return true;
       },
-      refocus() { if (!el) return; select(sel, true); },
-      dismiss() { if (el) { el.remove(); el = null; closing = false; } },
+      refocus() { if (!el) return; render(); },
+      dismiss() { overlayOut(el, 'fade'); el = null; },
     };
-    return { open, close, get mode() { return mode; }, get isOpen() { return !!el; } };
+    return { open, close, get isOpen() { return !!el; } };
   })();
 
   /* ================= Game Details ================= */
@@ -929,7 +956,7 @@
         <nav class="det__tabs">${TABS_D.map((t, i) => `<button type="button" data-tab="${i}">${t}</button>`).join('')}</nav>
         <div class="det__title">${esc(g.title)}</div>
         <div class="det__body"></div>
-        <div class="foot-row foot-row--20 det__foot" style="left:95px;bottom:38px;font-size:16px">${G('A')} Select   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back   </span>${G('Y')} Pin to Tray</div>`;
+        <div class="foot-row foot-row--20 det__foot" style="left:95px;bottom:38px;font-size:16px">${G('A')} Select   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back   </span>${G('Y')} Pin</div>`;
       $$('.det__tabs button', el).forEach((b) => b.addEventListener('click', () => setTab(+b.dataset.tab)));
       Overlays.push('details', api);
       paint(true);
@@ -950,11 +977,12 @@
       const body = $('.det__body', el), g = game;
       $('.det__title', el).style.display = '';
       if (tab === 0) {
-        const four = !!g.second;
+        const pinLabel = pins().includes(g.id) ? 'Unpin' : 'Pin';
         body.innerHTML = `<div class="det__panel det__over" style="left:160px;top:184px;width:760px;height:382px">
             ${dbtn(g.launch.label, { left: 0, top: 0, width: 165, height: 100 }, 'launch')}
-            ${four ? dbtn(g.second.label, { left: 169, top: 0, width: 161, height: 100 }, 'second') : dbtn('Pin to Tray', { left: 169, top: 0, width: 161, height: 100 }, 'tray')}
-            ${four ? dbtn('Details', { left: 0, top: 104, width: 165, height: 96 }, 'details') + dbtn('Pin to Tray', { left: 169, top: 104, width: 161, height: 96 }, 'tray') : ''}
+            ${dbtn(g.second ? g.second.label : 'Details', { left: 169, top: 0, width: 161, height: 100 }, g.second ? 'second' : 'details')}
+            ${g.second ? dbtn('Details', { left: 0, top: 104, width: 165, height: 96 }, 'details') : ''}
+            ${dbtn(pinLabel, g.second ? { left: 169, top: 104, width: 161, height: 96 } : { left: 0, top: 104, width: 165, height: 96 }, 'pin')}
             <div class="det__cover"><img src="${g.wide}" alt=""></div>
             <div class="det__meta">${g.meta.map((m, i) => `<div style="font-size:${[15, 16, 14, 14][i] || 14}px;margin-top:${i ? 5 : 0}px">${esc(m)}</div>`).join('')}</div>
           </div>
@@ -999,27 +1027,20 @@
       if (a === 'launch') launch(game);
       else if (a === 'second') openLink(game.second.url, 'source');
       else if (a === 'details') setTab(1);
-      else if (a === 'tray') pinToTray(game);
+      else if (a === 'pin') { togglePin(game); paint(); }
       else if (a === 'extra') {
         const [, u] = game.extras[+b.dataset.i];
         if (u === '#details') setTab(1); else openLink(u, 'source');
       }
     }
-    function pinToTray(g) {
-      if (g.type !== 'game') { sfx('select'); toast(g.title, 'Only games go in the tray'); return; }
-      S.tray = g.id; saveSettings();
-      sfx('select');
-      achieve('tray');
-      rebuildPage('home');
-      toast(g.title, 'Pinned to the tray');
-    }
     function close() {
       if (!el) return;
-      el.remove(); el = null;
+      const node = el;
+      el = null;
       sfx('menu-out');
       Overlays.pop('details');
-      const top = Overlays.api();
-      if (top && top.refocus) top.refocus(); else if (!overlayOpen()) focusDefault();
+      refocusUnder();
+      overlayOut(node);
     }
     const api = {
       handle(a) {
@@ -1037,30 +1058,19 @@
         }
         if (a === 'a') { if (activeEl && el.contains(activeEl) && activeEl.dataset.act) act(activeEl); return true; }
         if (a === 'b') { close(); return true; }
-        if (a === 'y') { pinToTray(game); return true; }
+        if (a === 'y') { togglePin(game); if (tab === 0) paint(); return true; }
         return true;
       },
       refocus() { if (!el) return; const f = $('.det__body [data-nav]', el); if (f) focusEl(f); },
-      dismiss() { if (el) { el.remove(); el = null; } },
+      dismiss() { overlayOut(el, 'fade'); el = null; },
     };
     return { open, close };
   })();
 
-  function rebuildPage(k) {
-    const old = pageEls[k], fresh = html(PAGES[k]());
-    if (old.classList.contains('cur')) fresh.classList.add('cur');
-    old.replaceWith(fresh);
-    pageEls[k] = fresh;
-    wirePage(fresh);
-    if (activeEl && !document.contains(activeEl)) activeEl = null;
-    delete lastFocus[k];
-    renderPeeks();
-    fillLive();
-  }
-
   /* ================= System Settings ================= */
   const Settings = (() => {
-    let el = null, cat = null;
+    // direct: opened straight into a category from a tile, so B goes back to the dashboard.
+    let el = null, cat = null, direct = false;
     const CATS = [
       ['console', 'Console Settings', 'Change startup, sound and controller behaviour.'],
       ['dashboard', 'Dashboard Customization', 'Change the dashboard theme and tile colour.'],
@@ -1070,6 +1080,7 @@
     ];
     const STARTUP = [['video', 'Boot Video and Loading'], ['loading', 'Loading Only'], ['off', 'Straight to the Dashboard']];
     function open(category) {
+      direct = !!category && !el;
       if (!el) {
         Overlays.clear();
         el = overlayEl('set');
@@ -1139,7 +1150,7 @@
       } else if (k === 'data') {
         list([
           btn('reset-ach', 'Reset Achievements', 'Lock every achievement again. Your gamerscore goes back to 0.'),
-          btn('reset-lib', 'Reset Pins, Tray and Recent', 'Clear My Pins and Recent, and put Capital City back in the tray.'),
+          btn('reset-lib', 'Reset Pins and Recent', 'Clear My Pins and the Recent list.'),
           btn('reset-all', 'Reset Everything', 'Clear all dashboard data saved in this browser, including settings.'),
         ]);
       } else if (k === 'about') {
@@ -1171,7 +1182,7 @@
           return;
         }
         if (id === 'reset-ach') { store.del('achievements'); refreshScore(); sfx('select'); toast('Achievements', 'Reset'); }
-        if (id === 'reset-lib') { store.del('pins'); store.del('recentList'); store.del('played'); S.tray = 'capital-city'; saveSettings(); rebuildPage('home'); sfx('select'); toast('My Pins', 'Reset'); }
+        if (id === 'reset-lib') { store.del('pins'); store.del('recentList'); store.del('played'); sfx('select'); toast('My Pins', 'Reset'); }
         if (id === 'reset-all') { ['achievements', 'pins', 'recentList', 'played', 'capitalBest', 'read', 'visited', 'settings', 'days'].forEach(store.del); sfx('select'); setTimeout(() => location.reload(), 400); }
       }
     }
@@ -1203,13 +1214,13 @@
       const node = el;
       el = null;
       if (!silent) sfx('menu-out');
-      const finish = () => { node.remove(); Overlays.pop('settings'); if (!overlayOpen()) focusDefault(); else { const t = Overlays.api(); if (t && t.refocus) t.refocus(); } };
-      if (reduced.matches) { finish(); return; }
+      Overlays.pop('settings');
+      refocusUnder();
+      if (reduced.matches) { node.remove(); return; }
       layerOut($('.set__title', node), 42, 145);
       layerOut($('.set__frame', node), 136, 215);
       layerOut($('.set__foot', node), 24, 130);
-      anim(node, [{ opacity: 1 }, { opacity: 0 }], 150, E.sineIn);
-      anim(node, [{ translate: '0 0' }, { translate: '112px 0' }], 210, E.cubicIn).finished.then(finish);
+      overlayOut(node);
     }
     function keepVisible() {
       const box = $('.set__scroll > div', el);
@@ -1232,11 +1243,11 @@
           return true;
         }
         if (a === 'a') { if (activeEl && el.contains(activeEl)) onClick(activeEl); return true; }
-        if (a === 'b') { if (cat) { sfx('menu-out'); showCategories(); } else close(); return true; }
+        if (a === 'b') { if (cat && !direct) { sfx('menu-out'); showCategories(); } else close(); return true; }
         return true;
       },
       refocus() { if (!el) return; const f = $('.set__left [data-nav]', el); if (f) focusEl(f); },
-      dismiss() { if (el) { el.remove(); el = null; } },
+      dismiss() { overlayOut(el, 'fade'); el = null; },
     };
     return { open, close };
   })();
@@ -1281,11 +1292,13 @@
     }
     function close() {
       if (!el) return;
-      el.remove(); el = null;
+      const node = el;
+      el = null;
       sfx('menu-out');
       Overlays.pop('themes');
-      const t = Overlays.api();
-      if (t && t.refocus) t.refocus(); else focusDefault();
+      refocusUnder();
+      if (!reduced.matches) layerOut($('.themes__panel', node), 64, 200);
+      overlayOut(node, 'fade');
     }
     const api = {
       handle(a) {
@@ -1300,46 +1313,68 @@
         return true;
       },
       refocus() { if (!el) return; focusEl($('.tbtn', el)); },
-      dismiss() { if (el) { el.remove(); el = null; } },
+      dismiss() { overlayOut(el, 'fade'); el = null; },
     };
     return { open };
   })();
 
-  /* ================= Profile ================= */
+  /* ================= Profile: Hamza's about page ================= */
+  // The left list picks a section; the right pane shows it under the gamercard.
   const Profile = (() => {
-    let el = null;
-    const ITEMS = [
-      ['View Games', () => Library.open('games')],
-      ['View Achievements', () => Guide.open('achievements')],
-      ['View Apps', () => Library.open('apps')],
-      ['GitHub', () => openLink(LINKS.github, 'source')],
-      ['LinkedIn', () => openLink(LINKS.linkedin, 'networker')],
-      ['LeetCode', () => openLink(LINKS.leetcode, 'leetcode')],
-      ['Send Message', () => openLink(LINKS.mail, 'messenger')],
+    let el = null, sel = 0;
+    const useTheme = () => {
+      if (S.theme !== 'batman_arkham_asylum') { S.theme = 'batman_arkham_asylum'; saveSettings(); achieve('themes'); updateBackgrounds(); }
+      sfx('select');
+      toast('Batman: Arkham Asylum', 'Theme applied');
+      paintView(false);
+    };
+    const SECTIONS = [
+      { id: 'about', t: 'About Me' },
+      { id: 'stack', t: 'Tech Stack', ach: 'stack' },
+      { id: 'games', t: 'Games I Play' },
+      { id: 'origin', t: 'Where It Began', ach: 'origin', act: () => (S.theme === 'batman_arkham_asylum' ? null : 'Use Theme'), run: useTheme },
+      { id: 'timeline', t: 'Timeline' },
+      { id: 'achievements', t: 'Achievements', act: () => 'View Achievements', run: () => Guide.open('achievements') },
+      { id: 'contact', t: 'Send Message', act: () => 'Send Message', run: () => openLink(LINKS.mail, 'messenger') },
     ];
-    function open() {
-      if (el) return;
+    const rows = (pairs) => `<dl class="pv__rows">${pairs.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`;
+    function view(id) {
+      if (id === 'stack') return `<h3>Tech Stack</h3><div class="pv__chips">${ABOUT.stack.map(([n, d]) => `<div><b>${esc(n)}</b><span>${esc(d)}</span></div>`).join('')}</div>`;
+      if (id === 'games') return `<h3>Games I Play</h3><ul class="pv__games">${ABOUT.games.map(([t, y], i) => `<li${i ? '' : ' class="fav"'}><span>${esc(t)}</span><small>${y}</small></li>`).join('')}</ul>`;
+      if (id === 'origin') return `<div class="pv__art"><img src="${ORIGIN_ART}" alt=""></div><h3>Batman: Arkham Asylum <small>2009</small></h3><p>${esc(ABOUT.origin)}</p>`;
+      if (id === 'timeline') return `<h3>Timeline</h3><ol class="pv__time">${ABOUT.timeline.map(([d, t, s]) => `<li><time>${esc(d)}</time><b>${esc(t)}</b><span>${esc(s)}</span></li>`).join('')}</ol>`;
+      if (id === 'achievements') {
+        const g = got(), n = ACHIEVEMENTS.filter((a) => g[a.id]).length, gs = gamerscore();
+        return `<h3>Achievements</h3><p>${n} of ${ACHIEVEMENTS.length} unlocked, ${gs} of 1000 gamerscore.</p><div class="pv__meter"><i style="width:${gs / 10}%"></i></div><p class="pv__dim">Every one is earned on this site. Some are secret.</p>`;
+      }
+      if (id === 'contact') return `<h3>Say hello</h3><p>Message me about projects, uni or games.</p>${rows([['Email', 'hello@byhamza.dev'], ['GitHub', 'hamzaaaaaf'], ['LinkedIn', 'Hamza Faisal'], ['LeetCode', 'hamza57']])}`;
+      return `<h3>Hi, I’m Hamza.</h3><p>${esc(ABOUT.intro)}</p>${rows(ABOUT.facts)}`;
+    }
+    function open(section = 'about') {
+      if (el) { show(Math.max(0, SECTIONS.findIndex((s) => s.id === section)), true); return; }
       Overlays.clear();
+      sel = Math.max(0, SECTIONS.findIndex((s) => s.id === section));
       el = overlayEl('prof');
       el.innerHTML = `<div class="prof__title">Profile</div>
         <div class="prof__pic"><img src="${ME.pic}" alt=""></div>
         <div class="prof__clock" data-clock24></div>
         <div class="prof__frame">
-          <div class="prof__left">${ITEMS.map(([t], i) => `<button type="button" class="pbtn" data-nav data-i="${i}">${esc(t)}</button>`).join('')}</div>
+          <div class="prof__left">${SECTIONS.map((s, i) => `<button type="button" class="pbtn" data-nav data-i="${i}">${esc(s.t)}</button>`).join('')}</div>
           <div class="prof__right">
             <div class="gc"><div class="gc__tag">${esc(ME.tag)}</div><div class="gc__pic"><img src="${ME.pic}" alt=""></div>
-              <div class="gc__rows"><div><span>Rep</span><span class="rep">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div><div><span>Gamerscore</span><span><span data-gs>${gamerscore()}</span> G</span></div><div><span>Zone</span><span>${esc(ME.zone)}</span></div></div></div>
-            <div class="prof__bio"><p class="motto">${esc(ME.motto)}</p><p>${esc(ME.name)}</p><p class="loc">${esc(ME.location)}</p><p>${esc(ME.bio)}</p></div>
+              <div class="gc__rows"><div><span>Rep</span><span class="rep">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div><div><span>Gamerscore</span><span><span data-gs>${gamerscore()}</span> G</span></div><div><span>Zone</span><span>${esc(ME.zone)}</span></div></div>
+              <div class="gc__motto">${esc(ME.motto)}</div></div>
+            <div class="pv"></div>
           </div>
         </div>
-        <div class="foot-row prof__foot" style="left:138px;bottom:38px;font-size:15px">${G('A')} Select   <span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back</span></div>`;
-      $$('.pbtn', el).forEach((b) => {
-        b.addEventListener('mouseenter', () => setActive(b));
-        b.addEventListener('click', () => ITEMS[+b.dataset.i][1]());
+        <div class="foot-row prof__foot" style="left:138px;bottom:38px;font-size:15px"></div>`;
+      $$('.pbtn', el).forEach((b, i) => {
+        b.addEventListener('mouseenter', () => { if (i !== sel) show(i); });
+        b.addEventListener('click', () => { show(i); run(); });
       });
       Overlays.push('profile', api);
       tickClock();
-      focusEl($('.pbtn', el));
+      show(sel, true);
       sfx('menu-in');
       achieve('profile');
       if (!reduced.matches) {
@@ -1351,28 +1386,46 @@
         layerIn($('.prof__foot', el), 24, 205, 145);
       }
     }
+    function paintView(animate) {
+      const s = SECTIONS[sel], label = s.act && s.act();
+      const pv = $('.pv', el);
+      pv.innerHTML = view(s.id);
+      pv.dataset.view = s.id;
+      $('.prof__foot', el).innerHTML = `${label ? `<span data-act="a" style="display:flex;align-items:center;cursor:pointer">${G('A')} ${esc(label)}   </span>` : ''}<span data-act="b" style="display:flex;align-items:center;cursor:pointer">${G('B')} Back</span>`;
+      if (animate && !reduced.matches) layerIn(pv, 28, 220, 0);
+    }
+    function show(i, quiet) {
+      const changed = i !== sel;
+      sel = clamp(i, 0, SECTIONS.length - 1);
+      focusEl($$('.pbtn', el)[sel]);
+      if (SECTIONS[sel].ach) achieve(SECTIONS[sel].ach);
+      paintView(changed || quiet);
+      if (changed && !quiet) sfx('focus');
+    }
+    function run() {
+      const s = SECTIONS[sel];
+      if (s.run && (!s.act || s.act())) s.run();
+    }
     function close() {
       if (!el) return;
-      el.remove(); el = null;
+      const node = el;
+      el = null;
       sfx('menu-out');
       Overlays.pop('profile');
-      const t = Overlays.api();
-      if (t && t.refocus) t.refocus(); else focusDefault();
+      refocusUnder();
+      if (!reduced.matches) layerOut($('.prof__frame', node), 118, 210);
+      overlayOut(node);
     }
     const api = {
       handle(a) {
         if (!el) return true;
-        if (a === 'up' || a === 'down') {
-          const n = bestInDirection(rectCands($('.prof__left', el)), activeEl, a);
-          if (n) { focusEl(n); sfx('focus'); }
-          return true;
-        }
-        if (a === 'a') { if (activeEl && el.contains(activeEl)) activeEl.click(); return true; }
-        if (a === 'b') { close(); return true; }
+        if (a === 'up' || a === 'down') show(sel + (a === 'up' ? -1 : 1));
+        else if (a === 'a') run();
+        else if (a === 'b') close();
         return true;
       },
-      refocus() { if (!el) return; focusEl($('.pbtn', el)); },
-      dismiss() { if (el) { el.remove(); el = null; } },
+      refocus() { if (!el) return; show(sel, true); },
+      dismiss() { overlayOut(el, 'fade'); el = null; },
     };
     return { open };
   })();
@@ -1411,10 +1464,12 @@
     function submit() { const q = $('input', el).value.trim(); if (!q) return; close(true); bingSearch(q); }
     function close(silent) {
       if (!el) return;
-      el.remove(); el = null;
+      const node = el;
+      el = null;
       if (!silent) sfx('menu-out');
       Overlays.pop('search');
-      focusDefault();
+      refocusUnder();
+      overlayOut(node, 'fade');
     }
     const api = {
       handle(a) {
@@ -1429,44 +1484,33 @@
         if (a === 'a') { if (activeEl && el.contains(activeEl)) activeEl.click(); else submit(); return true; }
         return true;
       },
-      dismiss() { if (el) { el.remove(); el = null; } },
+      dismiss() { overlayOut(el, 'fade'); el = null; },
     };
     return { open };
   })();
 
   const BingResults = (() => {
     let el = null, sel = 0, tiles = [];
-    const promo = (title, kw, img, act) => ({ title, kw, img, act, cat: 'marketplace' });
     const INDEX = () => [
-      ...LIBRARY.map((g) => ({ title: g.title, kw: `${g.type} ${g.genre} ${g.sub} ${g.meta.join(' ')} hamza project`, img: g.icon || g.wide, act: () => Details.open(g), cat: g.type === 'game' ? 'games' : 'apps' })),
-      { title: 'Hamza', kw: 'profile about me gamercard student computer science aston university birmingham cv resume', img: ME.pic, act: () => Profile.open(), cat: 'profile' },
-      { title: 'GitHub', kw: 'code source repos repositories hamzaaaaaf', glyph: 'github', act: () => openLink(LINKS.github, 'source'), cat: 'apps' },
-      { title: 'LinkedIn', kw: 'cv resume work jobs contact', glyph: 'linkedin', act: () => openLink(LINKS.linkedin, 'networker'), cat: 'apps' },
-      { title: 'LeetCode', kw: 'problems algorithms data structures coding hamza57', glyph: 'leetcode', act: () => openLink(LINKS.leetcode, 'leetcode'), cat: 'apps' },
-      { title: 'Message Hamza', kw: 'email mail contact hello', glyph: 'mail', act: () => openLink(LINKS.mail, 'messenger'), cat: 'apps' },
-      { title: 'My Games', kw: 'library games collection', glyph: 'games', act: () => Library.open('games'), cat: 'dashboard' },
-      { title: 'My Apps', kw: 'library apps', glyph: 'apps', act: () => Library.open('apps'), cat: 'dashboard' },
-      { title: 'My Pins', kw: 'pinned favourites favorites', glyph: 'eject', act: () => Library.open('pins'), cat: 'dashboard' },
-      { title: 'Recent', kw: 'history played opened', glyph: 'prev', act: () => Library.open('recent'), cat: 'dashboard' },
-      { title: 'Achievements', kw: 'gamerscore trophies awards', glyph: 'trophy', vb: '0 0 30 32', act: () => Guide.open('achievements'), cat: 'dashboard' },
-      { title: 'Friends', kw: 'people social contacts', glyph: 'people', act: () => Guide.open('friends'), cat: 'dashboard' },
-      { title: 'Music Player', kw: 'songs music audio play', glyph: 'play', act: () => Music.open(), cat: 'dashboard' },
-      { title: 'Themes', kw: 'background wallpaper halo batman resident evil stockholm', glyph: 'sliders', act: () => Themes.open(), cat: 'dashboard' },
-      { title: 'System Settings', kw: 'settings options preferences sound volume controller startup', glyph: 'gear', act: () => Settings.open(), cat: 'dashboard' },
-      promo('Forza Horizon', 'racing cars driving game', `${A}tiles/forza.webp`, ACTIONS['games.forza']),
-      promo('Minecraft', 'blocks building game', `${A}tiles/minecraft.webp`, ACTIONS['games.minecraft']),
-      promo('Black Ops II', 'call of duty shooter game cod', `${A}tiles/blackops2.webp`, ACTIONS['games.blackops']),
-      promo('The Dark Knight', 'batman movie film video', `${A}tiles/darkknight.webp`, ACTIONS['video.feature']),
-      promo('Kung Fu Panda 2', 'movie film video', `${A}tiles/kungfupanda2.webp`, ACTIONS['video.kungfu']),
-      promo('Cloudy with a Chance of Meatballs', 'movie film video', `${A}tiles/cloudy.webp`, ACTIONS['video.cloudy']),
-      promo('Overexposed', 'maroon 5 album music', `${A}tiles/overexposed.webp`, ACTIONS['music.feature']),
-      promo('Evanescence', 'recent music album', `${A}tiles/evanescence.webp`, ACTIONS['music.recent']),
-      promo('Panchiko', 'music album', `${A}tiles/panchiko.webp`, ACTIONS['music.panchiko']),
-      promo('Netflix', 'movies tv streaming app', `${A}tiles/netflix.webp`, ACTIONS['apps.netflix']),
-      promo('YouTube', 'videos app', `${A}tiles/youtube-apps.webp`, ACTIONS['apps.youtube']),
-      promo('HBO GO', 'tv streaming app max', `${A}tiles/hbogo-apps.webp`, ACTIONS['apps.hbogo']),
-      promo('Hulu Plus', 'tv streaming app', null, ACTIONS['apps.hulu']),
-      promo('ESPN', 'sports live app', null, ACTIONS['apps.espn']),
+      ...LIBRARY.map((g) => ({ title: g.title, kw: `project ${g.type} ${g.genre} ${g.sub} ${g.meta.join(' ')} hamza`, img: g.icon || g.wide, act: () => Details.open(g) })),
+      { title: 'About Me', kw: 'hamza profile about bio student computer science aston university birmingham cv resume gamercard', img: ME.pic, act: () => Profile.open('about') },
+      { title: 'Tech Stack', kw: `skills languages tools stack ${ABOUT.stack.map((x) => x[0]).join(' ')}`, glyph: 'layers', act: () => Profile.open('stack') },
+      { title: 'Games I Play', kw: `games gaming favourite favorite ${ABOUT.games.map((x) => x[0]).join(' ')}`, glyph: 'games', act: () => Profile.open('games') },
+      { title: 'Where It Began', kw: 'batman arkham asylum first game origin rocksteady', img: ORIGIN_ART, act: () => Profile.open('origin') },
+      { title: 'Timeline', kw: 'history journey career dates', glyph: 'clock', act: () => Profile.open('timeline') },
+      { title: 'GitHub', kw: 'code source repos repositories hamzaaaaaf', glyph: 'github', act: () => openLink(LINKS.github, 'source') },
+      { title: 'LinkedIn', kw: 'cv resume work jobs contact', glyph: 'linkedin', act: () => openLink(LINKS.linkedin, 'networker') },
+      { title: 'LeetCode', kw: 'problems algorithms data structures coding hamza57', glyph: 'leetcode', act: () => openLink(LINKS.leetcode, 'leetcode') },
+      { title: 'Message Hamza', kw: 'email mail contact hello', glyph: 'mail', act: () => openLink(LINKS.mail, 'messenger') },
+      { title: 'My Projects', kw: 'library games apps work portfolio collection', glyph: 'games', act: () => Library.open('projects') },
+      { title: 'My Pins', kw: 'pinned favourites favorites', glyph: 'pin', act: () => Library.open('pins') },
+      { title: 'Recent', kw: 'history played opened', glyph: 'clock', act: () => Library.open('recent') },
+      { title: 'Achievements', kw: 'gamerscore trophies awards', glyph: 'trophy', vb: '0 0 30 32', act: () => Guide.open('achievements') },
+      { title: 'Friends', kw: 'people social contacts', glyph: 'people', act: () => Guide.open('friends') },
+      { title: 'Music Player', kw: 'songs music audio play', glyph: 'play', act: () => Music.open() },
+      { title: 'Themes', kw: 'background wallpaper halo batman resident evil stockholm', glyph: 'sliders', act: () => Themes.open() },
+      { title: 'System Settings', kw: 'settings options preferences sound volume controller startup', glyph: 'gear', act: () => Settings.open() },
+      { title: trayLabel(), kw: 'disc tray eject drive', glyph: 'eject', act: () => toggleTray() },
     ];
     function search(q) {
       const words = q.toLowerCase().split(/\s+/).filter(Boolean), ql = q.toLowerCase();
@@ -1538,8 +1582,9 @@
       el = null;
       sfx('menu-out');
       Overlays.pop('bing');
-      node.remove();
-      focusDefault();
+      refocusUnder();
+      if (!reduced.matches) layerOut($('.apps__view', node), 150, 210);
+      overlayOut(node);
     }
     const api = {
       handle(a) {
@@ -1554,39 +1599,7 @@
         return true;
       },
       refocus() { if (!el) return; select(sel, true); },
-      dismiss() { if (el) { el.remove(); el = null; } },
-    };
-    return { open };
-  })();
-
-  // The Guide's message box (GuideWindow SocialMessage), used for content the console can't open.
-  const Message = (() => {
-    let el = null;
-    function open(title, text) {
-      if (el) el.remove(), Overlays.pop('msg');
-      el = overlayEl('msg');
-      el.innerHTML = `<div class="msg__dim"></div><div class="msg__box" role="alertdialog" aria-label="${esc(title)}"><b>${esc(title)}</b><p>${esc(text)}</p></div>
-        <div class="gfoot msg__foot"><span class="h" data-act="a">${G('A')}OK</span></div>`;
-      el.addEventListener('click', () => close());
-      Overlays.push('msg', api);
-      sfx('select');
-      if (!reduced.matches) {
-        anim($('.msg__box', el), [{ opacity: 0, transform: 'scale(.94)' }, { opacity: 1, transform: 'scale(1)' }], 140, E.cubicOut);
-        anim($('.msg__dim', el), [{ opacity: 0 }, { opacity: 1 }], 140, E.sineOut);
-      }
-    }
-    function close() {
-      if (!el) return;
-      el.remove(); el = null;
-      sfx('back');
-      Overlays.pop('msg');
-      const t = Overlays.api();
-      if (t && t.refocus) t.refocus(); else if (!overlayOpen()) focusDefault();
-    }
-    const api = {
-      handle(a) {
-        if (!el) return true; if (a === 'a' || a === 'b') close(); return true; },
-      dismiss() { if (el) { el.remove(); el = null; } },
+      dismiss() { overlayOut(el, 'fade'); el = null; },
     };
     return { open };
   })();
@@ -1692,11 +1705,13 @@
     function close() {
       if (!el) return;
       cancelAnimationFrame(raf);
-      el.remove(); el = null;
+      const node = el;
+      el = null;
       sfx('menu-out');
       Overlays.pop('music');
-      const t = Overlays.api();
-      if (t && t.refocus) t.refocus(); else focusDefault();
+      refocusUnder();
+      if (!reduced.matches) layerOut($('.mus__frame', node), 112, 210);
+      overlayOut(node);
     }
     const api = {
       handle(a) {
@@ -1712,30 +1727,57 @@
         return true;
       },
       refocus() { if (!el) return; focusEl($('.mus__src', el)); },
-      dismiss() { if (el) { el.remove(); el = null; } },
+      dismiss() { cancelAnimationFrame(raf); overlayOut(el, 'fade'); el = null; },
     };
     return { open, toggle, next: () => tracks.length && play((cur + 1) % tracks.length), prev: () => tracks.length && play((cur - 1 + tracks.length) % tracks.length), stop: () => { if (audio) { audio.pause(); audio.currentTime = 0; } }, label: () => (cur >= 0 && audio && !audio.paused ? tracks[cur].name : 'Select Music'), get playing() { return !!(audio && !audio.paused); } };
   })();
 
   /* ================= Running a game ================= */
-  let running = null;
+  let running = null, switching = false;
+  // Launching: the dashboard drops away behind the loading ring, then the game fades up.
   async function launch(g) {
-    if (!g) return;
+    if (!g || switching) return;
     pushRecent(g.id);
     if (g.launch.kind === 'link') { openLink(g.launch.url, 'source'); return; }
+    if (running) return;
+    switching = true;
     sfx('select');
     const played = store.get('played', {}); played[g.id] = Date.now(); store.set('played', played);
+    const L = $('#loading');
+    L.hidden = false;
+    await anim(L, [{ opacity: 0 }, { opacity: 1 }], 240, E.sineOut).finished;
     Overlays.clear();
-    await fakeLoading(900);
+    await wait(850);
     running = g;
     CapitalCity.open();
+    await anim(L, [{ opacity: 1 }, { opacity: 0 }], 300, E.cubicOut).finished;
+    L.hidden = true;
+    switching = false;
   }
-  function quitGame(fromGuide) {
-    if (!running) return;
-    running = null;
-    CapitalCity.close();
+  // Quitting to Xbox Home: the game fades to black, the ring spins while the
+  // dashboard loads, then it settles in on Home.
+  async function quitGame(fromGuide) {
+    if (!running || switching) return;
+    switching = true;
     if (fromGuide) achieve('ragequit');
-    if (!overlayOpen()) focusDefault();
+    const black = $('#blackout'), L = $('#loading');
+    black.hidden = false;
+    await anim(black, [{ opacity: 0 }, { opacity: 1 }], 340, E.sineIn).finished;
+    if (Guide.isOpen) Guide.close(false, true);
+    running = null;
+    quietReturn = true;
+    Overlays.clear();
+    jumpTab('home');
+    host.style.opacity = 0;
+    L.hidden = false; L.style.opacity = 1; $('.ring', L).style.opacity = 1;
+    await wait(80);
+    await anim(black, [{ opacity: 1 }, { opacity: 0 }], 240, E.sineOut).finished;
+    black.hidden = true;
+    quietReturn = false;
+    await wait(850);
+    await settle();
+    focusDefault();
+    switching = false;
   }
 
   // Capital City: Hamza's 2024 Python guessing game (github.com/hamzaaaaaf/CapitalCityGame),
@@ -1759,11 +1801,6 @@
       achieve('capital');
       paint();
       if (!reduced.matches) anim(el, [{ opacity: 0 }, { opacity: 1 }], 300, E.sineOut);
-    }
-    function close() {
-      if (!el) return;
-      el.remove(); el = null;
-      Overlays.pop('game');
     }
     function newRound() {
       let country;
@@ -1831,7 +1868,7 @@
     }
     function paintAsk() {
       let box = $('.cc__ask', el);
-      if (!box) { el.insertAdjacentHTML('beforeend', `<div class="msg__dim cc__askdim"></div><div class="ask cc__ask"><b>Capital City</b><div><p>Are you sure you want to quit? Any unsaved progress will be lost.</p><button type="button" class="grow" data-a="0"><span>Yes</span><span></span><span></span></button><button type="button" class="grow" data-a="1"><span>No</span><span></span><span></span></button></div></div>`); box = $('.cc__ask', el); $$('.grow', box).forEach((b, i) => b.addEventListener('click', () => { askSel = i; answer(); })); }
+      if (!box) { el.insertAdjacentHTML('beforeend', `<div class="cc__askdim"></div><div class="ask cc__ask"><b>Capital City</b><div><p>Are you sure you want to quit? Any unsaved progress will be lost.</p><button type="button" class="grow" data-a="0"><span>Yes</span><span></span><span></span></button><button type="button" class="grow" data-a="1"><span>No</span><span></span><span></span></button></div></div>`); box = $('.cc__ask', el); $$('.grow', box).forEach((b, i) => b.addEventListener('click', () => { askSel = i; answer(); })); }
       $$('.grow', box).forEach((b, i) => b.classList.toggle('sel', i === askSel));
     }
     function answer() {
@@ -1862,16 +1899,8 @@
       refocus() { if (!el) return; paint(); },
       dismiss() { running = null; if (el) { el.remove(); el = null; } },
     };
-    return { open, close };
+    return { open };
   })();
-
-  async function fakeLoading(ms) {
-    const L = $('#loading');
-    L.hidden = false;
-    await anim(L, [{ opacity: 0 }, { opacity: 1 }], 200, E.sineOut).finished;
-    await wait(ms);
-    anim(L, [{ opacity: 1 }, { opacity: 0 }], 260, E.cubicOut).finished.then(() => { L.hidden = true; });
-  }
 
   /* ================= Xbox Guide ================= */
   const Guide = (() => {
@@ -1879,45 +1908,36 @@
     let open_ = false, busy = false, tab = 2, sel = 0, screen = 'main', mediaFocus = 'list', transport = 1, bladeSound = 0;
     let achSel = 0, achDetail = false, frSel = 0, status = '', returnFocus = null, askOpen = false, askSel = 0;
     const NAMES = ['Games & Apps', ME.tag, 'Xbox Home', 'Media', 'Settings'];
-    const placeholder = (name) => setStatus(`${name} is not connected yet`);
     const closeThen = (fn) => () => { close(false); fn(); };
     function items() {
-      const tg = trayGame();
       switch (tab) {
         case 0: return [
-          ['My Games', 'games', closeThen(() => Library.open('games'))],
-          ['My Apps', 'apps', closeThen(() => Library.open('apps'))],
-          ['Game Marketplace', 'bag', () => placeholder('Game Marketplace')],
-          ['App Marketplace', 'bag', () => placeholder('App Marketplace')],
+          ['My Projects', 'games', closeThen(() => Library.open('projects'))],
+          ['Capital City', 'play', closeThen(() => launch(byId('capital-city')))],
+          ['My Pins', 'pin', closeThen(() => Library.open('pins'))],
+          ['Recent', 'clock', closeThen(() => Library.open('recent'))],
         ];
         case 1: return [
           ['Achievements', '', () => openScreen('achievements')],
-          ['Awards', '', () => placeholder('Awards')],
-          ['Recent', '', () => placeholder('Recent')],
-          ['My Games', '', closeThen(() => Library.open('games'))],
-          ['Active Downloads', '', () => placeholder('Active Downloads')],
-          ['Redeem Code', '', () => placeholder('Redeem Code')],
+          ['About Me', 'person', closeThen(() => Profile.open('about'))],
+          ['Tech Stack', 'layers', closeThen(() => Profile.open('stack'))],
+          ['Games I Play', 'games', closeThen(() => Profile.open('games'))],
         ];
         case 3: return [
-          ['Video Player', '', null],
           ['Music Player', '', closeThen(() => Music.open())],
-          ['Picture Viewer', '', null],
-          ['Windows Media Center', '', null],
         ];
         case 4: return [
           ['System Settings', 'gear', closeThen(() => Settings.open())],
-          ['Profile', 'person', closeThen(() => Profile.open())],
           ['Preferences', 'sliders', closeThen(() => Settings.open('dashboard'))],
+          ['Themes', 'sliders', closeThen(() => Themes.open())],
           ['Turn Off', 'power', () => { close(false); powerOff(); }],
         ];
         default: return [
           ['Xbox Home', '', xboxHome],
           ['Friends', 'contact', () => openScreen('friends'), String(FRIENDS().length)],
-          ['Party', 'people', () => placeholder('Party'), '0'],
-          ['Inside Xbox', 'mail', () => placeholder('Inside Xbox'), '0'],
+          ['Messages', 'mail', () => openLink(LINKS.mail, 'messenger', true)],
           ['Minimize', 'minimize', () => close(false)],
-          ['Chat and IM', 'chat', () => placeholder('Chat and IM')],
-          [tg.title, 'eject', () => { close(false); launch(tg); }],
+          [trayLabel(), 'eject', () => { toggleTray(); paint(); }],
         ];
       }
     }
@@ -1928,7 +1948,6 @@
       { tag: 'Message Hamza', sub: 'hello@byhamza.dev', status: 'Send a message', pic: 'mail', url: LINKS.mail, ach: 'messenger' },
     ];
     function clockText() { const d = new Date(); let h = d.getHours(); const ap = h < 12 ? 'AM' : 'PM'; h = h % 12 || 12; return `${h}:${String(d.getMinutes()).padStart(2, '0')}  ${ap}`; }
-    function setStatus(t) { status = t; const s = $('.gd__status', canvas); if (s) s.textContent = t; }
     function build() {
       canvas.innerHTML = `<div class="gd">
         <div class="gd__title">Xbox Guide</div>
@@ -1941,7 +1960,7 @@
           <div class="gd__side gd__s3" data-rel="1"><span></span></div>
           <div class="gd__side gd__s4" data-rel="2"><span></span></div>
         </div>
-        <div class="gfoot gd__foot"><span class="h" data-act="a">${G('A')}Select</span><span class="h" data-act="b">${G('B')}Back</span><span class="h gd__x" data-act="x" hidden>${G('X')}<span class="gd__xt"></span></span></div></div>
+        <div class="gfoot gd__foot"><span class="h" data-act="a">${G('A')}Select</span><span class="h" data-act="b">${G('B')}Back</span><span class="h" data-act="y">${G('Y')}Xbox Home</span></div></div>
         <div class="gd__status"></div>
         <div class="gd__over"></div>
       </div>`;
@@ -1973,9 +1992,6 @@
         $('.gd__transport', media).innerHTML = ctrls.map(([icon], i) => `<button type="button" class="${mediaFocus === 'transport' && i === transport ? 'sel' : ''}" data-i="${i}" aria-label="${icon}">${svg(icon)}</button>`).join('');
         $$('.gd__transport button', media).forEach((b) => b.addEventListener('click', () => { transport = +b.dataset.i; ctrls[transport][1](); sfx('guide-select'); setTimeout(() => paint(), 50); }));
       }
-      const x = $('.gd__x', canvas);
-      x.hidden = !running;
-      $('.gd__xt', canvas).textContent = 'Close Game';
       $('.gd__status', canvas).textContent = status;
     }
     // GuideWindow.Open + BeginOpenAnimation.
@@ -2019,11 +2035,11 @@
       anim($('.gd__blade', canvas), [{ opacity: 1 }, { opacity: 0.72 }], 115, E.sineIn);
       anim(layer, [{ opacity: 1 }, { opacity: 0 }], 165, E.sineIn).finished.then(done);
     }
+    // Xbox Home: back to the Home tab, asking first if a game is running.
     function xboxHome() {
       if (running) { ask(); return; }
       close(false);
-      while (overlayOpen()) { const t = Overlays.top(); if (t === 'library') Library.close(true, true); else { const a = Overlays.api(); a.handle('b'); } if (Overlays.top() === t) break; }
-      goTab('home');
+      if (overlayOpen()) { jumpTab('home'); Overlays.clear(); } else goTab('home');
     }
     function ask() {
       askOpen = true; askSel = 0;
@@ -2034,7 +2050,7 @@
     function answer() {
       askOpen = false;
       $('.gd__over', canvas).innerHTML = '';
-      if (askSel === 0) { sfx('guide-select'); close(false, true); quitGame(true); goTab('home'); } else sfx('guide-back');
+      if (askSel === 0) { sfx('guide-select'); quitGame(true); } else sfx('guide-back');
     }
     function moveTab(d) {
       if (screen !== 'main') return;
@@ -2174,7 +2190,7 @@
       else if (a === 'rb') moveTab(1);
       else if (a === 'a') activate();
       else if (a === 'b') close();
-      else if (a === 'x' && running) ask();
+      else if (a === 'y') { sfx('guide-select'); xboxHome(); }
       return true;
     }
     function toggle() { if (open_) close(); else open(); }
@@ -2188,7 +2204,10 @@
     achieve('lightsout');
     sfx('select');
     setTimeout(() => {
-        if (running) quitGame(false);
+      if (Guide.isOpen) Guide.close(false, true);
+      running = null;
+      Overlays.clear();
+      jumpTab('home');
       booting = true;
       const gate = $('#gate');
       gate.hidden = false;
@@ -2204,7 +2223,7 @@
   function act(a) {
     if (gateWaiting) { startFromGate(); return; }
     if (bootSkippable) { skipBoot(); return; }
-    if (booting) return;
+    if (booting || switching) return;
     if (a === 'guide') { Guide.toggle(); return; }
     if (Guide.isOpen) { Guide.handle(a); return; }
     const top = Overlays.api();
@@ -2215,17 +2234,16 @@
   function dashboard(a) {
     const dirs = ['left', 'right', 'up', 'down'];
     if (animatingTab && ['left', 'right', 'lb', 'rb'].includes(a)) { queuedStep = a === 'left' || a === 'lb' ? -1 : 1; return; }
-    if (a === 'lb' || a === 'rb') { moveTab(a === 'lb' ? -1 : 1); sfx('focus'); return; }
+    // One sound per move: the tab swoosh when the hub changes, the tile tick otherwise.
+    if (a === 'lb' || a === 'rb') { moveTab(a === 'lb' ? -1 : 1); return; }
     if (dirs.includes(a)) {
       const cands = pageCands();
       let cur = document.activeElement && document.activeElement.closest && document.activeElement.closest('.t, [data-nav]');
       if (!cur || !cands.some((c) => c.el === cur)) cur = null;
       if (!cur) { focusDefault(); sfx('focus'); return; }
       const n = bestInDirection(cands, cur, a);
-      if (n) { focusEl(n); lastFocus[curTab()] = n; }
-      else if (a === 'left') moveTab(-1);
-      else if (a === 'right') moveTab(1);
-      sfx('focus');
+      if (n) { focusEl(n); lastFocus[curTab()] = n; sfx('focus'); }
+      else if (a === 'left' || a === 'right') moveTab(a === 'left' ? -1 : 1);
       return;
     }
     if (a === 'a') {
@@ -2289,7 +2307,7 @@
   $('.peek-hit--l').addEventListener('click', () => { if (!overlayOpen()) moveTab(-1); });
   $('.peek-hit--r').addEventListener('click', () => { if (!overlayOpen()) moveTab(1); });
   $('.me [data-guide]').addEventListener('click', () => act('guide'));
-  dashCanvas.addEventListener('click', (e) => { const h = e.target.closest('[data-act]'); if (h && !e.target.closest('.t, .dbtn, [data-nav]')) { const a = h.dataset.act; if (a === 'y' && !overlayOpen()) Search.open(); else if (a === 'b') act('b'); } });
+  dashCanvas.addEventListener('click', (e) => { const h = e.target.closest('[data-act]'); if (h && !e.target.closest('.t, .dbtn, [data-nav]')) act(h.dataset.act); });
   $('#guide').addEventListener('click', (e) => { if (e.target === $('#guide') || e.target === $('#guide .canvas') || e.target.classList.contains('gd')) Guide.close(); });
 
   // Wheel and swipe change tabs.
@@ -2462,21 +2480,29 @@
       L.hidden = false; L.style.opacity = 1;
       $('.ring', L).style.opacity = 1;
       await wait(1150);
-      await anim($('.ring', L), [{ opacity: 1 }, { opacity: 0 }], 120).finished;
+    }
+    await settle();
+    booting = false;
+    focusDefault();
+    await wait(120);
+    toast(`${ME.tag} signed`, 'in to Xbox LIVE');
+    signedIn();
+  }
+  // The ring fades, then the dashboard scales up into place with its tiles sweeping in.
+  async function settle() {
+    const L = $('#loading'), ring = $('.ring', L);
+    if (!L.hidden) {
+      await anim(ring, [{ opacity: 1 }, { opacity: 0 }], 120).finished;
       await wait(40);
     }
     sfx('startup');
     paintTabs();
     renderPeeks();
     anim(host, [{ opacity: 0, transform: 'translateY(18px) scale(.965)' }, { opacity: 1, transform: 'translateY(0) scale(1)' }], 470, E.cubicOut);
-    if (!L.hidden) anim(L, [{ opacity: 1 }, { opacity: 0 }], 520, E.cubicOut).finished.then(() => { L.hidden = true; $('.ring', L).style.opacity = ''; });
+    if (!reduced.matches) tilesIn(84, 40);
+    if (!L.hidden) anim(L, [{ opacity: 1 }, { opacity: 0 }], 520, E.cubicOut).finished.then(() => { L.hidden = true; ring.style.opacity = ''; });
     await wait(470);
     host.style.opacity = '';
-    booting = false;
-    focusDefault();
-    await wait(120);
-    toast(`${ME.tag} signed`, 'in to Xbox LIVE');
-    signedIn();
   }
   function signedIn() {
     achieve('hello');
@@ -2490,7 +2516,7 @@
 
   /* ================= Deep links ================= */
   function route() {
-    // Old addresses redirect to /?to=<screen> (see public/_redirects); hashes work too.
+    // /?to=<screen> and #<screen> both open a tab or a screen.
     const q = new URLSearchParams(location.search).get('to');
     if (q) history.replaceState(null, '', `/#${q}`);
     const h = location.hash.slice(1).toLowerCase();
@@ -2498,10 +2524,9 @@
     const tabI = TABS.findIndex((t) => t.k === h);
     if (tabI >= 0) { tabIndex = tabI; return; }
     const after = () => {
-      if (h === 'profile' || h === 'about') Profile.open();
-      else if (h === 'games' || h === 'mygames' || h === 'projects' || h === 'work') Library.open('games');
-      else if (h === 'apps' || h === 'myapps') Library.open('apps');
-      else if (h === 'settings') Settings.open();
+      if (h === 'profile' || h === 'me') Profile.open('about');
+      else if (['stack', 'games-i-play', 'origin', 'timeline', 'contact'].includes(h)) Profile.open(h === 'games-i-play' ? 'games' : h);
+      else if (['games', 'mygames', 'apps', 'myapps', 'work'].includes(h)) Library.open('projects');
       else if (h === 'achievements') Guide.open('achievements');
       else if (byId(h)) Details.open(byId(h));
     };

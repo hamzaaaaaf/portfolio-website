@@ -5,11 +5,14 @@ My personal site: a web port of [DashX360](https://github.com/ZivvoZ/dashx360) b
 Every screen is DashX360's 1280×720 canvas scaled to fit the window, so tile positions, colours, fonts, animation timings and sound cues come straight from its XAML and C#. The content is mine.
 
 - **Startup**: the boot video, the loading ring, the dashboard settling in and the "signed in to Xbox LIVE" pop-up.
-- **Dashboard**: bing, home, social, video, games, music, apps and settings, with DashX360's sliding tab change and the neighbouring tabs peeking in at the edges.
-- **Xbox Guide**: Games & Apps, profile, Xbox Home, Media and Settings blades, plus Achievements and Friends.
-- **My Games and My Apps**: my projects, with DashX360's game details screen (overview, details, extras, gallery). Capital City, my first Python game, is in the tray and playable.
+- **Dashboard**: bing, home, about, projects, social and settings, with DashX360's sliding tab change and the neighbouring tabs peeking in at the edges. The real 2011 dashboard had eight tabs; this keeps the ones a portfolio needs.
+- **About**: a profile with my background, tech stack, the games I play, the game that got me into gaming (Batman: Arkham Asylum) and a timeline.
+- **Projects**: My Projects with DashX360's game details screen (overview, details, extras, gallery). Capital City, my first Python game, is playable.
+- **Open Tray** behaves like a console with no disc in it: it opens and closes the tray.
+- **Menus slide away and the tiles fly back in** when you back out, and quitting a game drops to black and loads back into Home.
+- **Xbox Guide**: Games & Apps, profile, Xbox Home, Media and Settings blades, plus Achievements and Friends. Y goes to Xbox Home.
 - **Bing**: searches the console like the 360's Bing did, with a last tile that searches the web.
-- **System Settings, Profile, Themes and a Music Player** for songs on your own device.
+- **System Settings, Themes and a Music Player** for songs on your own device.
 - **Achievements**: 31 of them worth 1000 gamerscore, saved in your browser.
 
 ### Controls
@@ -23,6 +26,7 @@ Every screen is DashX360's 1280×720 canvas scaled to fit the window, so tile po
 | Game details | X | X |
 | Search | Y | Y or F |
 | Xbox Guide | Guide / PS / Home button, PlayStation touchpad, or Back + Start | Home or G |
+| Xbox Home (in the Guide) | Y | Y |
 
 Xbox, PlayStation and Nintendo controllers are mapped by button position, so the bottom face button is always A. Mouse, trackpad swipes and touch work too.
 
