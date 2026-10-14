@@ -14,6 +14,9 @@ import { DurableObject } from 'cloudflare:workers';
 //   VALORANT_REGION  eu, na, ap, kr, latam or br (eu if unset)
 //   OMDB_API_KEY     OMDb key, for IMDb ratings
 //   STEAM_API_KEY    Steam Web API key, for full library hours
+//   GITHUB_TOKEN     optional; GitHub limits anonymous requests from shared IPs
+//
+// /api/feed?refresh pulls everything again, at most once every ten minutes.
 
 const LEETCODE_USER = 'hamza57';
 const GITHUB_USER = 'hamzaaaaaf';
@@ -27,8 +30,11 @@ const UA = 'Mozilla/5.0 (compatible; byhamza.dev)';
 class Skip extends Error {}
 async function get(url, init = {}, type = 'json') {
   const res = await fetch(url, { ...init, signal: AbortSignal.timeout(8000), headers: { 'user-agent': UA, ...init.headers } });
-  // Only the host goes in the error, never a URL that might carry a key.
-  if (!res.ok) throw new Error(`${new URL(url).host} responded ${res.status}`);
+  // Only the host and the reply go in the error, never a URL that might carry a key.
+  if (!res.ok) {
+    const why = (await res.text().catch(() => '')).replace(/\s+/g, ' ').slice(0, 80);
+    throw new Error(`${new URL(url).host} responded ${res.status}${why ? `: ${why}` : ''}`);
+  }
   return type === 'json' ? res.json() : res.text();
 }
 const tag = (xml, name) => {
@@ -72,27 +78,27 @@ async function leetcode() {
 
 /* ---------- GitHub ---------- */
 
-async function github() {
+async function github(env) {
   const headers = { accept: 'application/vnd.github+json' };
+  if (env.GITHUB_TOKEN) headers.authorization = `Bearer ${env.GITHUB_TOKEN}`;
   const repos = (await get(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=pushed`, { headers })).filter((r) => !r.fork);
-  // Bytes per language, summed over the most recently pushed repos.
-  const bytes = {};
-  await Promise.all(repos.slice(0, 8).map(async (r) => {
-    const langs = await get(r.languages_url, { headers }).catch(() => ({}));
-    for (const [name, n] of Object.entries(langs)) bytes[name] = (bytes[name] || 0) + n;
-  }));
-  const total = Object.values(bytes).reduce((a, b) => a + b, 0) || 1;
+  // Share of repos by main language: one request, so the rate limit lasts.
+  const count = {};
+  for (const r of repos) if (r.language) count[r.language] = (count[r.language] || 0) + 1;
+  const total = Object.values(count).reduce((x, y) => x + y, 0) || 1;
   return {
     repos: repos.length,
     stars: repos.reduce((n, r) => n + r.stargazers_count, 0),
-    languages: Object.entries(bytes).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([name, n]) => [name, Math.round((n / total) * 100)]),
+    languages: Object.entries(count).sort((x, y) => y[1] - x[1]).slice(0, 5).map(([name, c]) => [name, Math.round((c / total) * 100)]),
     latest: repos[0] ? { name: repos[0].name, pushed: repos[0].pushed_at } : null,
   };
 }
 
 /* ---------- Letterboxd, with IMDb ratings ---------- */
 
+let imdbError = null;
 async function letterboxd(env, imdb) {
+  imdbError = null;
   const xml = await get(`https://letterboxd.com/${LETTERBOXD_USER}/rss/`, {}, 'text');
   const diary = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(([, it]) => ({
     title: entities(tag(it, 'letterboxd:filmTitle')),
@@ -116,19 +122,26 @@ async function letterboxd(env, imdb) {
   favourites = favourites.map((f) => ({ ...f, poster: f.poster || (recent.find((r) => r.title === f.title && r.year === f.year) || {}).poster || null }));
 
   let lookups = 0;
+  const src = env.OMDB_API_KEY ? 'omdb' : 'free';
   const rate = async (f) => {
     const key = `${f.title}|${f.year}`;
     const hit = imdb[key];
-    if (!hit || Date.now() - hit.t > 30 * 864e5) {
-      if (lookups++ < 10) imdb[key] = { ...(await imdbRating(env, f).catch(() => null)), t: Date.now() };
+    // Ratings keep for a month; misses are tried again the next day.
+    const fresh = hit && hit.src === src && Date.now() - hit.t < (hit.rating ? 30 : 1) * 864e5;
+    if (!fresh && lookups++ < 10) {
+      let r = null;
+      try { r = await imdbRating(env, f); } catch (err) { imdbError = imdbError || String(err.message || err).slice(0, 100); }
+      imdb[key] = { ...r, src, t: Date.now() };
     }
     const r = imdb[key] || {};
     return { ...f, imdb: r.rating || null, poster: f.poster || r.poster || null };
   };
-  return {
+  const out = {
     favourites: await Promise.all(favourites.map(rate)),
     recent: await Promise.all(recent.map(rate)),
   };
+  out.ratings = imdbError || `${[...out.favourites, ...out.recent].filter((f) => f.imdb).length} rated via ${src}`;
+  return out;
 }
 
 async function profileFavourites() {
@@ -296,7 +309,7 @@ async function refresh(env) {
   const imdb = JSON.parse((await env.FEED.get('imdb')) || '{}');
   const jobs = {
     leetcode: () => leetcode(),
-    github: () => github(),
+    github: () => github(env),
     movies: () => letterboxd(env, imdb),
     steam: () => steam(env),
     psn: () => psn(env),
@@ -317,9 +330,9 @@ async function refresh(env) {
   return out;
 }
 
-async function feed(env, ctx) {
+async function feed(env, ctx, force) {
   let data = JSON.parse((await env.FEED.get('feed')) || 'null');
-  if (!data) data = await refresh(env);
+  if (!data || (force && Date.now() - data.updated > 10 * 60000)) data = await refresh(env);
   else if (Date.now() - data.updated > STALE_MS && !(await env.FEED.get('refreshing'))) {
     // Serve what's there now and refresh in the background, once.
     ctx.waitUntil(env.FEED.put('refreshing', '1', { expirationTtl: 300 }).then(() => refresh(env)));
@@ -337,7 +350,7 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === '/api/feed') {
       try {
-        return await feed(env, ctx);
+        return await feed(env, ctx, url.searchParams.has('refresh'));
       } catch (err) {
         return Response.json({ error: String(err.message || err) }, { status: 502, headers: { 'cache-control': 'no-store' } });
       }

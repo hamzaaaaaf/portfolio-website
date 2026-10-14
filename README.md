@@ -33,14 +33,14 @@ Xbox, PlayStation and Nintendo controllers are mapped by button position, so the
 | Source | Where it comes from | Needs |
 | --- | --- | --- |
 | LeetCode | LeetCode's GraphQL API | nothing |
-| GitHub | GitHub's REST API | nothing |
+| GitHub | GitHub's REST API | nothing (`GITHUB_TOKEN` if Cloudflare's shared IPs hit the rate limit) |
 | Films | the Letterboxd RSS feed | nothing |
 | IMDb ratings | OMDb | `OMDB_API_KEY` |
 | Steam | the public profile, and the Web API for full library hours | `STEAM_API_KEY`, with "Game details" set to public |
 | PlayStation | PSN's mobile API: trophies and play time | `PSN_NPSSO` |
 | Valorant | the HenrikDev API | `HENRIK_API_KEY` and `VALORANT_ID` (`name#tag`, kept out of the repo and the page) |
 
-Add the secrets under Workers & Pages → portfolio-website → Settings → Variables and Secrets. A section with no secret just stays hidden.
+Add the secrets under Workers & Pages → portfolio-website → Settings → Variables and Secrets. A section with no secret just stays hidden. After adding one, open `byhamza.dev/api/feed?refresh` to pull everything straight away (it works at most once every ten minutes); `status` in the reply says how each source went.
 
 - **OMDb**: a free key from omdbapi.com/apikey.aspx.
 - **Steam**: a key from steamcommunity.com/dev/apikey, then Profile → Edit Profile → Privacy Settings → Game details: Public.
