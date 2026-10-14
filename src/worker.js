@@ -30,8 +30,10 @@ const UA = 'Mozilla/5.0 (compatible; byhamza.dev)';
 /* ---------- helpers ---------- */
 
 class Skip extends Error {}
-async function get(url, init = {}, type = 'json') {
-  const res = await fetch(url, { ...init, signal: AbortSignal.timeout(8000), headers: { 'user-agent': UA, ...init.headers } });
+// One more go after a short wait, for hosts that sometimes turn Cloudflare away.
+const retry = (fn) => fn().catch(() => new Promise((r) => setTimeout(r, 1500)).then(fn));
+async function get(url, init = {}, type = 'json', ms = 8000) {
+  const res = await fetch(url, { ...init, signal: AbortSignal.timeout(ms), headers: { 'user-agent': UA, ...init.headers } });
   // Only the host and the reply go in the error, never a URL that might carry a key.
   if (!res.ok) {
     const why = (await res.text().catch(() => '')).replace(/\s+/g, ' ').slice(0, 80);
@@ -114,11 +116,17 @@ async function letterboxd(env, imdb) {
   const seen = new Set();
   const logged = diary.filter((f) => !seen.has(key(f)) && seen.add(key(f)));
 
-  // The RSS feed only has diary entries. Films that are just rated live on
-  // the site, which Letterboxd sometimes lets the Worker read.
-  const site = await letterboxdSite().catch((err) => ({ error: String(err.message || err).slice(0, 80) }));
+  // The RSS feed only has diary entries. Films that are just rated come from
+  // the site; diary entries newer than the last read of it go on top.
+  const site = await letterboxdSite(env).catch((err) => ({ errors: [String(err.message || err)] }));
   const fromDiary = (f) => logged.find((d) => key(d) === key(f)) || {};
-  const recent = (site.rated && site.rated.length ? site.rated.map((f) => ({ ...fromDiary(f), ...f })) : logged).slice(0, 12);
+  let recent = logged;
+  if (site.rated && site.rated.length) {
+    const newer = logged.filter((f) => f.watched && Date.parse(f.watched) > site.ratedAt - 2 * 864e5);
+    const seenR = new Set();
+    recent = [...newer, ...site.rated.map((f) => ({ ...fromDiary(f), ...f }))].filter((f) => !seenR.has(key(f)) && seenR.add(key(f)));
+  }
+  recent = recent.slice(0, 12);
   let favourites = site.favourites && site.favourites.length ? site.favourites.map((f) => ({ ...fromDiary(f), ...f }))
     : logged.filter((f) => f.rating >= 4.5 || f.liked).sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 4);
   favourites = favourites.map((f) => ({ ...f, poster: f.poster || fromDiary(f).poster || null }));
@@ -142,31 +150,59 @@ async function letterboxd(env, imdb) {
     recent: await Promise.all(recent.map(rate)),
     films: site.films || null,
     thisYear: site.thisYear || null,
-    source: site.error ? `RSS only (${site.error})` : 'letterboxd.com',
+    source: !site.favourites && !site.rated ? `RSS only (${site.errors.join('; ').slice(0, 120)})`
+      : site.errors.length ? `letterboxd.com, saved copy (${site.errors.join('; ').slice(0, 120)})` : 'letterboxd.com',
   };
   out.ratings = !env.OMDB_API_KEY ? 'OMDB_API_KEY not set' : imdbError || `${[...out.favourites, ...out.recent].filter((f) => f.imdb).length} films rated`;
   return out;
 }
 
+// Letterboxd puts a browser check in front of requests from Cloudflare, so a
+// page that gets turned away is fetched through the r.jina.ai reader instead.
+async function letterboxdPage(path) {
+  const url = `https://letterboxd.com/${LETTERBOXD_USER}/${path}`;
+  const tries = [
+    () => get(url, { headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36', accept: 'text/html' } }, 'text'),
+    () => get(`https://r.jina.ai/${url}`, { headers: { 'x-return-format': 'html' } }, 'text', 30000),
+  ];
+  let why = null;
+  for (const t of tries) {
+    try {
+      const html = await t();
+      if (html.includes('data-item-name="')) return html;
+      why = 'letterboxd.com asked for a browser check';
+    } catch (err) { why = String(err.message || err); }
+  }
+  throw new Error(why);
+}
+const lbFilms = (html) => html.split(/data-item-name="/).slice(1).map((chunk) => {
+  const name = entities(chunk.slice(0, chunk.indexOf('"')));
+  const m = name.match(/^(.*) \((\d{4})\)$/);
+  const stars = chunk.match(/rated-(\d+)/);
+  return { title: m ? m[1] : name, year: m ? Number(m[2]) : null, rating: stars ? Number(stars[1]) / 2 : null };
+});
 // Letterboxd's own pages: the four profile favourites, the film counts, and
-// every rated film, newest rating first.
-async function letterboxdSite() {
-  const page = (path) => get(`https://letterboxd.com/${LETTERBOXD_USER}/${path}`, { headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36', accept: 'text/html' } }, 'text');
-  const [profile, rated] = await Promise.all([page(''), page('films/by/rated-date/')]);
-  const films = (html) => html.split(/data-item-name="/).slice(1).map((chunk) => {
-    const name = entities(chunk.slice(0, chunk.indexOf('"')));
-    const m = name.match(/^(.*) \((\d{4})\)$/);
-    const stars = chunk.match(/rated-(\d+)/);
-    return { title: m ? m[1] : name, year: m ? Number(m[2]) : null, rating: stars ? Number(stars[1]) / 2 : null };
-  });
-  const stat = (label) => Number(((profile.match(new RegExp(`<span class="value">([\\d,]+)</span>\\s*<span class="definition[^"]*">${label}</span>`)) || [])[1] || '').replace(/,/g, '')) || null;
-  const favSection = (profile.match(/<section[^>]*id="favourites"[\s\S]*?<\/section>/) || [])[0] || '';
-  return {
-    favourites: films(favSection).slice(0, 4),
-    rated: films(rated).filter((f) => f.rating),
-    films: stat('Films'),
-    thisYear: stat('This year'),
-  };
+// the films by date rated. Each keeps its last good read in KV, since the
+// browser check comes and goes.
+async function letterboxdSite(env) {
+  const saved = JSON.parse((await env.FEED.get('letterboxd')) || '{}');
+  const site = { ...saved };
+  const errors = [];
+  const [profile, rated] = await Promise.allSettled([letterboxdPage(''), letterboxdPage('films/by/rated-date/')]);
+  if (profile.status === 'fulfilled') {
+    const html = profile.value;
+    const stat = (label) => Number(((html.match(new RegExp(`<span class="value">([\\d,]+)</span>\\s*<span class="definition[^"]*">${label}</span>`)) || [])[1] || '').replace(/,/g, '')) || null;
+    const favs = lbFilms((html.match(/<section[^>]*id="favourites"[\s\S]*?<\/section>/) || [''])[0]).slice(0, 4);
+    if (favs.length) site.favourites = favs;
+    site.films = stat('Films') || site.films || null;
+    site.thisYear = stat('This year') || null;
+  } else errors.push(`profile: ${profile.reason.message}`);
+  if (rated.status === 'fulfilled') {
+    const list = lbFilms(rated.value).filter((f) => f.rating);
+    if (list.length) { site.rated = list.slice(0, 24); site.ratedAt = Date.now(); }
+  } else errors.push(`rated: ${rated.reason.message}`);
+  if (errors.length < 2) await env.FEED.put('letterboxd', JSON.stringify(site));
+  return { ...site, errors };
 }
 
 // IMDb's own site blocks servers, so ratings come from OMDb.
@@ -201,7 +237,10 @@ async function steam(env) {
     if (games.length) {
       out.games = games.length;
       out.totalHours = Math.round(games.reduce((n, g) => n + g.playtime_forever, 0) / 60);
-      out.top = games.sort((a, b) => b.playtime_forever - a.playtime_forever).slice(0, 6).map((g) => ({ name: clean(g.name), hours: hours(g.playtime_forever) }));
+      out.top = games.sort((a, b) => b.playtime_forever - a.playtime_forever).slice(0, 6).map((g) => ({
+        name: clean(g.name), hours: hours(g.playtime_forever),
+        art: `https://cdn.cloudflare.steamstatic.com/steam/apps/${g.appid}/header.jpg`,
+      }));
     }
   }
   return out;
@@ -259,15 +298,15 @@ async function psn(env) {
   const auth = { authorization: `Bearer ${await psnAccess(env)}` };
   const api = 'https://m.np.playstation.com/api';
   const [summary, played] = await Promise.all([
-    get(`${api}/trophy/v1/users/me/trophySummary`, { headers: auth }),
-    get(`${api}/gamelist/v2/users/me/titles?categories=ps4_game,ps5_native_game&limit=200&offset=0`, { headers: auth }),
+    retry(() => get(`${api}/trophy/v1/users/me/trophySummary`, { headers: auth })),
+    retry(() => get(`${api}/gamelist/v2/users/me/titles?categories=ps4_game,ps5_native_game&limit=200&offset=0`, { headers: auth })),
   ]);
   // One entry per game: the PS4 and PS5 versions of a game count together.
   // PSN reports many titles' platform as "unknown", so they're all just PlayStation.
   const byName = new Map();
   for (const g of played.titles || []) {
     const name = clean(g.localizedName || g.name).replace(/\s*\((?:PlayStation|PS)\s*[45]\)$/i, '');
-    const t = byName.get(name) || { name, platform: 'PlayStation', hours: 0, first: null, last: null };
+    const t = byName.get(name) || { name, platform: 'PlayStation', hours: 0, first: null, last: null, art: g.imageUrl || null };
     t.hours += duration(g.playDuration);
     if (g.firstPlayedDateTime && (!t.first || g.firstPlayedDateTime < t.first)) t.first = g.firstPlayedDateTime;
     if (g.lastPlayedDateTime && (!t.last || g.lastPlayedDateTime > t.last)) t.last = g.lastPlayedDateTime;
@@ -284,7 +323,7 @@ async function psn(env) {
     trophies: { platinum: t.platinum || 0, gold: t.gold || 0, silver: t.silver || 0, bronze: t.bronze || 0 },
     games: titles.length,
     totalHours: Math.round(titles.reduce((n, g) => n + g.hours, 0)),
-    top: [...titles].sort((a, b) => b.hours - a.hours).slice(0, 6).map(({ name, platform, hours: h }) => ({ name, platform, hours: h })),
+    top: [...titles].sort((a, b) => b.hours - a.hours).slice(0, 6).map(({ name, platform, hours: h, art }) => ({ name, platform, hours: h, art })),
     recent: [...titles].sort((a, b) => String(b.last).localeCompare(String(a.last))).slice(0, 4).map(({ name, platform, last }) => ({ name, platform, last })),
     peakYears: Object.entries(byYear).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([year, h]) => ({ year: Number(year), hours: h })),
   };
@@ -340,7 +379,8 @@ async function fortnite(env) {
   const o = d.data.stats.all.overall;
   // Only the numbers go out: the account name stays in the secret.
   return {
-    wins: o.wins, kills: o.kills, matches: o.matches, kd: o.kd, winRate: o.winRate, top10: o.top10,
+    wins: o.wins, kills: o.kills, matches: o.matches,
+    kd: Math.round(o.kd * 100) / 100, winRate: Math.round(o.winRate * 10) / 10,
     hours: Math.round((o.minutesPlayed || 0) / 60),
     level: (d.data.battlePass && d.data.battlePass.level) || null,
   };

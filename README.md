@@ -7,7 +7,7 @@ Every screen is DashX360's 1280×720 canvas scaled to fit the window, so tile po
 - **Tabs**: home, about, projects, games, social and settings. Each tile opens its own window, or goes straight to the project's page.
 - **About**: about me, education, tech stack, and my favourite and latest films from Letterboxd with IMDb ratings.
 - **Projects**: Panic Pack!, Instagram Unliker and this site, plus live LeetCode and GitHub stats.
-- **Games**: where it began (Batman: Arkham Asylum), my console journey, the games I play, and live Valorant, Fortnite, PlayStation and Steam stats.
+- **Games**: where it began (Batman: Arkham Asylum), my console journey, my favourite games, and live Valorant, Fortnite, PlayStation and Steam stats.
 - **Open Tray** behaves like a console with no disc in it: it opens and closes the tray.
 - **Xbox Guide**: Games & Apps, profile, Xbox Home, Media and Settings blades, plus Achievements and Friends. Y goes to Xbox Home.
 - **Achievements**: 33 of them worth 1000 gamerscore, saved in your browser.
@@ -33,7 +33,7 @@ Xbox, PlayStation and Nintendo controllers are mapped by button position, so the
 | --- | --- | --- |
 | LeetCode | LeetCode's GraphQL API | nothing |
 | GitHub | GitHub's REST API | nothing (`GITHUB_TOKEN` if Cloudflare's shared IPs hit the rate limit) |
-| Films | my Letterboxd profile and rated films, or the RSS feed if Letterboxd blocks Cloudflare | nothing |
+| Films | my Letterboxd profile (favourites and counts), films by date rated, and the diary RSS feed. Letterboxd puts a browser check in front of Cloudflare, so the pages go through the r.jina.ai reader and the last good read is kept | nothing |
 | IMDb ratings | OMDb | `OMDB_API_KEY` |
 | Steam | the public profile, and the Web API for full library hours | `STEAM_API_KEY`, with "Game details" set to public |
 | PlayStation | PSN's mobile API: trophies and play time | `PSN_NPSSO` |

@@ -113,7 +113,7 @@
     ['friends', 'Friends list', 'Open Friends.', 50],
     ['origin', 'Where it all began', 'Find the game that got Hamza into gaming.', 20],
     ['journey', 'Generations', 'Look at Hamza’s console journey.', 20],
-    ['gamer', 'Player two', 'See the games Hamza plays.', 20],
+    ['gamer', 'Player two', 'See Hamza’s favourite games.', 20],
     ['valorant', 'Ranked', 'Check Hamza’s Valorant rank.', 30],
     ['trophies', 'Trophy hunter', 'Open PlayStation.', 30],
     ['steam', 'Full steam ahead', 'Open Steam.', 30],
@@ -218,6 +218,15 @@
     linkedin: 'M4 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM2.3 8.5h3.4V21H2.3Zm6 0h3.3v1.7c.5-.9 1.7-2 3.6-2 3.8 0 4.5 2.5 4.5 5.8V21h-3.4v-6.2c0-1.5 0-3.3-2-3.3s-2.3 1.6-2.3 3.2V21H8.3Z',
     layers: 'M12 2 22 7l-10 5L2 7Zm-7.6 8.3L12 14l7.6-3.7L22 11.5 12 16.5 2 11.5Zm0 4.5L12 18.5l7.6-3.7L22 16 12 21 2 16Z',
     film: 'M3 9h18v11H3Zm0-5.6 16.8-3 .7 3.6-16.8 3Z',
+    pc: 'M2 4h20v13H2Zm2 2v9h16V6ZM8 19h8v2H8Z',
+    // Brand marks, from Simple Icons (CC0).
+    valorant: 'M23.792 2.152a.252.252 0 0 0-.098.083c-3.384 4.23-6.769 8.46-10.15 12.69-.107.093-.025.288.119.265 2.439.003 4.877 0 7.316.001a.66.66 0 0 0 .552-.25c.774-.967 1.55-1.934 2.324-2.903a.72.72 0 0 0 .144-.49c-.002-3.077 0-6.153-.003-9.23.016-.11-.1-.206-.204-.167zM.077 2.166c-.077.038-.074.132-.076.205.002 3.074.001 6.15.001 9.225a.679.679 0 0 0 .158.463l7.64 9.55c.12.152.308.25.505.247 2.455 0 4.91.003 7.365 0 .142.02.222-.174.116-.265C10.661 15.176 5.526 8.766.4 2.35c-.08-.094-.174-.272-.322-.184z',
+    playstation: 'M8.984 2.596v17.547l3.915 1.261V6.688c0-.69.304-1.151.794-.991.636.18.76.814.76 1.505v5.875c2.441 1.193 4.362-.002 4.362-3.152 0-3.237-1.126-4.675-4.438-5.827-1.307-.448-3.728-1.186-5.39-1.502zm4.656 16.241l6.296-2.275c.715-.258.826-.625.246-.818-.586-.192-1.637-.139-2.357.123l-4.205 1.5V14.98l.24-.085s1.201-.42 2.913-.615c1.696-.18 3.785.03 5.437.661 1.848.601 2.04 1.472 1.576 2.072-.465.6-1.622 1.036-1.622 1.036l-8.544 3.107V18.86zM1.807 18.6c-1.9-.545-2.214-1.668-1.352-2.32.801-.586 2.16-1.052 2.16-1.052l5.615-2.013v2.313L4.205 17c-.705.271-.825.632-.239.826.586.195 1.637.15 2.343-.12L8.247 17v2.074c-.12.03-.256.044-.39.073-1.939.331-3.996.196-6.038-.479z',
+    steam: 'M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z',
+    fortnite: 'm15.767 14.171.097-5.05H12.4V5.197h3.99L16.872 0H7.128v24l5.271-.985V14.17z',
+    psp: 'M0 9.93v.296h7.182v1.626H.001v2.217h.295v-1.921h7.182V9.93zm11.29 0v3.844H7.478v.296h4.124v-3.844h3.813V9.93zm5.233 0v.296h7.182v1.626h-7.182v2.217h.296v-1.921H24V9.93z',
+    ps4: 'M12.302 13.18v-2.387c0-.486.227-.834.712-.834h2.99c.017 0 .035-.018.035-.036v-.475c0-.004 0-.008-.003-.012h-3.66c-.792.1-1.18.653-1.18 1.357v2.386c0 .482-.233.831-.71.831H7.332c-.018 0-.036.012-.036.036v.475c0 .02.01.035.023.04h3.584c.933-.025 1.393-.62 1.393-1.385zM.024 14.564h1.05a.042.042 0 00.025-.04v-1.52c0-.487.275-.823.676-.823h4.323c.974 0 1.445-.6 1.445-1.384 0-.705-.386-1.257-1.18-1.357H.006c0 .003-.006.005-.006.01v.475c0 .024.013.036.037.036h5.697c.484 0 .712.35.712.833 0 .484-.227.836-.712.836H1.226c-.7 0-1.226.592-1.226 1.373v1.519c0 .02.01.036.028.04zm15.998-.55h5.738c.017 0 .03.012.03.024v.483c0 .024.017.036.035.036h1.035c.018 0 .036-.01.036-.036v-.475c0-.018.02-.036.04-.036h1.028c.024 0 .036-.018.036-.036v-.484c0-.018-.01-.036-.035-.036h-1.03c-.02 0-.037-.017-.037-.035V9.96c0-.283-.104-.463-.28-.523h-.3a1.153 1.153 0 00-.303.132l-6.18 3.815c-.24.15-.323.318-.263.445.048.104.185.182.454.182zm.895-.637l4.79-2.961c.03-.024.09-.018.09.048v2.961c0 .018-.016.036-.034.036h-4.817c-.04 0-.06-.012-.065-.024-.006-.024.005-.042.036-.06z',
+    leetcode: 'M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z',
     cap: 'M12 3 1 8.5 12 14l9-4.5V16h2V8.5ZM5 12.2V16c0 2 3.1 3.5 7 3.5s7-1.5 7-3.5v-3.8L12 15.7Z',
     info: 'M10.5 4h3v3h-3Zm0 5h3v11h-3Z',
   };
@@ -271,13 +280,23 @@
       ${tile('home.linkedin', fx, fy + 266, 185, 131, `${LINKEDIN}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,0) 58%,rgba(0,0,0,.47) 100%')}`, { label: 'LinkedIn', bg: '#fff' })}
       ${tile('home.hero', fx + 187, fy, 466, 263, `<span class="hero"><img src="${ME.pic}" alt=""><span><b>${esc(ME.tag)}</b><span>${esc(ME.motto)}</span></span></span>${shade('rgba(0,0,0,.14) 0%,rgba(0,0,0,0) 48%,rgba(0,0,0,.66) 100%')}${bar(30, 'rgba(0,0,0,.79)')}${tx('About Me · Computer Science at Aston University', { left: 8, right: 8, bottom: 6, 'font-size': 17 })}`, { label: 'About Me', bg: grad('#bfd5d8 0%,#3b5e65 34%,#111a1d 78%,#9eaeb0 100%'), def: true })}
       ${tile('home.projects', fx + 187, fy + 265, 231, 133, `<span class="lines">${PROJECTS.map((p) => `<i>${esc(p.title)}</i>`).join('')}</span>${label('Projects')}`, { label: 'Projects', bg: grad('#3a4a55 0%,#1f2a31 60%,#11181c 100%') })}
-      ${tile('home.stats', fx + 420, fy + 265, 233, 133, `<span class="big-n" style="top:12px;font-size:46px">${live('lc', '·')}</span><span class="big-n" style="top:64px;font-size:14px;opacity:.85">LeetCode problems solved</span>${label('Stats')}`, { label: 'Stats', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}
+      ${tile('home.stats', fx + 420, fy + 265, 233, 133, `<span class="big-n" style="top:12px;font-size:46px">${live('lc', '·')}</span><span class="big-n" style="top:64px;font-size:14px;opacity:.85">LeetCode problems solved</span>${label('Stats')}${brand('leetcode', 22)}`, { label: 'Stats', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}
       ${tile('home.valorant', fx + 655, fy, 179, 263, valorantArt(), { label: 'Valorant', bg: VAL_BG })}
       ${tile('home.film', fx + 655, fy + 265, 179, 133, `${glyph('film', 179, 133, 40)}${livePic('film0')}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.1) 50%,rgba(0,0,0,.75) 100%')}${label('Last Watched', 16)}`, { label: 'Last Watched', bg: '#2a2d30' })}
     </div>`;
   }
+  // A tile's logo, in the bottom right corner across from its label.
+  const brand = (name, size = 26) => `<span class="brand" style="width:${size}px;height:${size}px">${svg(name)}</span>`;
+  // Letterboxd's three dots, in its colours.
+  const lbDots = (bottom = 15) => `<span class="brand" style="width:30px;height:10px;bottom:${bottom}px"><svg viewBox="0 0 36 12" aria-hidden="true"><circle cx="6" cy="6" r="5.5" fill="#ff8000"/><circle cx="18" cy="6" r="5.5" fill="#00e054"/><circle cx="30" cy="6" r="5.5" fill="#40bcf4"/></svg></span>`;
   function valorantArt() {
-    return `<span class="val"><small>Valorant</small>${live('valRank', 'Ranked', 'val__rank')}${live('valPeak', '', 'val__peak')}</span>${label('Valorant')}`;
+    return `<span class="val"><small>Rank</small>${live('valRank', 'Ranked', 'val__rank')}${live('valPeak', '', 'val__peak')}</span>${label('Valorant')}${brand('valorant')}`;
+  }
+  // Xbox 360, PSP, PS4, then PC, as logos.
+  function journeyArt() {
+    const step = (c) => (c === 'Xbox 360' ? `<img src="${A}ui/xbox-orb.webp" alt="Xbox 360" class="jx">`
+      : `<span class="jl jl--${c.toLowerCase()}" title="${esc(c)}">${svg({ PSP: 'psp', PS4: 'ps4', PC: 'pc' }[c])}</span>`);
+    return `<span class="journey">${JOURNEY.map(([c]) => step(c)).join('<em>›</em>')}</span>`;
   }
   function githubArt(w, h) {
     const top = h - 33;
@@ -291,8 +310,8 @@
       ${tile('about.me', 224, 31, 300, 263, `<span class="mecard"><img src="${ME.pic}" alt=""><b>About Me</b><span>${esc(ME.short)}</span></span>`, { label: 'About Me', bg: grad('#3f7f97 0%,#1d4656 50%,#0c1d25 100%'), def: true })}
       ${tile('about.education', 224, 296, 149, 132, glyph('cap', 149, 132, 40) + label('Education'), { label: 'Education' })}
       ${tile('about.stack', 375, 296, 149, 132, glyph('layers', 149, 132, 40) + label('Tech Stack'), { label: 'Tech Stack' })}
-      ${tile('about.favs', 526, 31, 354, 263, `${favs}<span class="tile__note" style="bottom:40px">${live('filmCount', '')}</span>${bar(30, 'rgba(0,0,0,.6)')}${tx('Favourite Films', { left: 8, bottom: 6, 'font-size': 17 })}`, { label: 'Favourite Films', bg: grad('#3a2f45 0%,#1c1724 100%') })}
-      ${tile('about.recent', 526, 296, 354, 132, `<span class="lines">${live('recent0', '', 'li')}${live('recent1', '', 'li')}${live('recent2', '', 'li')}</span>${tx('Latest Films', { left: 12, right: 10, bottom: 10, 'font-size': 17 })}`, { label: 'Latest Films', bg: grad('#2e3438 0%,#1a1e21 100%') })}
+      ${tile('about.favs', 526, 31, 354, 263, `${favs}<span class="tile__note" style="bottom:40px">${live('filmCount', '')}</span>${bar(30, 'rgba(0,0,0,.6)')}${tx('Favourite Films', { left: 8, bottom: 6, 'font-size': 17 })}${lbDots(10)}`, { label: 'Favourite Films', bg: grad('#3a2f45 0%,#1c1724 100%') })}
+      ${tile('about.recent', 526, 296, 354, 132, `<span class="lines">${live('recent0', '', 'li')}${live('recent1', '', 'li')}${live('recent2', '', 'li')}</span>${tx('Latest Films', { left: 12, right: 10, bottom: 10, 'font-size': 17 })}${lbDots()}`, { label: 'Latest Films', bg: grad('#2e3438 0%,#1a1e21 100%') })}
       ${tile('about.latest', 882, 31, 176, 263, `${glyph('film', 176, 263, 50)}${livePic('film0')}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.1) 55%,rgba(0,0,0,.78) 100%')}<span class="tile__note" style="bottom:34px">${live('film0', '')}</span>${label('Last Watched')}`, { label: 'Last Watched', bg: '#2a2d30' })}
       ${tile('about.achievements', 882, 296, 176, 132, `${glyph('trophy', 176, 132, 40, '0 0 30 32')}<span class="tile__note"><span data-gs>0</span> of 1000G</span>${label('Achievements')}`, { label: 'Achievements' })}
     </div>`;
@@ -305,7 +324,7 @@
       ${tile('projects.panic', 411, 31, 466, 263, picture(`${A}tiles/panic-pack.webp`, 'Panic Pack!', 'Godot 4 · Free download for Windows'), { label: 'Panic Pack!', bg: grad('#2d100d 0%,#e27522 50%,#321a16 100%'), def: true })}
       ${tile('projects.unliker', 411, 296, 232, 132, picture(`${A}tiles/instagram-unliker.webp`, 'Instagram Unliker'), { label: 'Instagram Unliker', bg: grad('#ff78aa 0%,#d62976 50%,#4f0c4a 100%') })}
       ${tile('projects.site', 645, 296, 232, 132, `<img class="ico" src="/favicon.svg" alt="" style="${px(icoBox(232, 132, 62, 62, { mt: -26 }))}">${label('byhamza.dev')}`, { label: 'byhamza.dev', bg: grad('#4a5054 0%,#2a2e30 60%,#151718 100%') })}
-      ${tile('projects.stats', 879, 31, 179, 397, `<span class="statcol"><b>${live('lc', '·')}</b><span>LeetCode solved</span><b>${live('ghRepos', '·')}</b><span>Public repos</span><b>${live('lcDays', '·')}</b><span>Active days</span></span>${label('Stats')}`, { label: 'Stats', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}
+      ${tile('projects.stats', 879, 31, 179, 397, `<span class="statcol"><b>${live('lc', '·')}</b><span>LeetCode solved</span><b>${live('ghRepos', '·')}</b><span>Public repos</span><b>${live('lcDays', '·')}</b><span>Active days</span></span>${label('Stats')}${brand('leetcode', 22)}`, { label: 'Stats', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}
     </div>`;
   }
 
@@ -313,12 +332,12 @@
     return `<div class="page" data-tab="games">
       ${tile('games.origin', 224, 31, 354, 263, picture(ORIGIN.art, 'Where It Began', `${ORIGIN.title}, ${ORIGIN.year}`), { label: 'Where it began', bg: '#1a120c', def: true })}
       ${tile('games.valorant', 580, 31, 232, 131, valorantArt(), { label: 'Valorant', bg: VAL_BG })}
-      ${tile('games.fortnite', 580, 164, 232, 130, `<span class="tile__big">${live('fnBig', 'Fortnite')}</span><span class="tile__note">${live('fnSub', '')}</span>${label('Fortnite')}`, { label: 'Fortnite', bg: grad('#6a3fd6 0%,#3a1f8f 55%,#160b3d 100%') })}
-      ${tile('games.played', 814, 31, 232, 131, glyph('games', 232, 131, 46) + label('Games I Play'), { label: 'Games I Play' })}
-      ${tile('games.journey', 814, 164, 232, 130, `<span class="journey">${JOURNEY.map(([n]) => `<i>${esc(n)}</i>`).join('<em>›</em>')}</span>${label('Console Journey')}`, { label: 'Console Journey', bg: grad('#4c5a62 0%,#2a3338 100%') })}
-      ${tile('games.psn', 224, 296, 354, 132, `<span class="tile__big">${live('psnLevel', 'Trophies')}</span><span class="tile__note">${live('psnSub', '')}</span>${label('PlayStation')}`, { label: 'PlayStation', bg: grad('#2b6fd6 0%,#0f3f8f 55%,#081d45 100%') })}
-      ${tile('games.steam', 580, 296, 232, 132, `<span class="tile__big">${live('steamBig', 'Steam')}</span><span class="tile__note">${live('steamSub', '')}</span>${label('Steam')}`, { label: 'Steam', bg: grad('#2a475e 0%,#1b2838 60%,#0e141b 100%') })}
-      ${tile('games.most', 814, 296, 232, 132, `<span class="lines">${live('most0', '', 'li')}${live('most1', '', 'li')}${live('most2', '', 'li')}</span>${label('Most Played')}`, { label: 'Most Played', bg: grad('#3d4a52 0%,#20282d 100%') })}
+      ${tile('games.fortnite', 580, 164, 232, 130, `<span class="tile__big">${live('fnBig', 'Fortnite')}</span><span class="tile__note">${live('fnSub', '')}</span>${label('Fortnite')}${brand('fortnite', 24)}`, { label: 'Fortnite', bg: grad('#6a3fd6 0%,#3a1f8f 55%,#160b3d 100%') })}
+      ${tile('games.played', 814, 31, 232, 131, glyph('games', 232, 131, 46) + label('My Favourite Games'), { label: 'My Favourite Games' })}
+      ${tile('games.journey', 814, 164, 232, 130, `${journeyArt()}${label('Console Journey')}`, { label: 'Console Journey', bg: grad('#4c5a62 0%,#2a3338 100%') })}
+      ${tile('games.psn', 224, 296, 354, 132, `<span class="tile__big">${live('psnLevel', 'Trophies')}</span><span class="tile__note">${live('psnSub', '')}</span>${label('PlayStation')}${brand('playstation', 30)}`, { label: 'PlayStation', bg: grad('#2b6fd6 0%,#0f3f8f 55%,#081d45 100%') })}
+      ${tile('games.steam', 580, 296, 232, 132, `<span class="tile__big">${live('steamBig', 'Steam')}</span><span class="tile__note">${live('steamSub', '')}</span>${label('Steam')}${brand('steam')}`, { label: 'Steam', bg: grad('#2a475e 0%,#1b2838 60%,#0e141b 100%') })}
+      ${tile('games.most', 814, 296, 232, 132, `${livePic('mostArt')}${shade('rgba(10,14,16,.86) 0%,rgba(10,14,16,.7) 60%,rgba(10,14,16,.9) 100%')}<span class="lines">${live('most0', '', 'li')}${live('most1', '', 'li')}${live('most2', '', 'li')}</span>${label('Most Played')}`, { label: 'Most Played', bg: grad('#3d4a52 0%,#20282d 100%') })}
     </div>`;
   }
 
@@ -462,6 +481,12 @@
     if (activeEl) activeEl.classList.remove('on');
     activeEl = el;
     if (el) el.classList.add('on');
+  }
+  // The mouse plays the same tick as the stick when it moves onto something new.
+  function hover(el) {
+    if (activeEl === el) return;
+    setActive(el);
+    sfx('focus');
   }
   function focusEl(el) {
     if (!el) return false;
@@ -806,7 +831,7 @@
       box.style.transform = '';
       box.innerHTML = items.join('');
       $$('[data-nav]', box).forEach((b) => {
-        b.addEventListener('mouseenter', () => { setActive(b); if (b.dataset.tip) describe(...b.dataset.tip.split('|')); });
+        b.addEventListener('mouseenter', () => { hover(b); if (b.dataset.tip) describe(...b.dataset.tip.split('|')); });
         b.addEventListener('focus', () => { if (b.dataset.tip) describe(...b.dataset.tip.split('|')); });
         b.addEventListener('click', (e) => onClick(b, e));
       });
@@ -967,7 +992,7 @@
       el.innerHTML = `<div class="themes__back"></div><div class="themes__panel"><div class="themes__head">Select Theme</div>${THEMES.map((t) => `<button type="button" class="tbtn" data-nav data-theme="${t.id}">${esc(t.name)}${t.id === S.theme ? '<small>Current</small>' : ''}</button>`).join('')}</div>
         <div class="hints ofoot themes__foot"><span class="h" data-act="a">${G('A')} Select   </span><span class="h" data-act="b">${G('B')} Back   </span></div>`;
       $$('.tbtn', el).forEach((b) => {
-        b.addEventListener('mouseenter', () => setActive(b));
+        b.addEventListener('mouseenter', () => hover(b));
         b.addEventListener('click', () => pick(b));
       });
       Overlays.push('themes', api);
@@ -1031,7 +1056,7 @@
   // Riot's short season names: e9a2 is Episode 9 Act 2.
   const season = (s) => String(s).replace(/^e(\d+)a(\d+)$/i, 'Episode $1 Act $2');
   const filmCounts = (m) => (m.films ? `<p class="wdim">${n(m.films)} films watched${m.thisYear ? `, ${n(m.thisYear)} this year` : ''}.</p>` : '');
-  const gameRow = ([name, hrs, plat]) => `<li><span>${esc(name)}</span><small>${plat ? `${esc(plat)} · ` : ''}${n(Math.round(hrs))} h</small></li>`;
+  const gameRow = ([name, hrs, plat, art]) => `<li>${art ? `<img src="${esc(art)}" alt="" loading="lazy" onerror="this.replaceWith(document.createElement('i'))">` : ''}<span>${esc(name)}</span><small>${plat ? `${esc(plat)} · ` : ''}${n(Math.round(hrs))} h</small></li>`;
   function copyEmail() {
     const done = () => { achieve('messenger'); sfx('select'); toast(LINKS.email, 'Copied to clipboard'); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(LINKS.email).then(done, () => toast(LINKS.email, 'Copy it from here'));
@@ -1039,8 +1064,8 @@
   }
   // Everything played on PlayStation and Steam, most hours first.
   const mostPlayed = () => [
-    ...(F('psn', (d) => d.top.map((g) => [g.name, g.hours, g.platform])) || []),
-    ...(F('steam', (d) => (d.top || d.recent).map((g) => [g.name, g.hours, 'PC'])) || []),
+    ...(F('psn', (d) => d.top.map((g) => [g.name, g.hours, g.platform, g.art])) || []),
+    ...(F('steam', (d) => (d.top || d.recent).map((g) => [g.name, g.hours, 'PC', g.art])) || []),
   ].sort((a, b) => b[1] - a[1]);
 
   const WINDOWS = {
@@ -1071,7 +1096,7 @@
     }),
     origin: () => ({ title: 'Where It Began', ach: 'origin', body: `<div class="wart"><img src="${ORIGIN.art}" alt=""></div><h3>${esc(ORIGIN.title)} <small>${ORIGIN.year}</small></h3><p>${esc(ORIGIN.text)}</p>` }),
     journey: () => ({ title: 'Console Journey', ach: 'journey', body: `<ol class="wjourney">${JOURNEY.map(([c, s]) => `<li><b>${esc(c)}</b>${s ? `<small>${esc(s)}</small>` : ''}</li>`).join('')}</ol><p>The Xbox 360 came first, and it’s why this site looks the way it does.</p>` }),
-    played: () => ({ title: 'Games I Play', ach: 'gamer', body: `<ul class="wgames">${GAMES.map(([t, y]) => `<li${t === ORIGIN.title ? ' class="fav"' : ''}><span>${esc(t)}</span><small>${y}</small></li>`).join('')}</ul>` }),
+    played: () => ({ title: 'My Favourite Games', ach: 'gamer', body: `<ul class="wgames">${GAMES.map(([t, y]) => `<li${t === ORIGIN.title ? ' class="fav"' : ''}><span>${esc(t)}</span><small>${y}</small></li>`).join('')}</ul>` }),
     valorant: () => {
       const v = F('valorant', (d) => d);
       return {
@@ -1084,7 +1109,7 @@
       return {
         title: 'PlayStation', ach: 'trophies',
         body: p ? `<div class="wcols"><section>${rows([['Trophy level', p.level], ['Platinum', p.trophies.platinum], ['Gold', p.trophies.gold], ['Silver', p.trophies.silver], ['Bronze', p.trophies.bronze], ['Games played', p.games], ['Hours played', n(p.totalHours)], ['Peak years', p.peakYears.slice(0, 2).map((y) => y.year).join(' and ')]])}</section>
-          <section><h4>Most played</h4><ul class="wgames">${p.top.slice(0, 6).map((g) => gameRow([g.name, g.hours, g.platform])).join('')}</ul></section></div>` : waiting('PlayStation'),
+          <section><h4>Most played</h4><ul class="wgames">${p.top.slice(0, 6).map((g) => gameRow([g.name, g.hours, g.platform, g.art])).join('')}</ul></section></div>` : waiting('PlayStation'),
       };
     },
     steam: () => {
@@ -1092,7 +1117,7 @@
       const list = s ? (s.top || s.recent) : [];
       return {
         title: 'Steam', ach: 'steam',
-        body: s ? `${rows([['Library', s.games ? `${s.games} games` : ''], ['Hours played', s.totalHours ? n(s.totalHours) : ''], ['On Steam since', s.since || '']])}${list.length ? `<h4>${s.top ? 'Most played' : 'Recently played'}</h4><ul class="wgames">${list.slice(0, 6).map((g) => gameRow([g.name, g.hours])).join('')}</ul>` : ''}` : waiting('Steam'),
+        body: s ? `${rows([['Library', s.games ? `${s.games} games` : ''], ['Hours played', s.totalHours ? n(s.totalHours) : ''], ['On Steam since', s.since || '']])}${list.length ? `<h4>${s.top ? 'Most played' : 'Recently played'}</h4><ul class="wgames">${list.slice(0, 6).map((g) => gameRow([g.name, g.hours, '', g.art])).join('')}</ul>` : ''}` : waiting('Steam'),
       };
     },
     most: () => {
@@ -1112,7 +1137,7 @@
       const ps = F('psn', (d) => d.top.find((g) => /^fortnite$/i.test(g.name)));
       return {
         title: 'Fortnite', ach: 'fortnite',
-        body: f ? rows([['Wins', n(f.wins)], ['Matches', n(f.matches)], ['Win rate', `${f.winRate}%`], ['Kills', n(f.kills)], ['K/D', f.kd], ['Top 10s', n(f.top10)], ['Hours played', n(f.hours)], ['Battle Pass level', f.level || '']])
+        body: f ? rows([['Wins', n(f.wins)], ['Matches', n(f.matches)], ['Win rate', `${Number(f.winRate).toFixed(1)}%`], ['Kills', n(f.kills)], ['K/D', Number(f.kd).toFixed(2)], ['Hours played', n(Math.max(f.hours || 0, ps ? ps.hours : 0))], ['Season level', f.level || '']])
           : ps ? `<div class="wrank"><small>On PlayStation</small><b>${n(ps.hours)} hours</b></div><p>My most played game by a long way.</p>` : waiting('Fortnite'),
       };
     },
@@ -1144,7 +1169,7 @@
       body.scrollTop = 0;
       $('.win__foot', el).innerHTML = [spec.a && ['a', spec.a], spec.x && ['x', spec.x], ['b', 'Back']].filter(Boolean).map(([k, t]) => `<span class="h" data-act="${k}">${G(k.toUpperCase())} ${esc(t)}   </span>`).join('');
       $$('[data-nav]', body).forEach((b) => {
-        b.addEventListener('mouseenter', () => setActive(b));
+        b.addEventListener('mouseenter', () => hover(b));
         b.addEventListener('click', () => spec.run(+b.dataset.i));
       });
       const first = $('[data-nav]', body);
@@ -1197,7 +1222,7 @@
         case 0: return [
           ['All Projects', 'games', win('projects')],
           ['Stats', 'layers', win('stats')],
-          ['Games I Play', 'games', win('played')],
+          ['My Favourite Games', 'games', win('played')],
           ['Valorant', '', win('valorant')],
           ['Fortnite', '', win('fortnite')],
         ];
@@ -1264,7 +1289,7 @@
       const list = $('.gd__list', canvas);
       list.innerHTML = items().map(([t, icon, , count], i) => `<button type="button" class="grow${i === sel ? ' sel' : ''}" role="menuitem" data-i="${i}"><span>${esc(t)}</span><span class="cnt">${count ? esc(count) : ''}</span>${icon ? svg(icon) : '<span></span>'}</button>`).join('');
       $$('.grow', list).forEach((r) => {
-        r.addEventListener('mouseenter', () => { if (+r.dataset.i !== sel) { sel = +r.dataset.i; paint(true); } });
+        r.addEventListener('mouseenter', () => { if (+r.dataset.i !== sel) { sel = +r.dataset.i; sfx('guide-hover'); paint(true); } });
         r.addEventListener('click', () => { sel = +r.dataset.i; activate(); });
       });
       if (nudge) { const s = $('.grow.sel', list); if (s) { s.classList.remove('nudge'); void s.offsetWidth; s.classList.add('nudge'); } }
@@ -1523,7 +1548,7 @@
   // Mouse: hover makes a tile active, a click activates it.
   function wirePage(page) {
     $$('.t', page).forEach((b) => {
-      b.addEventListener('mousemove', () => { if (activeEl !== b && !animatingTab) { inputMode = 'mouse'; setPadMode(false); setActive(b); } });
+      b.addEventListener('mousemove', () => { if (activeEl !== b && !animatingTab) { inputMode = 'mouse'; setPadMode(false); setActive(b); sfx('focus'); } });
       b.addEventListener('mouseleave', () => { if (activeEl === b && inputMode === 'mouse') setActive(null); });
       b.addEventListener('click', () => { if (animatingTab) return; focusEl(b); lastFocus[curTab()] = b; activateTile(b); });
     });
@@ -1654,9 +1679,12 @@
     film0: () => F('movies', (d) => d.recent[0] && d.recent[0].title),
     filmCount: () => F('movies', (d) => d.films && `${n(d.films)} films watched`),
     fnBig: () => F('fortnite', (d) => `${n(d.wins)} wins`) || F('psn', (d) => { const g = d.top.find((x) => /^fortnite$/i.test(x.name)); return g && `${n(g.hours)} hours`; }),
-    fnSub: () => F('fortnite', (d) => `${n(d.kills)} kills · ${n(d.hours)} hours`) || (F('psn', (d) => d.top.some((x) => /^fortnite$/i.test(x.name))) ? 'On PlayStation' : null),
+    fnSub: () => F('fortnite', (d) => `${n(d.kills)} kills · ${n(Math.max(d.hours || 0, F('psn', (p) => (p.top.find((x) => /^fortnite$/i.test(x.name)) || {}).hours) || 0))} hours`) || (F('psn', (d) => d.top.some((x) => /^fortnite$/i.test(x.name))) ? 'On PlayStation' : null),
   };
-  const LIVE_SRC = { film0: () => F('movies', (d) => d.recent[0] && d.recent[0].poster) };
+  const LIVE_SRC = {
+    film0: () => F('movies', (d) => d.recent[0] && d.recent[0].poster),
+    mostArt: () => { const g = mostPlayed()[0]; return g && g[3]; },
+  };
   for (let i = 0; i < 4; i++) {
     LIVE[`recent${i}`] = () => F('movies', (d) => d.recent[i] && `${d.recent[i].title}   ${stars(d.recent[i].rating)}`);
     LIVE_SRC[`fav${i}`] = () => F('movies', (d) => d.favourites[i] && d.favourites[i].poster);
