@@ -247,8 +247,9 @@
   const G = (letter) => { const l = letter.toLowerCase(); return `<i class="g g--${l}" role="img" aria-label="${letter}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="${GLYPHS[l]}"/></svg></i>`; };
 
   /* ================= Dashboard markup ================= */
-  // The 2011 dashboard had eight tabs; this one keeps the six a portfolio needs.
-  const TABS = ['home', 'about', 'projects', 'games', 'social', 'settings'].map((k) => ({ k }));
+  // The 2011 dashboard had eight tabs; a portfolio needs four. Settings live in the Guide.
+  const TABS = ['about', 'projects', 'hobbies', 'social'].map((k) => ({ k }));
+  const HOME = 'about';
 
   const px = (o) => Object.entries(o).map(([k, v]) => `${k}:${typeof v === 'number' ? `${v}px` : v}`).join(';');
   const tile = (id, x, y, w, h, inner, { label = '', bg = '', cls = '', def = false } = {}) =>
@@ -274,22 +275,9 @@
   const LINKEDIN = `<span class="logo" style="display:flex;align-items:center;gap:3px;font-size:30px;font-weight:700;color:#0a66c2;letter-spacing:-.5px">Linked<span style="display:grid;place-items:center;width:34px;height:34px;border-radius:5px;background:#0a66c2;color:#fff;font-size:26px">in</span></span>`;
   const VAL_BG = grad('#ff5a63 0%,#d1323e 45%,#5a1016 100%');
 
-  // The Open Tray tile, as on a console with no disc in the drive.
+  // Open Tray, in the Guide, as on a console with no disc in the drive.
   let trayOpen = false;
   const trayLabel = () => (trayOpen ? 'Close Tray' : 'Open Tray');
-  function pageHome() {
-    const fx = 224, fy = 31;
-    return `<div class="page" data-tab="home">
-      ${tile('home.tray', fx, fy, 185, 131, `${img(`${A}icons/disc-tray.webp`, { left: 55.5, top: 14, width: 74, height: 74 }, 'ico tray__ico')}${tx(trayLabel(), { left: 13, bottom: 10, 'font-size': 18 }, ' tray__t')}`, { label: trayLabel() })}
-      ${tile('home.message', fx, fy + 133, 185, 131, glyph('mail', 185, 131, 44) + label('Message Me'), { label: 'Message Me' })}
-      ${tile('home.linkedin', fx, fy + 266, 185, 131, `${LINKEDIN}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,0) 58%,rgba(0,0,0,.47) 100%')}`, { label: 'LinkedIn', bg: '#fff' })}
-      ${tile('home.hero', fx + 187, fy, 466, 263, `<span class="hero"><img src="${ME.pic}" alt=""><span><b>${esc(ME.tag)}</b><span>${esc(ME.motto)}</span></span></span>${shade('rgba(0,0,0,.14) 0%,rgba(0,0,0,0) 48%,rgba(0,0,0,.66) 100%')}${bar(30, 'rgba(0,0,0,.79)')}${tx('About Me · Computer Science at Aston University', { left: 8, right: 8, bottom: 6, 'font-size': 17 })}`, { label: 'About Me', bg: grad('#bfd5d8 0%,#3b5e65 34%,#111a1d 78%,#9eaeb0 100%'), def: true })}
-      ${tile('home.projects', fx + 187, fy + 265, 231, 133, `<span class="lines">${PROJECTS.map((p) => `<i>${esc(p.title)}</i>`).join('')}</span>${label('Projects')}`, { label: 'Projects', bg: grad('#3a4a55 0%,#1f2a31 60%,#11181c 100%') })}
-      ${tile('home.stats', fx + 420, fy + 265, 233, 133, `<span class="big-n" style="top:12px;font-size:46px">${live('lc', '·')}</span><span class="big-n" style="top:64px;font-size:14px;opacity:.85">LeetCode problems solved</span>${label('Stats')}${brand('leetcode', 22)}`, { label: 'Stats', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}
-      ${tile('home.valorant', fx + 655, fy, 179, 263, valorantArt(), { label: 'Valorant', bg: VAL_BG })}
-      ${tile('home.film', fx + 655, fy + 265, 179, 133, `${glyph('film', 179, 133, 40)}${livePic('film0')}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.1) 50%,rgba(0,0,0,.75) 100%')}${label('Last Watched', 16)}`, { label: 'Last Watched', bg: '#2a2d30' })}
-    </div>`;
-  }
   // A tile's logo, in the bottom right corner across from its label.
   const brand = (name, size = 26) => `<span class="brand" style="width:${size}px;height:${size}px">${svg(name)}</span>`;
   // Letterboxd's three dots, in its colours.
@@ -308,23 +296,22 @@
     return `<span class="abs" style="left:0;right:0;top:0;height:${top}px;background:#1b1f23"></span><span class="logo" style="top:${top * 0.42}px;width:44px;height:44px;fill:#fff">${svg('github')}</span><span class="big-n" style="top:${top * 0.42 + 28}px;font-size:13px;opacity:.8">${live('gh', 'hamzaaaaaf')}</span><span class="bar" style="height:33px;background:#2b3137"></span>${tx('GitHub', { left: 8, bottom: 6, 'font-size': 16 })}`;
   }
 
-  // About: who I am on the left, films in the middle, the latest film and achievements on the right.
+  // About is the landing page: who I am, with the photo a click away in About Me.
   function pageAbout() {
-    const favs = [0, 1, 2, 3].map((i) => `<span class="poster" style="left:${14 + i * 82}px;top:46px;width:76px;height:114px">${livePic(`fav${i}`)}</span>`).join('');
+    const c0 = 692, c1 = 876, w = 182;
     return `<div class="page" data-tab="about">
-      ${tile('about.me', 224, 31, 300, 263, `<span class="mecard"><img src="${ME.pic}" alt=""><b>About Me</b><span>${esc(ME.short)}</span></span>`, { label: 'About Me', bg: grad('#3f7f97 0%,#1d4656 50%,#0c1d25 100%'), def: true })}
-      ${tile('about.education', 224, 296, 149, 132, glyph('cap', 149, 132, 40) + label('Education'), { label: 'Education' })}
-      ${tile('about.stack', 375, 296, 149, 132, glyph('layers', 149, 132, 40) + label('Tech Stack'), { label: 'Tech Stack' })}
-      ${tile('about.favs', 526, 31, 354, 263, `${favs}<span class="tile__note" style="bottom:40px">${live('filmCount', '')}</span>${bar(30, 'rgba(0,0,0,.6)')}${tx('Favourite Films', { left: 8, bottom: 6, 'font-size': 17 })}${lbDots(10)}`, { label: 'Favourite Films', bg: grad('#3a2f45 0%,#1c1724 100%') })}
-      ${tile('about.recent', 526, 296, 354, 132, `<span class="lines">${live('recent0', '', 'li')}${live('recent1', '', 'li')}${live('recent2', '', 'li')}</span>${tx('Latest Films', { left: 12, right: 10, bottom: 10, 'font-size': 17 })}${lbDots()}`, { label: 'Latest Films', bg: grad('#2e3438 0%,#1a1e21 100%') })}
-      ${tile('about.latest', 882, 31, 176, 263, `${glyph('film', 176, 263, 50)}${livePic('film0')}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,.1) 55%,rgba(0,0,0,.78) 100%')}<span class="tile__note" style="bottom:34px">${live('film0', '')}</span>${label('Last Watched')}`, { label: 'Last Watched', bg: '#2a2d30' })}
-      ${tile('about.achievements', 882, 296, 176, 132, `${glyph('trophy', 176, 132, 40, '0 0 30 32')}<span class="tile__note"><span data-gs>0</span> of 1000G</span>${label('Achievements')}`, { label: 'Achievements' })}
+      ${tile('about.me', 224, 31, 466, 397, `<span class="hello"><img src="/favicon.svg" alt=""><b>${esc(ME.tag)}</b><span>${esc(ME.short)}</span><em>${esc(ME.motto)}</em></span>${bar(30, 'rgba(0,0,0,.35)')}${tx('About Me', { left: 10, bottom: 6, 'font-size': 17 })}`, { label: 'About Me', bg: 'radial-gradient(120% 90% at 20% 0%,#3d93f0 0%,#1b6fd1 38%,#0b3f86 75%,#062a5c 100%)', def: true })}
+      ${tile('about.education', c0, 31, w, 131, glyph('cap', w, 131, 42) + label('Education'), { label: 'Education', bg: grad('#18c2b4 0%,#0b958b 55%,#06635c 100%') })}
+      ${tile('about.stack', c1, 31, w, 131, glyph('layers', w, 131, 42) + label('Tech Stack'), { label: 'Tech Stack', bg: grad('#f7923a 0%,#e5650c 55%,#a8430a 100%') })}
+      ${tile('about.message', c0, 164, w, 130, glyph('mail', w, 130, 42) + label('Message Me'), { label: 'Message Me' })}
+      ${tile('about.linkedin', c1, 164, w, 130, `${LINKEDIN}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,0) 58%,rgba(0,0,0,.4) 100%')}`, { label: 'LinkedIn', bg: '#fff' })}
+      ${tile('about.achievements', c0, 296, w * 2 + 2, 132, `${glyph('trophy', w * 2 + 2, 132, 42, '0 0 30 32')}<span class="tile__note"><span data-gs>0</span> of 1000G</span>${label('Achievements')}`, { label: 'Achievements', bg: grad('#9a5ce0 0%,#7b3fbf 50%,#4b1f8a 100%') })}
     </div>`;
   }
 
   function pageProjects() {
     return `<div class="page" data-tab="projects">
-      ${tile('projects.list', 224, 31, 185, 197, `${img(`${A}icons/mygames.webp`, icoBox(185, 197, 72, 72, { mt: -24 }))}${label('All Projects', 19)}`, { label: 'All Projects' })}
+      ${tile('projects.list', 224, 31, 185, 197, `${img(`${A}icons/mygames.webp`, icoBox(185, 197, 72, 72, { mt: -24 }))}${label('All Projects', 19)}`, { label: 'All Projects', bg: grad('#f7923a 0%,#e5650c 55%,#a8430a 100%') })}
       ${tile('projects.github', 224, 230, 185, 198, githubArt(185, 198), { label: 'GitHub', bg: '#1b1f23' })}
       ${tile('projects.panic', 411, 31, 466, 263, picture(`${A}tiles/panic-pack.webp`, 'Panic Pack!', 'Godot 4 · Free download for Windows'), { label: 'Panic Pack!', bg: grad('#2d100d 0%,#e27522 50%,#321a16 100%'), def: true })}
       ${tile('projects.unliker', 411, 296, 232, 132, picture(`${A}tiles/instagram-unliker.webp`, 'Instagram Unliker'), { label: 'Instagram Unliker', bg: grad('#ff78aa 0%,#d62976 50%,#4f0c4a 100%') })}
@@ -333,16 +320,20 @@
     </div>`;
   }
 
-  function pageGames() {
-    return `<div class="page" data-tab="games">
-      ${tile('games.origin', 224, 31, 354, 263, picture(ORIGIN.art, 'Where It Began', ORIGIN.games.map(([g]) => g).join(' and ')), { label: 'Where it began', bg: '#1a120c', def: true })}
-      ${tile('games.valorant', 580, 31, 232, 131, valorantArt(), { label: 'Valorant', bg: VAL_BG })}
-      ${tile('games.fortnite', 580, 164, 232, 130, `<span class="tile__big">${live('fnBig', 'Fortnite')}</span><span class="tile__note">${live('fnSub', '')}</span>${label('Fortnite')}${brand('fortnite', 24)}`, { label: 'Fortnite', bg: grad('#6a3fd6 0%,#3a1f8f 55%,#160b3d 100%') })}
-      ${tile('games.played', 814, 31, 232, 131, glyph('games', 232, 131, 46) + label('My Favourite Games'), { label: 'My Favourite Games' })}
-      ${tile('games.journey', 814, 164, 232, 130, `${journeyArt()}${label('Console Journey')}`, { label: 'Console Journey', bg: grad('#4c5a62 0%,#2a3338 100%') })}
-      ${tile('games.psn', 224, 296, 354, 132, `<span class="tile__big">${live('psnLevel', 'Trophies')}</span><span class="tile__note">${live('psnSub', '')}</span>${label('PlayStation')}${brand('playstation', 30)}`, { label: 'PlayStation', bg: grad('#2b6fd6 0%,#0f3f8f 55%,#081d45 100%') })}
-      ${tile('games.steam', 580, 296, 232, 132, `<span class="tile__big">${live('steamBig', 'Steam')}</span><span class="tile__note">${live('steamSub', '')}</span>${label('Steam')}${brand('steam')}`, { label: 'Steam', bg: grad('#2a475e 0%,#1b2838 60%,#0e141b 100%') })}
-      ${tile('games.most', 814, 296, 232, 132, `${livePic('mostArt')}${shade('rgba(10,14,16,.86) 0%,rgba(10,14,16,.7) 60%,rgba(10,14,16,.9) 100%')}<span class="lines">${live('most0', '', 'li')}${live('most1', '', 'li')}${live('most2', '', 'li')}</span>${label('Most Played')}`, { label: 'Most Played', bg: grad('#3d4a52 0%,#20282d 100%') })}
+  // Hobbies: games and films on one page, four columns of 207 px.
+  function pageHobbies() {
+    const c = [224, 433, 642, 851], w = 207;
+    const favs = [0, 1, 2, 3].map((i) => `<span class="poster" style="left:${8 + i * 49}px;top:10px;width:44px;height:66px">${livePic(`fav${i}`)}</span>`).join('');
+    return `<div class="page" data-tab="hobbies">
+      ${tile('hobbies.origin', c[0], 31, w * 2 + 2, 263, picture(ORIGIN.art, 'Where It Began', ORIGIN.games.map(([g]) => g).join(' and ')), { label: 'Where it began', bg: '#1a120c', def: true })}
+      ${tile('hobbies.valorant', c[2], 31, w, 131, valorantArt(), { label: 'Valorant', bg: VAL_BG })}
+      ${tile('hobbies.fortnite', c[2], 164, w, 130, `<span class="tile__big">${live('fnBig', 'Fortnite')}</span><span class="tile__note">${live('fnSub', '')}</span>${label('Fortnite')}${brand('fortnite', 24)}`, { label: 'Fortnite', bg: grad('#6a3fd6 0%,#3a1f8f 55%,#160b3d 100%') })}
+      ${tile('hobbies.played', c[3], 31, w, 131, `${journeyArt()}${label('My Favourite Games')}`, { label: 'My Favourite Games' })}
+      ${tile('hobbies.most', c[3], 164, w, 130, `${livePic('mostArt')}${shade('rgba(10,14,16,.86) 0%,rgba(10,14,16,.7) 60%,rgba(10,14,16,.9) 100%')}<span class="lines">${live('most0', '', 'li')}${live('most1', '', 'li')}${live('most2', '', 'li')}</span>${label('Most Played')}`, { label: 'Most Played', bg: grad('#3d4a52 0%,#20282d 100%') })}
+      ${tile('hobbies.psn', c[0], 296, w, 132, `<span class="tile__big">${live('psnLevel', 'Trophies')}</span><span class="tile__note">${live('psnSub', '')}</span>${label('PlayStation')}${brand('playstation', 28)}`, { label: 'PlayStation', bg: grad('#2b6fd6 0%,#0f3f8f 55%,#081d45 100%') })}
+      ${tile('hobbies.steam', c[1], 296, w, 132, `<span class="tile__big">${live('steamBig', 'Steam')}</span><span class="tile__note">${live('steamSub', '')}</span>${label('Steam')}${brand('steam')}`, { label: 'Steam', bg: grad('#2a475e 0%,#1b2838 60%,#0e141b 100%') })}
+      ${tile('hobbies.favs', c[2], 296, w, 132, `${favs}${bar(30, 'rgba(0,0,0,.55)')}${tx('Favourite Films', { left: 10, bottom: 6, 'font-size': 17 })}${lbDots(10)}`, { label: 'Favourite Films', bg: grad('#4a3a5a 0%,#2a2034 60%,#17121d 100%') })}
+      ${tile('hobbies.recent', c[3], 296, w, 132, `${glyph('film', w, 132, 40)}${livePic('film0')}${shade('rgba(0,0,0,.15) 0%,rgba(0,0,0,.35) 45%,rgba(0,0,0,.85) 100%')}<span class="tile__note">${live('film0', '')}</span>${label('Latest Films')}${lbDots()}`, { label: 'Latest Films', bg: '#2a2d30' })}
     </div>`;
   }
 
@@ -357,24 +348,7 @@
     </div>`;
   }
 
-  function pageSettings() {
-    const fx = 224, fy = 31, w = 270, h = 192;
-    const cells = [
-      ['system', 'System', img(`${A}icons/settings-system.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
-      ['preferences', 'Preferences', img(`${A}icons/settings-preferences.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
-      ['audio', 'Audio', img(`${A}icons/music.webp`, icoBox(w, h, 50, 50, { mt: -30 }))],
-      ['privacy', 'Privacy', img(`${A}icons/settings-privacy.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
-      ['credits', 'Credits', glyph('info', w, h, 56)],
-      ['turnoff', 'Turn Off', img(`${A}icons/settings-turnoff.webp`, icoBox(w, h, 80, 80, { mt: -30 }))],
-    ];
-    const tiles = cells.map(([id, name, icon], i) => tile(`settings.${id}`, fx + (i % 3) * (w + 2), fy + Math.floor(i / 3) * (h + 2), w, h, icon + tx(name, { left: 11, bottom: 10, 'font-size': 21 }), { label: name, def: i === 0 })).join('');
-    return `<div class="page" data-tab="settings">
-      ${tiles}
-      <p class="tx wrap" style="left:${fx}px;top:${fy + 2 * (h + 2) + 12}px;width:650px;margin:0;font-size:12px;color:rgba(255,255,255,.53)">Unofficial non-commercial fan project, inspired by my first console. Xbox and related names, logos, and imagery are property of Microsoft. Not affiliated with or endorsed by Microsoft. Dashboard design and assets from DashX360 by ZivvoZ.</p>
-    </div>`;
-  }
-
-  const PAGES = { home: pageHome, about: pageAbout, projects: pageProjects, games: pageGames, social: pageSocial, settings: pageSettings };
+  const PAGES = { about: pageAbout, projects: pageProjects, hobbies: pageHobbies, social: pageSocial };
   // The side previews show the end of the previous tab and the start of the next one.
   function pageSpan(k) {
     const els = $$('[data-x]', pageEls[k]);
@@ -533,7 +507,7 @@
   }
 
   /* ================= Tabs ================= */
-  let tabIndex = TABS.findIndex((t) => t.k === 'home'), animatingTab = false, queuedStep = 0;
+  let tabIndex = TABS.findIndex((t) => t.k === HOME), animatingTab = false, queuedStep = 0;
   const lastFocus = {};
   const curTab = () => TABS[tabIndex].k;
   const curPage = () => pageEls[curTab()];
@@ -665,20 +639,11 @@
 
   /* ================= Tile actions ================= */
   const ACTIONS = {
-    'home.tray': () => toggleTray(),
-    'home.message': () => Win.open('message'),
-    'home.linkedin': () => openLink(LINKS.linkedin, 'networker'),
-    'home.hero': () => Win.open('about'),
-    'home.projects': () => Win.open('projects'),
-    'home.stats': () => Win.open('stats'),
-    'home.valorant': () => Win.open('valorant'),
-    'home.film': () => Win.open('recent'),
     'about.me': () => Win.open('about'),
     'about.education': () => Win.open('education'),
     'about.stack': () => Win.open('stack'),
-    'about.favs': () => Win.open('favs'),
-    'about.recent': () => Win.open('recent'),
-    'about.latest': () => Win.open('recent'),
+    'about.message': () => Win.open('message'),
+    'about.linkedin': () => openLink(LINKS.linkedin, 'networker'),
     'about.achievements': () => Guide.open('achievements'),
     'projects.list': () => Win.open('projects'),
     'projects.github': () => openLink(LINKS.github, 'source'),
@@ -686,23 +651,18 @@
     'projects.unliker': () => openLink(PROJECTS[1].url, 'source'),
     'projects.site': () => openLink(PROJECTS[2].url, 'source'),
     'projects.stats': () => Win.open('stats'),
-    'games.origin': () => Win.open('origin'),
-    'games.valorant': () => Win.open('valorant'),
-    'games.played': () => Win.open('played'),
-    'games.journey': () => Win.open('journey'),
-    'games.psn': () => Win.open('psn'),
-    'games.steam': () => Win.open('steam'),
-    'games.most': () => Win.open('most'),
-    'games.fortnite': () => Win.open('fortnite'),
+    'hobbies.origin': () => Win.open('origin'),
+    'hobbies.valorant': () => Win.open('valorant'),
+    'hobbies.fortnite': () => Win.open('fortnite'),
+    'hobbies.played': () => Win.open('played'),
+    'hobbies.most': () => Win.open('most'),
+    'hobbies.psn': () => Win.open('psn'),
+    'hobbies.steam': () => Win.open('steam'),
+    'hobbies.favs': () => Win.open('favs'),
+    'hobbies.recent': () => Win.open('recent'),
     'social.friends': () => Guide.open('friends'),
     'social.message': () => Win.open('message'),
     'social.linkedin': () => openLink(LINKS.linkedin, 'networker'),
-    'settings.system': () => Settings.open(),
-    'settings.preferences': () => Settings.open('dashboard'),
-    'settings.audio': () => Settings.open('audio'),
-    'settings.privacy': () => Settings.open('data'),
-    'settings.credits': () => Settings.open('about'),
-    'settings.turnoff': () => powerOff(),
   };
   function activateTile(el) {
     const id = el.dataset.t;
@@ -714,12 +674,6 @@
     trayOpen = !trayOpen;
     sfx('select');
     if (trayOpen) achieve('tray');
-    $$('[data-t="home.tray"]').forEach((t) => {
-      $('.tray__t', t).textContent = trayLabel();
-      t.setAttribute('aria-label', trayLabel());
-      const ico = $('.tray__ico', t);
-      if (ico && !reduced.matches) ico.animate([{ translate: '0 0' }, { translate: `0 ${trayOpen ? 7 : -7}px` }, { translate: '0 0' }], { duration: 300, easing: E.cubicOut });
-    });
   }
 
   /* ================= Overlay stack ================= */
@@ -1127,8 +1081,14 @@
       a: 'Select',
     }),
     origin: () => ({ title: 'Where It Began', ach: 'origin', body: `<div class="wart"><img src="${ORIGIN.art}" alt=""></div>${ORIGIN.games.map(([g, y]) => `<h3>${esc(g)} <small>${y}</small></h3>`).join('')}<p>${esc(ORIGIN.text)}</p>` }),
-    journey: () => ({ title: 'Console Journey', ach: 'journey', body: `<ol class="wjourney">${JOURNEY.map(([c, s]) => `<li><b>${esc(c)}</b>${s ? `<small>${esc(s)}</small>` : ''}</li>`).join('')}</ol><p>The Xbox 360 came first, and it’s why this site looks the way it does.</p>` }),
-    played: () => ({ title: 'My Favourite Games', ach: 'gamer', body: `<ul class="wgames">${GAMES.map(([t, y]) => `<li${isOrigin(t) ? ' class="fav"' : ''}><span>${esc(t)}</span><small>${y}</small></li>`).join('')}</ul>` }),
+    played: () => {
+      achieve('journey');
+      return {
+        title: 'My Favourite Games', ach: 'gamer',
+        body: `<h4>Console journey</h4><ol class="wjourney">${JOURNEY.map(([c, t]) => `<li><b>${esc(c)}</b>${t ? `<small>${esc(t)}</small>` : ''}</li>`).join('')}</ol>
+          <h4>Favourites, oldest first</h4><ul class="wgames wgames--tight">${GAMES.map(([t, y]) => `<li${isOrigin(t) ? ' class="fav"' : ''}><span>${esc(t)}</span><small>${y}</small></li>`).join('')}</ul>`,
+      };
+    },
     valorant: () => {
       const v = F('valorant', (d) => d);
       return {
@@ -1373,7 +1333,7 @@
     // Xbox Home: back to the Home tab from wherever you are.
     function xboxHome() {
       close(false);
-      if (overlayOpen()) { jumpTab('home'); Overlays.clear(); } else goTab('home');
+      if (overlayOpen()) { jumpTab(HOME); Overlays.clear(); } else goTab(HOME);
     }
     function moveTab(d) {
       if (screen !== 'main') return;
@@ -1507,7 +1467,7 @@
     setTimeout(() => {
       if (Guide.isOpen) Guide.close(false, true);
       Overlays.clear();
-      jumpTab('home');
+      jumpTab(HOME);
       booting = true;
       const gate = $('#gate');
       gate.hidden = false;
@@ -1838,10 +1798,13 @@
     if (q) history.replaceState(null, '', `/#${q}`);
     const h = location.hash.slice(1).toLowerCase();
     if (!h) return;
-    const tabI = TABS.findIndex((t) => t.k === (h === 'movies' ? 'about' : h));
+    const tab = { home: 'about', games: 'hobbies', movies: 'hobbies', films: 'hobbies' }[h] || h;
+    const tabI = TABS.findIndex((t) => t.k === tab);
     if (tabI >= 0) { tabIndex = tabI; return; }
     const after = () => {
       if (h === 'achievements') Guide.open('achievements');
+      else if (h === 'settings') Settings.open();
+      else if (h === 'journey') Win.open('played');
       else if (WINDOWS[h]) Win.open(h);
       else if (['profile', 'me'].includes(h)) Win.open('about');
       else if (['work', 'apps'].includes(h)) Win.open('projects');
