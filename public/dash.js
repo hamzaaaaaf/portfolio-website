@@ -87,7 +87,12 @@
     ['Call of Duty: Warzone', 2020], ['Valorant', 2020],
   ].sort((a, b) => a[1] - b[1] || a[0].localeCompare(b[0]));
   const JOURNEY = [['Xbox 360', 'Where it started'], ['PSP', ''], ['PS4', ''], ['PC', 'Now']];
-  const ORIGIN = { title: 'Batman: Arkham Asylum', year: 2009, art: `${A}themes/batman_arkham_asylum/home.webp`, text: 'The game that got me into gaming. I’ve played every Arkham game since: City, Origins and Knight.' };
+  const ORIGIN = {
+    games: [['Batman: Arkham Asylum', 2009], ['Minecraft', 2011]],
+    art: `${A}themes/batman_arkham_asylum/home.webp`,
+    text: 'The two games that got me into gaming. I’ve played every Arkham game since: City, Origins and Knight.',
+  };
+  const isOrigin = (t) => ORIGIN.games.some(([g]) => g === t);
 
   const THEMES = [
     { id: 'default', name: 'Default' },
@@ -330,7 +335,7 @@
 
   function pageGames() {
     return `<div class="page" data-tab="games">
-      ${tile('games.origin', 224, 31, 354, 263, picture(ORIGIN.art, 'Where It Began', `${ORIGIN.title}, ${ORIGIN.year}`), { label: 'Where it began', bg: '#1a120c', def: true })}
+      ${tile('games.origin', 224, 31, 354, 263, picture(ORIGIN.art, 'Where It Began', ORIGIN.games.map(([g]) => g).join(' and ')), { label: 'Where it began', bg: '#1a120c', def: true })}
       ${tile('games.valorant', 580, 31, 232, 131, valorantArt(), { label: 'Valorant', bg: VAL_BG })}
       ${tile('games.fortnite', 580, 164, 232, 130, `<span class="tile__big">${live('fnBig', 'Fortnite')}</span><span class="tile__note">${live('fnSub', '')}</span>${label('Fortnite')}${brand('fortnite', 24)}`, { label: 'Fortnite', bg: grad('#6a3fd6 0%,#3a1f8f 55%,#160b3d 100%') })}
       ${tile('games.played', 814, 31, 232, 131, glyph('games', 232, 131, 46) + label('My Favourite Games'), { label: 'My Favourite Games' })}
@@ -1055,18 +1060,45 @@
   const filmRow = (f) => `<li class="film">${f.poster ? `<img src="${esc(f.poster)}" alt="" loading="lazy" onerror="this.replaceWith(document.createElement('i'))">` : '<i></i>'}<span><b>${esc(f.title)}</b><small>${[f.year, f.watched ? `watched ${when(f.watched)}` : ''].filter(Boolean).join(' · ')}</small></span><em>${f.rating ? `<span class="mine">${stars(f.rating)}</span>` : ''}${f.imdb ? `<span class="imdb">IMDb ${esc(f.imdb)}</span>` : ''}</em></li>`;
   // Riot's short season names: e9a2 is Episode 9 Act 2.
   const season = (s) => String(s).replace(/^e(\d+)a(\d+)$/i, 'Episode $1 Act $2');
-  const filmCounts = (m) => (m.films ? `<p class="wdim">${n(m.films)} films watched${m.thisYear ? `, ${n(m.thisYear)} this year` : ''}.</p>` : '');
-  const gameRow = ([name, hrs, plat, art]) => `<li>${art ? `<img src="${esc(art)}" alt="" loading="lazy" onerror="this.replaceWith(document.createElement('i'))">` : ''}<span>${esc(name)}</span><small>${plat ? `${esc(plat)} · ` : ''}${n(Math.round(hrs))} h</small></li>`;
+  // PlayStation counts every hour the game was open there; the stats add PC
+  // (keyboard and mouse) matches. Without PlayStation, the stats' own total.
+  const fortniteHours = () => {
+    const ps = F('psn', (d) => (d.top.find((g) => /^fortnite$/i.test(g.name)) || {}).hours) || 0;
+    const f = F('fortnite', (d) => d) || {};
+    return ps ? ps + (f.pcHours || 0) : f.hours || 0;
+  };
+  const filmCounts = (m) => (m.films ? `<p class="wdim">${n(m.films)} films watched.</p>` : '');
+  // art is a picture URL, or icon:name for a game with a logo instead.
+  const gameArt = (art) => (!art ? '' : art.startsWith('icon:') ? `<i class="gico gico--${art.slice(5)}">${svg(art.slice(5))}</i>`
+    : `<img src="${esc(art)}" alt="" loading="lazy" onerror="this.replaceWith(document.createElement('i'))">`);
+  const gameRow = ([name, hrs, plat, art]) => `<li>${gameArt(art)}<span>${esc(name)}</span><small>${[plat && esc(plat), hrs != null ? `${n(Math.round(hrs))} h` : ''].filter(Boolean).join(' · ')}</small></li>`;
   function copyEmail() {
     const done = () => { achieve('messenger'); sfx('select'); toast(LINKS.email, 'Copied to clipboard'); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(LINKS.email).then(done, () => toast(LINKS.email, 'Copy it from here'));
     else toast(LINKS.email, 'Copy it from here');
   }
   // Everything played on PlayStation and Steam, most hours first.
-  const mostPlayed = () => [
-    ...(F('psn', (d) => d.top.map((g) => [g.name, g.hours, g.platform, g.art])) || []),
-    ...(F('steam', (d) => (d.top || d.recent).map((g) => [g.name, g.hours, 'PC', g.art])) || []),
-  ].sort((a, b) => b[1] - a[1]);
+  // One row per game: hours on PlayStation and PC add up. Names are matched
+  // without symbols or edition suffixes, so GTA V and GTA V Legacy are one game.
+  const gameKey = (name) => name.toLowerCase().replace(/[™®©:'’.,-]/g, ' ').replace(/\b(legacy|enhanced|remastered|definitive|deluxe|complete|goty|game of the year|edition)\b/g, ' ').replace(/\s+/g, ' ').trim();
+  const mostPlayed = () => {
+    const all = new Map();
+    const add = (g, plat) => {
+      const k = gameKey(g.name), t = all.get(k);
+      if (!t) { all.set(k, [g.name, g.hours, plat, g.art || null]); return; }
+      t[1] += g.hours;
+      if (!t[2].includes(plat)) t[2] += ` + ${plat}`;
+      t[3] = t[3] || g.art;
+    };
+    (F('psn', (d) => d.top) || []).forEach((g) => add(g, 'PlayStation'));
+    (F('steam', (d) => d.top || d.recent) || []).forEach((g) => add(g, 'PC'));
+    // Games played outside Steam: Valorant's ranked hours and Fortnite on PC.
+    const v = F('valorant', (d) => d.hours);
+    if (v) add({ name: 'Valorant', hours: v, art: 'icon:valorant' }, 'PC');
+    const fn = F('fortnite', (d) => d.pcHours);
+    if (fn) add({ name: 'Fortnite', hours: fn }, 'PC');
+    return [...all.values()].sort((a, b) => b[1] - a[1]);
+  };
 
   const WINDOWS = {
     about: () => ({ title: 'About Me', ach: 'about', body: `<div class="wme"><img src="${ME.pic}" alt=""><div>${ABOUT.map((p) => `<p>${esc(p)}</p>`).join('')}</div></div>${rows(FACTS)}` }),
@@ -1094,9 +1126,9 @@
       run: (i) => [copyEmail, () => openLink(`mailto:${LINKS.email}`, 'messenger'), () => openLink(LINKS.linkedin, 'networker')][i](),
       a: 'Select',
     }),
-    origin: () => ({ title: 'Where It Began', ach: 'origin', body: `<div class="wart"><img src="${ORIGIN.art}" alt=""></div><h3>${esc(ORIGIN.title)} <small>${ORIGIN.year}</small></h3><p>${esc(ORIGIN.text)}</p>` }),
+    origin: () => ({ title: 'Where It Began', ach: 'origin', body: `<div class="wart"><img src="${ORIGIN.art}" alt=""></div>${ORIGIN.games.map(([g, y]) => `<h3>${esc(g)} <small>${y}</small></h3>`).join('')}<p>${esc(ORIGIN.text)}</p>` }),
     journey: () => ({ title: 'Console Journey', ach: 'journey', body: `<ol class="wjourney">${JOURNEY.map(([c, s]) => `<li><b>${esc(c)}</b>${s ? `<small>${esc(s)}</small>` : ''}</li>`).join('')}</ol><p>The Xbox 360 came first, and it’s why this site looks the way it does.</p>` }),
-    played: () => ({ title: 'My Favourite Games', ach: 'gamer', body: `<ul class="wgames">${GAMES.map(([t, y]) => `<li${t === ORIGIN.title ? ' class="fav"' : ''}><span>${esc(t)}</span><small>${y}</small></li>`).join('')}</ul>` }),
+    played: () => ({ title: 'My Favourite Games', ach: 'gamer', body: `<ul class="wgames">${GAMES.map(([t, y]) => `<li${isOrigin(t) ? ' class="fav"' : ''}><span>${esc(t)}</span><small>${y}</small></li>`).join('')}</ul>` }),
     valorant: () => {
       const v = F('valorant', (d) => d);
       return {
@@ -1109,20 +1141,21 @@
       return {
         title: 'PlayStation', ach: 'trophies',
         body: p ? `<div class="wcols"><section>${rows([['Trophy level', p.level], ['Platinum', p.trophies.platinum], ['Gold', p.trophies.gold], ['Silver', p.trophies.silver], ['Bronze', p.trophies.bronze], ['Games played', p.games], ['Hours played', n(p.totalHours)], ['Peak years', p.peakYears.slice(0, 2).map((y) => y.year).join(' and ')]])}</section>
-          <section><h4>Most played</h4><ul class="wgames">${p.top.slice(0, 6).map((g) => gameRow([g.name, g.hours, g.platform, g.art])).join('')}</ul></section></div>` : waiting('PlayStation'),
+          <section><h4>Most played</h4><ul class="wgames">${p.top.slice(0, 8).map((g) => gameRow([g.name, g.hours, '', g.art])).join('')}</ul></section></div>
+          ${p.recent && p.recent.length ? `<h4>Recently played</h4><ul class="wgames">${p.recent.map((g) => gameRow([g.name, g.hours, '', g.art])).join('')}</ul>` : ''}` : waiting('PlayStation'),
       };
     },
     steam: () => {
       const s = F('steam', (d) => d);
-      const list = s ? (s.top || s.recent) : [];
+      const top = (s && s.top) || [], recent = (s && s.recent) || [];
       return {
         title: 'Steam', ach: 'steam',
-        body: s ? `${rows([['Library', s.games ? `${s.games} games` : ''], ['Hours played', s.totalHours ? n(s.totalHours) : ''], ['On Steam since', s.since || '']])}${list.length ? `<h4>${s.top ? 'Most played' : 'Recently played'}</h4><ul class="wgames">${list.slice(0, 6).map((g) => gameRow([g.name, g.hours, '', g.art])).join('')}</ul>` : ''}` : waiting('Steam'),
+        body: s ? `${rows([['Library', s.games ? `${s.games} games` : ''], ['Hours played', s.totalHours ? n(s.totalHours) : ''], ['On Steam since', s.since || '']])}${top.length ? `<h4>Most played</h4><ul class="wgames">${top.map((g) => gameRow([g.name, g.hours, '', g.art])).join('')}</ul>` : ''}${recent.length ? `<h4>Last two weeks</h4><ul class="wgames">${recent.map((g) => gameRow([g.name, g.twoWeeks, '', g.art])).join('')}</ul>` : ''}` : waiting('Steam'),
       };
     },
     most: () => {
       const all = mostPlayed();
-      return { title: 'Most Played', ach: 'gamer', body: all.length ? `<ul class="wgames">${all.slice(0, 10).map(gameRow).join('')}</ul>` : waiting('Play time') };
+      return { title: 'Most Played', ach: 'gamer', body: all.length ? `<p class="wdim">Every platform together. A game played on more than one adds up its hours.</p><ul class="wgames">${all.slice(0, 16).map(gameRow).join('')}</ul>` : waiting('Play time') };
     },
     favs: () => {
       const m = F('movies', (d) => d);
@@ -1135,9 +1168,10 @@
     fortnite: () => {
       const f = F('fortnite', (d) => d);
       const ps = F('psn', (d) => d.top.find((g) => /^fortnite$/i.test(g.name)));
+      const total = fortniteHours();
       return {
         title: 'Fortnite', ach: 'fortnite',
-        body: f ? rows([['Wins', n(f.wins)], ['Matches', n(f.matches)], ['Win rate', `${Number(f.winRate).toFixed(1)}%`], ['Kills', n(f.kills)], ['K/D', Number(f.kd).toFixed(2)], ['Hours played', n(Math.max(f.hours || 0, ps ? ps.hours : 0))], ['Season level', f.level || '']])
+        body: f ? rows([['Wins', n(f.wins)], ['Matches', n(f.matches)], ['Win rate', `${Number(f.winRate).toFixed(1)}%`], ['Kills', n(f.kills)], ['K/D', Number(f.kd).toFixed(2)], ['Hours played', n(total)], ['Season level', f.level || '']])
           : ps ? `<div class="wrank"><small>On PlayStation</small><b>${n(ps.hours)} hours</b></div><p>My most played game by a long way.</p>` : waiting('Fortnite'),
       };
     },
@@ -1679,11 +1713,11 @@
     film0: () => F('movies', (d) => d.recent[0] && d.recent[0].title),
     filmCount: () => F('movies', (d) => d.films && `${n(d.films)} films watched`),
     fnBig: () => F('fortnite', (d) => `${n(d.wins)} wins`) || F('psn', (d) => { const g = d.top.find((x) => /^fortnite$/i.test(x.name)); return g && `${n(g.hours)} hours`; }),
-    fnSub: () => F('fortnite', (d) => `${n(d.kills)} kills · ${n(Math.max(d.hours || 0, F('psn', (p) => (p.top.find((x) => /^fortnite$/i.test(x.name)) || {}).hours) || 0))} hours`) || (F('psn', (d) => d.top.some((x) => /^fortnite$/i.test(x.name))) ? 'On PlayStation' : null),
+    fnSub: () => F('fortnite', (d) => `${n(d.kills)} kills · ${n(fortniteHours())} hours`) || (F('psn', (d) => d.top.some((x) => /^fortnite$/i.test(x.name))) ? 'On PlayStation' : null),
   };
   const LIVE_SRC = {
     film0: () => F('movies', (d) => d.recent[0] && d.recent[0].poster),
-    mostArt: () => { const g = mostPlayed()[0]; return g && g[3]; },
+    mostArt: () => { const g = mostPlayed().find((x) => x[3] && !x[3].startsWith('icon:')); return g && g[3]; },
   };
   for (let i = 0; i < 4; i++) {
     LIVE[`recent${i}`] = () => F('movies', (d) => d.recent[i] && `${d.recent[i].title}   ${stars(d.recent[i].rating)}`);

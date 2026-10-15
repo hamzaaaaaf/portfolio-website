@@ -150,7 +150,6 @@ async function letterboxd(env, imdb) {
     favourites: await Promise.all(favourites.map(rate)),
     recent: await Promise.all(recent.map(rate)),
     films: site.films || null,
-    thisYear: site.thisYear || null,
     source: !site.favourites && !site.rated ? `RSS only (${site.errors.join('; ').slice(0, 120)})`
       : site.errors.length ? `letterboxd.com, saved copy (${site.errors.join('; ').slice(0, 120)})` : 'letterboxd.com',
   };
@@ -216,7 +215,7 @@ async function letterboxdSite(env) {
     const favs = lbFilms((html.match(/<section[^>]*id="favourites"[\s\S]*?<\/section>/) || [''])[0]).slice(0, 4);
     if (favs.length) site.favourites = favs;
     site.films = stat('Films') || site.films || null;
-    site.thisYear = stat('This year') || null;
+    delete site.thisYear;
   } else errors.push(`profile: ${profile.reason.message}`);
   if (rated.status === 'fulfilled') {
     const list = lbFilms(rated.value).filter((f) => f.rating);
@@ -239,6 +238,7 @@ async function imdbRating(env, f) {
 
 /* ---------- Steam ---------- */
 
+const steamArt = (appid) => `https://cdn.cloudflare.steamstatic.com/steam/apps/${appid}/header.jpg`;
 async function steam(env) {
   const xml = await get(`https://steamcommunity.com/id/${STEAM_PROFILE}/?xml=1`, {}, 'text');
   const id = tag(xml, 'steamID64');
@@ -258,9 +258,16 @@ async function steam(env) {
     if (games.length) {
       out.games = games.length;
       out.totalHours = Math.round(games.reduce((n, g) => n + g.playtime_forever, 0) / 60);
-      out.top = games.sort((a, b) => b.playtime_forever - a.playtime_forever).slice(0, 6).map((g) => ({
-        name: clean(g.name), hours: hours(g.playtime_forever),
-        art: `https://cdn.cloudflare.steamstatic.com/steam/apps/${g.appid}/header.jpg`,
+      out.top = games.sort((a, b) => b.playtime_forever - a.playtime_forever).slice(0, 12).map((g) => ({
+        name: clean(g.name), hours: hours(g.playtime_forever), art: steamArt(g.appid),
+      }));
+    }
+    // The last two weeks, with art, in place of the profile's plain list.
+    const r = await get(`https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/?${new URLSearchParams({ key: env.STEAM_API_KEY, steamid: id, count: '6' })}`).catch(() => null);
+    const recent = (r && r.response && r.response.games) || [];
+    if (recent.length) {
+      out.recent = recent.map((g) => ({
+        name: clean(g.name), twoWeeks: hours(g.playtime_2weeks), hours: hours(g.playtime_forever), art: steamArt(g.appid),
       }));
     }
   }
@@ -344,8 +351,8 @@ async function psn(env) {
     trophies: { platinum: t.platinum || 0, gold: t.gold || 0, silver: t.silver || 0, bronze: t.bronze || 0 },
     games: titles.length,
     totalHours: Math.round(titles.reduce((n, g) => n + g.hours, 0)),
-    top: [...titles].sort((a, b) => b.hours - a.hours).slice(0, 6).map(({ name, platform, hours: h, art }) => ({ name, platform, hours: h, art })),
-    recent: [...titles].sort((a, b) => String(b.last).localeCompare(String(a.last))).slice(0, 4).map(({ name, platform, last }) => ({ name, platform, last })),
+    top: [...titles].sort((a, b) => b.hours - a.hours).slice(0, 12).map(({ name, platform, hours: h, art }) => ({ name, platform, hours: h, art })),
+    recent: [...titles].sort((a, b) => String(b.last).localeCompare(String(a.last))).slice(0, 6).map(({ name, platform, hours: h, last, art }) => ({ name, platform, hours: h, last, art })),
     peakYears: Object.entries(byYear).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([year, h]) => ({ year: Number(year), hours: h })),
   };
 }
@@ -403,6 +410,8 @@ async function fortnite(env) {
     wins: o.wins, kills: o.kills, matches: o.matches,
     kd: Math.round(o.kd * 100) / 100, winRate: Math.round(o.winRate * 10) / 10,
     hours: Math.round((o.minutesPlayed || 0) / 60),
+    // Keyboard and mouse is as close to "on PC" as the stats get.
+    pcHours: Math.round((((d.data.stats.keyboardMouse || {}).overall || {}).minutesPlayed || 0) / 60),
     level: (d.data.battlePass && d.data.battlePass.level) || null,
   };
 }

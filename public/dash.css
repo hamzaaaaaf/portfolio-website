@@ -259,6 +259,9 @@ img { display: block; -webkit-user-drag: none; }
 .wgames li span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .wgames li img, .wgames li > i { width: 54px; height: 30px; flex: none; object-fit: cover; background: rgba(255, 255, 255, .1); }
 .wgames li img + span, .wgames li > i + span { flex: 1; min-width: 0; }
+.gico { display: grid; place-items: center; }
+.gico svg { width: 18px; height: 18px; fill: #fff; }
+.gico--valorant { background: #ff4655 !important; }
 .wgames small { flex: none; font-size: 15px; color: rgba(255, 255, 255, .65); }
 .wgames li.fav span { color: #ffd34d; }
 .wcols .wgames { columns: 1; }
