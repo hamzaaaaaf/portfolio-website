@@ -4,11 +4,11 @@ My personal site, built like the Xbox 360 dashboard because the 360 was my first
 
 Every screen is DashX360's 1280×720 canvas scaled to fit the window, so tile positions, colours, fonts, animation timings and sound cues come straight from its XAML and C#. The content is mine.
 
-- **Tabs**: home, about, projects, games, social and settings. Each tile opens its own window, or goes straight to the project's page.
-- **About**: about me, education, tech stack, and my favourite and latest films from Letterboxd with IMDb ratings.
+- **Tabs**: about, projects, hobbies and social. Each tile opens its own window, or goes straight to the project's page.
+- **About**: who I am, education, tech stack, a way to message me, LinkedIn and achievements. My photo is a click away, in About Me.
 - **Projects**: Panic Pack!, Instagram Unliker and this site, plus live LeetCode and GitHub stats.
-- **Games**: where it began (Batman: Arkham Asylum), my console journey, my favourite games, and live Valorant, Fortnite, PlayStation and Steam stats.
-- **Open Tray** behaves like a console with no disc in it: it opens and closes the tray.
+- **Hobbies**: where it began (Batman: Arkham Asylum and Minecraft), my favourite games and console journey, live Valorant, Fortnite, PlayStation and Steam stats, most played across every platform, and my favourite and latest films from Letterboxd with IMDb ratings.
+- **Settings and Open Tray** live in the Xbox Guide. Open Tray behaves like a console with no disc in it: it opens and closes the tray.
 - **Xbox Guide**: Games & Apps, profile, Xbox Home, Media and Settings blades, plus Achievements and Friends. Y goes to Xbox Home.
 - **Achievements**: 33 of them worth 1000 gamerscore, saved in your browser.
 
