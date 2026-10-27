@@ -38,7 +38,7 @@ Xbox, PlayStation and Nintendo controllers are mapped by button position, so the
 | IMDb ratings | OMDb | `OMDB_API_KEY` |
 | Steam | the public profile, and the Web API for full library hours | `STEAM_API_KEY`, with "Game details" set to public |
 | PlayStation | PSN's mobile API: trophies and play time | `PSN_NPSSO` |
-| Valorant | the HenrikDev API: rank, most played act, and headshot %, K/D and more from up to 100 ranked games. Hours are estimated: ranked games times the latest games' length plus three minutes for queue, plus about 500 on other accounts | `HENRIK_API_KEY` and `VALORANT_ID` (`name#tag`, kept out of the repo and the page) |
+| Valorant | the HenrikDev API: rank, most played act, and headshot %, K/D and more from up to 100 ranked games. Hours are estimated: live ranked games times tracker.gg's 34-minute average for this account, plus 117 hours in other modes and about 500 on other accounts | `HENRIK_API_KEY` and `VALORANT_ID` (`name#tag`, kept out of the repo and the page) |
 | Fortnite | fortnite-api.com, with PlayStation hours as a fallback | `FORTNITE_API_KEY` and `FORTNITE_NAME` (Epic display name) |
 
 Add the secrets under Workers & Pages → portfolio-website → Settings → Variables and Secrets. A section with no secret just stays hidden. After adding one, open `byhamza.dev/api/feed?refresh` to pull everything straight away (it works at most once every ten minutes); `status` in the reply says how each source went.

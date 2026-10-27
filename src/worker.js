@@ -362,8 +362,14 @@ async function psn(env) {
 
 /* ---------- Valorant (HenrikDev API) ---------- */
 
-// Hours on other accounts (one has about 223) and friends' accounts, my own
-// estimate. Riot only shows this account.
+// Riot doesn't publish play time, so hours are worked out from what tracker.gg
+// showed for this account in October 2026: 1,645 hours over 2,902 ranked
+// games (about 34 minutes a game, which the live game count is multiplied
+// by), and 117 hours across unrated, deathmatch, team deathmatch, spike rush
+// and swiftplay. On top of that, about 500 hours on other accounts (one has
+// about 223) and friends' accounts, my own estimate.
+const VALORANT_HOURS_PER_GAME = 1645 / 2902;
+const VALORANT_MODE_HOURS = 117;
 const VALORANT_OTHER_HOURS = 500;
 
 async function valorant(env) {
@@ -384,7 +390,7 @@ async function valorant(env) {
   const games = seasons.reduce((n, s) => n + (s.games || 0), 0);
   const most = seasons.reduce((a, s) => (!a || (s.games || 0) > (a.games || 0) ? s : a), null);
   const puuid = account && account.data && account.data.puuid;
-  const ranked = rankedHours(games, matches);
+  const ranked = games ? Math.round(games * VALORANT_HOURS_PER_GAME) : null;
   // Only numbers go out: the Riot ID stays in the secret.
   return {
     rank: (d.current && d.current.tier && d.current.tier.name) || null,
@@ -396,19 +402,11 @@ async function valorant(env) {
     mostSeason: most && most.games ? { season: (most.season && most.season.short) || null, games: most.games, wins: most.wins || 0, rank: (most.end_tier && most.end_tier.name) || null } : null,
     level: (account && account.data && account.data.account_level) || null,
     rankedHours: ranked,
+    modeHours: VALORANT_MODE_HOURS,
     otherHours: VALORANT_OTHER_HOURS,
-    hours: ranked ? ranked + VALORANT_OTHER_HOURS : null,
+    hours: ranked ? ranked + VALORANT_MODE_HOURS + VALORANT_OTHER_HOURS : null,
     stats: valorantStats(stored, matches, puuid, rawName, rawTag),
   };
-}
-// Riot doesn't publish play time. Ranked games times the average length of
-// the latest ones, plus about three minutes each for queue, agent select and
-// loading.
-function rankedHours(games, matches) {
-  const lengths = ((matches && matches.data) || []).map((m) => m.metadata && m.metadata.game_length_in_ms).filter((ms) => ms > 5 * 60000);
-  if (!games || !lengths.length) return null;
-  const avg = lengths.reduce((a, b) => a + b, 0) / lengths.length + 3 * 60000;
-  return Math.round((games * avg) / 3600000);
 }
 // Per-game numbers from stored matches (up to 100 ranked games), or the
 // latest full matches when those aren't there.
