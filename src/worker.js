@@ -1,4 +1,5 @@
 import { DurableObject } from 'cloudflare:workers';
+import { EmailMessage } from 'cloudflare:email';
 
 // Serves /api/feed: live stats pulled from LeetCode, GitHub, Letterboxd,
 // Steam, PlayStation Network and Valorant. A cron trigger refreshes them every
@@ -18,6 +19,8 @@ import { DurableObject } from 'cloudflare:workers';
 //   FORTNITE_API_KEY fortnite-api.com key, for Fortnite stats
 //   FORTNITE_NAME    Epic (or PSN) display name, kept out of the repo and the page
 //   JINA_API_KEY     optional; a jina.ai key, so reading Letterboxd isn't rate limited
+//   CONTACT_TO       where messages from the dashboard's keyboard are emailed; it
+//                    must be a verified destination address in Email Routing
 //
 // /api/feed?refresh pulls everything again, at most once every ten minutes.
 
@@ -359,36 +362,99 @@ async function psn(env) {
 
 /* ---------- Valorant (HenrikDev API) ---------- */
 
+// Hours on other accounts (one has about 223) and friends' accounts, my own
+// estimate. Riot only shows this account.
+const VALORANT_OTHER_HOURS = 500;
+
 async function valorant(env) {
   if (!env.HENRIK_API_KEY || !env.VALORANT_ID) throw new Skip('HENRIK_API_KEY or VALORANT_ID not set');
-  const [name, tagLine] = env.VALORANT_ID.split('#').map((s) => encodeURIComponent(s.trim()));
+  const [rawName, rawTag] = env.VALORANT_ID.split('#').map((s) => s.trim());
+  const [name, tagLine] = [rawName, rawTag].map(encodeURIComponent);
   const region = (env.VALORANT_REGION || 'eu').toLowerCase();
   const headers = { authorization: env.HENRIK_API_KEY };
-  const [mmr, account, matches] = await Promise.all([
-    get(`https://api.henrikdev.xyz/valorant/v3/mmr/${region}/pc/${name}/${tagLine}`, { headers }),
-    get(`https://api.henrikdev.xyz/valorant/v2/account/${name}/${tagLine}`, { headers }).catch(() => null),
-    get(`https://api.henrikdev.xyz/valorant/v4/matches/${region}/pc/${name}/${tagLine}?mode=competitive&size=10`, { headers }).catch(() => null),
+  const api = 'https://api.henrikdev.xyz/valorant';
+  const [mmr, account, matches, stored] = await Promise.all([
+    get(`${api}/v3/mmr/${region}/pc/${name}/${tagLine}`, { headers }),
+    get(`${api}/v2/account/${name}/${tagLine}`, { headers }).catch(() => null),
+    get(`${api}/v4/matches/${region}/pc/${name}/${tagLine}?mode=competitive&size=10`, { headers }).catch(() => null),
+    get(`${api}/v1/stored-matches/${region}/${name}/${tagLine}?mode=competitive&size=100`, { headers }).catch(() => null),
   ]);
   const d = mmr.data || {};
   const seasons = d.seasonal || [];
-  // Only the rank goes out: the Riot ID stays in the secret.
+  const games = seasons.reduce((n, s) => n + (s.games || 0), 0);
+  const most = seasons.reduce((a, s) => (!a || (s.games || 0) > (a.games || 0) ? s : a), null);
+  const puuid = account && account.data && account.data.puuid;
+  const ranked = rankedHours(games, matches);
+  // Only numbers go out: the Riot ID stays in the secret.
   return {
     rank: (d.current && d.current.tier && d.current.tier.name) || null,
     rr: d.current ? d.current.rr : null,
     peak: (d.peak && d.peak.tier && d.peak.tier.name) || null,
     peakSeason: (d.peak && d.peak.season && d.peak.season.short) || null,
     wins: seasons.reduce((n, s) => n + (s.wins || 0), 0),
-    games: seasons.reduce((n, s) => n + (s.games || 0), 0),
+    games,
+    mostSeason: most && most.games ? { season: (most.season && most.season.short) || null, games: most.games, wins: most.wins || 0, rank: (most.end_tier && most.end_tier.name) || null } : null,
     level: (account && account.data && account.data.account_level) || null,
-    // Riot doesn't publish play time, so ranked hours are estimated from the
-    // average length of the latest ranked games.
-    hours: estimateHours(seasons.reduce((n, s) => n + (s.games || 0), 0), matches),
+    rankedHours: ranked,
+    otherHours: VALORANT_OTHER_HOURS,
+    hours: ranked ? ranked + VALORANT_OTHER_HOURS : null,
+    stats: valorantStats(stored, matches, puuid, rawName, rawTag),
   };
 }
-function estimateHours(games, matches) {
+// Riot doesn't publish play time. Ranked games times the average length of
+// the latest ones, plus about three minutes each for queue, agent select and
+// loading.
+function rankedHours(games, matches) {
   const lengths = ((matches && matches.data) || []).map((m) => m.metadata && m.metadata.game_length_in_ms).filter((ms) => ms > 5 * 60000);
   if (!games || !lengths.length) return null;
-  return Math.round((games * lengths.reduce((a, b) => a + b, 0)) / lengths.length / 3600000);
+  const avg = lengths.reduce((a, b) => a + b, 0) / lengths.length + 3 * 60000;
+  return Math.round((games * avg) / 3600000);
+}
+// Per-game numbers from stored matches (up to 100 ranked games), or the
+// latest full matches when those aren't there.
+function valorantStats(stored, matches, puuid, name, tag) {
+  const rows = [];
+  for (const m of (stored && stored.data) || []) {
+    const s = m.stats || {}, t = m.teams || {}, mine = String(s.team || '').toLowerCase();
+    const rounds = (t.red || 0) + (t.blue || 0);
+    if (!rounds) continue;
+    rows.push({
+      kills: s.kills || 0, deaths: s.deaths || 0, score: s.score || 0, damage: (s.damage && s.damage.made) || 0,
+      head: (s.shots && s.shots.head) || 0, body: (s.shots && s.shots.body) || 0, leg: (s.shots && s.shots.leg) || 0,
+      rounds, won: mine === 'red' ? t.red > t.blue : mine === 'blue' ? t.blue > t.red : null,
+      agent: (s.character && s.character.name) || null, map: (m.meta && m.meta.map && m.meta.map.name) || null,
+    });
+  }
+  if (!rows.length) {
+    const me = (p) => (puuid ? p.puuid === puuid : String(p.name).toLowerCase() === String(name).toLowerCase() && String(p.tag).toLowerCase() === String(tag).toLowerCase());
+    for (const m of (matches && matches.data) || []) {
+      const p = (m.players || []).find(me), team = p && (m.teams || []).find((x) => x.team_id === p.team_id);
+      const st = p && p.stats;
+      const rounds = team && team.rounds ? (team.rounds.won || 0) + (team.rounds.lost || 0) : 0;
+      if (!st || !rounds) continue;
+      rows.push({
+        kills: st.kills || 0, deaths: st.deaths || 0, score: st.score || 0, damage: (st.damage && st.damage.dealt) || 0,
+        head: st.headshots || 0, body: st.bodyshots || 0, leg: st.legshots || 0,
+        rounds, won: !!team.won, agent: (p.agent && p.agent.name) || null, map: (m.metadata && m.metadata.map && m.metadata.map.name) || null,
+      });
+    }
+  }
+  if (!rows.length) return null;
+  const sum = (k) => rows.reduce((n, r) => n + r[k], 0);
+  const shots = sum('head') + sum('body') + sum('leg'), rounds = sum('rounds');
+  const count = (k) => Object.entries(rows.reduce((o, r) => (r[k] ? { ...o, [r[k]]: (o[r[k]] || 0) + 1 } : o), {})).sort((a, b) => b[1] - a[1]);
+  const decided = rows.filter((r) => r.won !== null);
+  return {
+    games: rows.length,
+    headshot: shots ? Math.round((sum('head') / shots) * 1000) / 10 : null,
+    kd: sum('deaths') ? Math.round((sum('kills') / sum('deaths')) * 100) / 100 : null,
+    acs: Math.round(sum('score') / rounds),
+    adr: Math.round(sum('damage') / rounds),
+    winRate: decided.length ? Math.round((decided.filter((r) => r.won).length / decided.length) * 100) : null,
+    mostKills: Math.max(...rows.map((r) => r.kills)),
+    agent: (count('agent')[0] || [])[0] || null,
+    map: (count('map')[0] || [])[0] || null,
+  };
 }
 
 /* ---------- Fortnite (fortnite-api.com) ---------- */
@@ -460,6 +526,72 @@ async function feed(env, ctx, force) {
 // until a deleted_classes migration ships in a deploy of its own.
 export class Room extends DurableObject {}
 
+/* ---------- Contact (Message Hamza on the dashboard) ---------- */
+
+// A message typed on the dashboard's keyboard, emailed to CONTACT_TO through
+// Email Routing. Limits keep it from being used to flood the inbox: three
+// messages an hour from one address, and twenty a day in all.
+const CONTACT_LIMITS = { perHour: 3, perDay: 20 };
+const reply = (status, body) => Response.json(body, { status, headers: { 'cache-control': 'no-store' } });
+
+async function contact(request, env) {
+  if (request.method !== 'POST') return reply(405, { error: 'method', message: 'Send messages with POST.' });
+  if (!env.MAIL || !env.CONTACT_TO) return reply(503, { error: 'off', message: 'Messages aren’t switched on yet.' });
+  let body;
+  try { body = await request.json(); } catch { return reply(400, { error: 'bad', message: 'That message didn’t come through properly.' }); }
+  const line = (v, max) => String(v || '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
+  const name = line(body.name, 60);
+  const email = line(body.email, 120);
+  const message = String(body.message || '').replace(/\r\n?/g, '\n').replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, '').trim().slice(0, 2000);
+  // A hidden field people never fill in, and a message typed faster than a
+  // person could: both look like bots, so they get a quiet success.
+  if (body.website || Number(body.elapsed) < 3000) return reply(200, { ok: true });
+  if (message.length < 2) return reply(400, { error: 'empty', message: 'Write a message first.' });
+  if (!/^[A-Za-z0-9._%+'-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email)) return reply(400, { error: 'email', message: 'Add your email so I can reply.' });
+  if ((message.match(/https?:\/\//gi) || []).length > 3) return reply(400, { error: 'links', message: 'That’s a lot of links. Email me instead.' });
+
+  const ip = request.headers.get('cf-connecting-ip') || 'unknown';
+  const day = new Date().toISOString().slice(0, 10);
+  const [hourCount, dayCount] = await Promise.all([env.FEED.get(`contact:ip:${ip}`), env.FEED.get(`contact:day:${day}`)]);
+  if (Number(hourCount) >= CONTACT_LIMITS.perHour) return reply(429, { error: 'slow', message: 'You’ve sent a few already. Try again in an hour.' });
+  if (Number(dayCount) >= CONTACT_LIMITS.perDay) return reply(429, { error: 'busy', message: 'The inbox is full for today. Email me instead.' });
+  await Promise.all([
+    env.FEED.put(`contact:ip:${ip}`, String(Number(hourCount) + 1), { expirationTtl: 3600 }),
+    env.FEED.put(`contact:day:${day}`, String(Number(dayCount) + 1), { expirationTtl: 2 * 86400 }),
+  ]);
+
+  try {
+    await env.MAIL.send(new EmailMessage(CONTACT_FROM, env.CONTACT_TO, mime({ name, email, message, to: env.CONTACT_TO })));
+  } catch (err) {
+    console.log('contact: send failed', String(err && err.message || err));
+    return reply(502, { error: 'send', message: 'It didn’t send. Email me instead.' });
+  }
+  return reply(200, { ok: true });
+}
+
+const CONTACT_FROM = 'dashboard@byhamza.dev';
+// A plain-text email. Anything a visitor typed goes in base64, so no header
+// can be forged from the form.
+function mime({ name, email, message, to }) {
+  const b64 = (s) => btoa(String.fromCharCode(...new TextEncoder().encode(s)));
+  const wrap = (s) => s.replace(/.{1,76}/g, '$&\r\n');
+  const who = name || email;
+  const text = `${message}\n\n--\nFrom: ${name || '(no name)'} <${email}>\nSent from the byhamza.dev dashboard\n`;
+  return [
+    `From: "byhamza.dev" <${CONTACT_FROM}>`,
+    `To: <${to}>`,
+    `Reply-To: <${email}>`,
+    `Subject: =?UTF-8?B?${b64(`Message from ${who}`)}?=`,
+    `Date: ${new Date().toUTCString().replace('GMT', '+0000')}`,
+    `Message-ID: <${crypto.randomUUID()}@byhamza.dev>`,
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset=utf-8',
+    'Content-Transfer-Encoding: base64',
+    '',
+    wrap(b64(text)),
+  ].join('\r\n');
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -470,6 +602,7 @@ export default {
         return Response.json({ error: String(err.message || err) }, { status: 502, headers: { 'cache-control': 'no-store' } });
       }
     }
+    if (url.pathname === '/api/contact') return contact(request, env);
     if (url.pathname.startsWith('/api/')) return Response.json({ error: 'Not found' }, { status: 404 });
     return env.ASSETS.fetch(request);
   },
