@@ -70,17 +70,21 @@
     'I’m Hamza, a second-year Computer Science student at Aston University in Birmingham. I like turning curious ideas into real software.',
     'My first console was an Xbox 360, so this site is built like its dashboard.',
   ];
-  const FACTS = [['Studying', 'BSc Computer Science'], ['Based in', 'Birmingham, UK'], ['Languages', 'Python, Java, JavaScript'], ['Off the clock', 'Games and horror films']];
+  const FACTS = [['Studying', 'BSc Computer Science'], ['Based in', 'Birmingham, UK'], ['Looking for', 'A placement year in 2027-28'], ['Programming', 'Java, Python, JavaScript'], ['Speaks', 'English and Urdu'], ['Off the clock', 'Games and horror films']];
   const EDUCATION = [
-    { place: 'Aston University', what: 'BSc Computer Science', when: '2025 to now' },
+    {
+      place: 'Aston University', what: 'BSc (Hons) Computer Science', when: 'Birmingham · Sep 2025 to Jun 2029 (expected)',
+      notes: ['In Year 2, and looking for a placement year in 2027-28.', 'Year 1 was International Year One at ONCAMPUS Aston.'],
+      modules: ['Data Structures, Algorithms and OOP (Java)', 'Software Engineering', 'Programming Language Concepts', 'Human-Computer Interaction', 'Team Project'],
+    },
     { place: 'LACAS', what: 'A-levels', when: '' },
   ];
   // Name, what I use it for, logo, logo colour.
   const STACK = [
     ['Python', 'Side projects and scripts', 'py', '#3776ab'], ['Java', 'Uni modules and OOP', 'java', '#f89820'],
     ['JavaScript', 'This site and the Unliker', 'js', '#f7df1e'], ['HTML & CSS', 'Hand-built, no framework', 'html', '#e34f26'],
-    ['Godot 4', 'Panic Pack!, in GDScript', 'godot', '#478cbf'], ['Cloudflare Workers', 'Hosting and the live stats', 'cfw', '#f38020'],
-    ['SQL', 'Databases', 'sql', '#4479a1'], ['Git & GitHub', 'Every project', 'git', '#f05032'],
+    ['Godot 4', 'Panic Pack!, in GDScript', 'godot', '#478cbf'], ['Cloudflare Workers', 'Hosting, KV and the live stats', 'cfw', '#f38020'],
+    ['REST & GraphQL APIs', 'Where the live stats come from', 'api', '#e10098'], ['Git & GitHub', 'Every project', 'git', '#f05032'],
   ];
   // Oldest first.
   const GAMES = [
@@ -234,7 +238,7 @@
     html: 'M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z',
     godot: 'M9.5598.683c-1.096.244-2.1812.5831-3.1983 1.0951.023.8981.081 1.7582.199 2.6323-.395.253-.81.47-1.178.766-.375.288-.7581.564-1.0971.9011-.6781-.448-1.3962-.869-2.1352-1.2411C1.3532 5.6934.608 6.6186 0 7.6546c.458.7411.936 1.4352 1.4521 2.0942h.014v6.3565c.012 0 .023 0 .035.003l3.8963.376c.204.02.364.184.378.3891l.12 1.7201 3.3994.242.234-1.587c.03-.206.207-.358.415-.358h4.1114c.208 0 .385.152.415.358l.234 1.587 3.3993-.242.12-1.72a.4196.4196 0 01.378-.3891l3.8954-.376c.012 0 .023-.003.035-.003v-.5071h.002V9.7498h.014c.516-.659.994-1.3531 1.4521-2.0942-.608-1.036-1.3541-1.9611-2.1512-2.8192-.739.372-1.4571.793-2.1352 1.2411-.339-.337-.721-.613-1.096-.901-.369-.296-.7841-.5131-1.1781-.7661.117-.8741.175-1.7342.199-2.6323-1.0171-.512-2.1012-.851-3.1983-1.095-.438.736-.838 1.533-1.1871 2.3121-.414-.069-.829-.094-1.2461-.099h-.016c-.417.005-.832.03-1.2461.099-.349-.779-.749-1.576-1.1881-2.3121l.001-.001zM6.4765 9.9889c1.2971 0 2.3492 1.0511 2.3492 2.3482s-1.052 2.3482-2.3492 2.3482c-1.296 0-2.3482-1.051-2.3482-2.3482 0-1.297 1.0511-2.3482 2.3482-2.3482zm11.049 0c1.296 0 2.3482 1.0511 2.3482 2.3482s-1.0511 2.3482-2.3482 2.3482-2.3492-1.051-2.3492-2.3482c0-1.297 1.051-2.3482 2.3492-2.3482zm-10.824.9301c-.861 0-1.559.698-1.559 1.5591s.698 1.5582 1.559 1.5582c.8611 0 1.5592-.698 1.5592-1.5582 0-.86-.697-1.559-1.5591-1.559zm10.598 0c-.8611 0-1.5582.698-1.5582 1.5591s.697 1.5582 1.5581 1.5582c.8611 0 1.5592-.698 1.5592-1.5582 0-.86-.697-1.559-1.5592-1.559zm-5.2985.453c.417 0 .757.308.757.6871v2.1622c0 .379-.339.687-.757.687s-.756-.308-.756-.687V12.059c0-.379.339-.687.756-.687zM1.4601 16.9464c.002.377.006.789.006.871 0 3.7014 4.6944 5.4795 10.5269 5.5005h.014c5.8325-.02 10.5259-1.7991 10.5259-5.5004 0-.084.005-.495.007-.871l-3.5023.338-.121 1.729a.421.421 0 01-.389.3901l-4.1814.296a.4203.4203 0 01-.415-.358l-.238-1.6141h-3.3863l-.238 1.6141a.4192.4192 0 01-.4451.357l-4.1513-.296c-.208-.015-.375-.181-.389-.389l-.12-1.7292-3.5044-.337z',
     cfw: 'm8.213.063 8.879 12.136-8.67 11.739h2.476l8.665-11.735-8.89-12.14Zm4.728 0 9.02 11.992-9.018 11.883h2.496L24 12.656v-1.199L15.434.063ZM7.178 2.02.01 11.398l-.01 1.2 7.203 9.644 1.238-1.676-6.396-8.556 6.361-8.313Z',
-    sql: 'M16.405 5.501c-.115 0-.193.014-.274.033v.013h.014c.054.104.146.18.214.273.054.107.1.214.154.32l.014-.015c.094-.066.14-.172.14-.333-.04-.047-.046-.094-.08-.14-.04-.067-.126-.1-.18-.153zM5.77 18.695h-.927a50.854 50.854 0 00-.27-4.41h-.008l-1.41 4.41H2.45l-1.4-4.41h-.01a72.892 72.892 0 00-.195 4.41H0c.055-1.966.192-3.81.41-5.53h1.15l1.335 4.064h.008l1.347-4.064h1.095c.242 2.015.384 3.86.428 5.53zm4.017-4.08c-.378 2.045-.876 3.533-1.492 4.46-.482.716-1.01 1.073-1.583 1.073-.153 0-.34-.046-.566-.138v-.494c.11.017.24.026.386.026.268 0 .483-.075.647-.222.197-.18.295-.382.295-.605 0-.155-.077-.47-.23-.944L6.23 14.615h.91l.727 2.36c.164.536.233.91.205 1.123.4-1.064.678-2.227.835-3.483zm12.325 4.08h-2.63v-5.53h.885v4.85h1.745zm-3.32.135l-1.016-.5c.09-.076.177-.158.255-.25.433-.506.648-1.258.648-2.253 0-1.83-.718-2.746-2.155-2.746-.704 0-1.254.232-1.65.697-.43.508-.646 1.256-.646 2.245 0 .972.19 1.686.574 2.14.35.41.877.615 1.583.615.264 0 .506-.033.725-.098l1.325.772.36-.622zM15.5 17.588c-.225-.36-.337-.94-.337-1.736 0-1.393.424-2.09 1.27-2.09.443 0 .77.167.977.5.224.362.336.936.336 1.723 0 1.404-.424 2.108-1.27 2.108-.445 0-.77-.167-.978-.5zm-1.658-.425c0 .47-.172.856-.516 1.156-.344.3-.803.45-1.384.45-.543 0-1.064-.172-1.573-.515l.237-.476c.438.22.833.328 1.19.328.332 0 .593-.073.783-.22a.754.754 0 00.3-.615c0-.33-.23-.61-.648-.845-.388-.213-1.163-.657-1.163-.657-.422-.307-.632-.636-.632-1.177 0-.45.157-.81.47-1.085.315-.278.72-.415 1.22-.415.512 0 .98.136 1.4.41l-.213.476a2.726 2.726 0 00-1.064-.23c-.283 0-.502.068-.654.206a.685.685 0 00-.248.524c0 .328.234.61.666.85.393.215 1.187.67 1.187.67.433.305.648.63.648 1.168zm9.382-5.852c-.535-.014-.95.04-1.297.188-.1.04-.26.04-.274.167.055.053.063.14.11.214.08.134.218.313.346.407.14.11.28.216.427.31.26.16.555.255.81.416.145.094.293.213.44.313.073.05.12.14.214.172v-.02c-.046-.06-.06-.147-.105-.214-.067-.067-.134-.127-.2-.193a3.223 3.223 0 00-.695-.675c-.214-.146-.682-.35-.77-.595l-.013-.014c.146-.013.32-.066.46-.106.227-.06.435-.047.67-.106.106-.027.213-.06.32-.094v-.06c-.12-.12-.21-.283-.334-.395a8.867 8.867 0 00-1.104-.823c-.21-.134-.476-.22-.697-.334-.08-.04-.214-.06-.26-.127-.12-.146-.19-.34-.275-.514a17.69 17.69 0 01-.547-1.163c-.12-.262-.193-.523-.34-.763-.69-1.137-1.437-1.826-2.586-2.5-.247-.14-.543-.2-.856-.274-.167-.008-.334-.02-.5-.027-.11-.047-.216-.174-.31-.235-.38-.24-1.364-.76-1.644-.072-.18.434.267.862.422 1.082.115.153.26.328.34.5.047.116.06.235.107.356.106.294.207.622.347.897.073.14.153.287.247.413.054.073.146.107.167.227-.094.136-.1.334-.154.5-.24.757-.146 1.693.194 2.25.107.166.362.534.703.393.3-.12.234-.5.32-.835.02-.08.007-.133.048-.187v.015c.094.188.188.367.274.555.206.328.566.668.867.895.16.12.287.328.487.402v-.02h-.015c-.043-.058-.1-.086-.154-.133a3.445 3.445 0 01-.35-.4 8.76 8.76 0 01-.747-1.218c-.11-.21-.202-.436-.29-.643-.04-.08-.04-.2-.107-.24-.1.146-.247.273-.32.453-.127.288-.14.642-.188 1.01-.027.007-.014 0-.027.014-.214-.052-.287-.274-.367-.46-.2-.475-.233-1.238-.06-1.785.047-.14.247-.582.167-.716-.042-.127-.174-.2-.247-.303a2.478 2.478 0 01-.24-.427c-.16-.374-.24-.788-.414-1.162-.08-.173-.22-.354-.334-.513-.127-.18-.267-.307-.368-.52-.033-.073-.08-.194-.027-.274.014-.054.042-.075.094-.09.088-.072.335.022.422.062.247.1.455.194.662.334.094.066.195.193.315.226h.14c.214.047.455.014.655.073.355.114.675.28.962.46a5.953 5.953 0 012.085 2.286c.08.154.115.295.188.455.14.33.313.663.455.982.14.315.275.636.476.897.1.14.502.213.682.286.133.06.34.115.46.188.23.14.454.3.67.454.11.076.443.243.463.378z',
+    api: 'M12.002 0a2.138 2.138 0 1 0 0 4.277 2.138 2.138 0 1 0 0-4.277zm8.54 4.931a2.138 2.138 0 1 0 0 4.277 2.138 2.138 0 1 0 0-4.277zm0 9.862a2.138 2.138 0 1 0 0 4.277 2.138 2.138 0 1 0 0-4.277zm-8.54 4.931a2.138 2.138 0 1 0 0 4.276 2.138 2.138 0 1 0 0-4.276zm-8.542-4.93a2.138 2.138 0 1 0 0 4.276 2.138 2.138 0 1 0 0-4.277zm0-9.863a2.138 2.138 0 1 0 0 4.277 2.138 2.138 0 1 0 0-4.277zm8.542-3.378L2.953 6.777v10.448l9.049 5.224 9.047-5.224V6.777zm0 1.601 7.66 13.27H4.34zm-1.387.371L3.97 15.037V7.363zm2.774 0 6.646 3.838v7.674zM5.355 17.44h13.293l-6.646 3.836z',
     git: 'M13.09 23.549a1.54 1.54 0 0 1-2.18 0L.451 13.089a1.54 1.54 0 0 1 0-2.179l7.191-7.19 2.733 2.733a1.85 1.85 0 0 0 .964 2.326v6.66a1.849 1.849 0 1 0 1.54 0V8.957l2.508 2.508a1.85 1.85 0 1 0 1.09-1.09l-2.634-2.634a1.85 1.85 0 0 0-2.378-2.377L8.73 2.63 10.91.451a1.54 1.54 0 0 1 2.179 0l10.459 10.46a1.54 1.54 0 0 1 0 2.179z',
     valorant: 'M23.792 2.152a.252.252 0 0 0-.098.083c-3.384 4.23-6.769 8.46-10.15 12.69-.107.093-.025.288.119.265 2.439.003 4.877 0 7.316.001a.66.66 0 0 0 .552-.25c.774-.967 1.55-1.934 2.324-2.903a.72.72 0 0 0 .144-.49c-.002-3.077 0-6.153-.003-9.23.016-.11-.1-.206-.204-.167zM.077 2.166c-.077.038-.074.132-.076.205.002 3.074.001 6.15.001 9.225a.679.679 0 0 0 .158.463l7.64 9.55c.12.152.308.25.505.247 2.455 0 4.91.003 7.365 0 .142.02.222-.174.116-.265C10.661 15.176 5.526 8.766.4 2.35c-.08-.094-.174-.272-.322-.184z',
     playstation: 'M8.984 2.596v17.547l3.915 1.261V6.688c0-.69.304-1.151.794-.991.636.18.76.814.76 1.505v5.875c2.441 1.193 4.362-.002 4.362-3.152 0-3.237-1.126-4.675-4.438-5.827-1.307-.448-3.728-1.186-5.39-1.502zm4.656 16.241l6.296-2.275c.715-.258.826-.625.246-.818-.586-.192-1.637-.139-2.357.123l-4.205 1.5V14.98l.24-.085s1.201-.42 2.913-.615c1.696-.18 3.785.03 5.437.661 1.848.601 2.04 1.472 1.576 2.072-.465.6-1.622 1.036-1.622 1.036l-8.544 3.107V18.86zM1.807 18.6c-1.9-.545-2.214-1.668-1.352-2.32.801-.586 2.16-1.052 2.16-1.052l5.615-2.013v2.313L4.205 17c-.705.271-.825.632-.239.826.586.195 1.637.15 2.343-.12L8.247 17v2.074c-.12.03-.256.044-.39.073-1.939.331-3.996.196-6.038-.479z',
@@ -1042,11 +1046,8 @@
   const season = (s) => String(s).replace(/^e(\d+)a(\d+)$/i, 'Episode $1 Act $2').replace(/^v(\d+)a(\d+)$/i, 'V$1 Act $2');
   // PlayStation counts every hour the game was open there; the stats add PC
   // (keyboard and mouse) matches. Without PlayStation, the stats' own total.
-  const fortniteHours = () => {
-    const ps = F('psn', (d) => (d.top.find((g) => /^fortnite$/i.test(g.name)) || {}).hours) || 0;
-    const f = F('fortnite', (d) => d) || {};
-    return ps ? ps + (f.pcHours || 0) : f.hours || 0;
-  };
+  const fortnitePC = () => Math.max(EPIC[0].hours, F('fortnite', (d) => d.pcHours) || 0);
+  const fortniteHours = () => (F('psn', (d) => (d.top.find((g) => /^fortnite$/i.test(g.name)) || {}).hours) || 0) + fortnitePC();
   const filmCounts = (m) => (m.films ? `<p class="wdim">${n(m.films)} films watched.</p>` : '');
   // art is a picture URL, or icon:name for a game with a logo instead.
   const gameArt = (art) => (!art ? '' : art.startsWith('icon:') ? `<i class="gico gico--${art.slice(5)}">${svg(art.slice(5))}</i>`
@@ -1060,7 +1061,20 @@
   // Everything played on PlayStation and Steam, most hours first.
   // One row per game: hours on PlayStation and PC add up. Names are matched
   // without symbols or edition suffixes, so GTA V and GTA V Legacy are one game.
-  const gameKey = (name) => name.toLowerCase().replace(/[™®©:'’.,-]/g, ' ').replace(/\b(legacy|enhanced|remastered|definitive|deluxe|complete|goty|game of the year|edition)\b/g, ' ').replace(/\s+/g, ' ').trim();
+  // HITMAN 3 was renamed HITMAN World of Assassination, so they're one game.
+  const ALIAS = { 'hitman 3': 'hitman world of assassination' };
+  const gameKey = (name) => {
+    const k = name.toLowerCase().replace(/[™®©:'’.,-]/g, ' ').replace(/\b(legacy|enhanced|remastered|definitive|deluxe|complete|goty|game of the year|edition)\b/g, ' ').replace(/\s+/g, ' ').trim();
+    return ALIAS[k] || k;
+  };
+  // Epic Games has no public play-time API, so these come from my Epic
+  // library by hand, rounded up a little for the games I still play.
+  const steamArt = (id) => `https://cdn.cloudflare.steamstatic.com/steam/apps/${id}/header.jpg`;
+  const EPIC = [
+    { name: 'Fortnite', hours: 1150 }, { name: 'Grand Theft Auto V', hours: 233, art: steamArt(271590) },
+    { name: 'Rocket League', hours: 90, art: steamArt(252950) }, { name: 'HITMAN', hours: 77, art: steamArt(236870) },
+    { name: 'HITMAN 3', hours: 35, art: steamArt(1659040) }, { name: 'Fall Guys', hours: 7, art: steamArt(1097150) },
+  ];
   const mostPlayed = () => {
     const all = new Map();
     const add = (g, plat) => {
@@ -1072,17 +1086,21 @@
     };
     (F('psn', (d) => d.top) || []).forEach((g) => add(g, 'PlayStation'));
     (F('steam', (d) => d.top || d.recent) || []).forEach((g) => add(g, 'PC'));
-    // Games played outside Steam: Valorant's ranked hours and Fortnite on PC.
+    // Games played outside Steam: the Epic library, Valorant's hours, and
+    // Fortnite on PC (Epic's count, or the stats' if that's ever higher).
+    EPIC.filter((g) => g.name !== 'Fortnite').forEach((g) => add(g, 'PC'));
     const v = F('valorant', (d) => d.hours);
     if (v) add({ name: 'Valorant', hours: v, art: 'icon:valorant' }, 'PC');
-    const fn = F('fortnite', (d) => d.pcHours);
-    if (fn) add({ name: 'Fortnite', hours: fn }, 'PC');
+    add({ name: 'Fortnite', hours: fortnitePC() }, 'PC');
     return [...all.values()].sort((a, b) => b[1] - a[1]);
   };
 
   const WINDOWS = {
     about: () => ({ title: 'About Me', ach: 'about', body: `<div class="wme"><img src="${ME.pic}" alt=""><div>${ABOUT.map((p) => `<p>${esc(p)}</p>`).join('')}</div></div>${rows(FACTS)}` }),
-    education: () => ({ title: 'Education', ach: 'education', body: `<ol class="wlist">${EDUCATION.map((e) => `<li><b>${esc(e.place)}</b><span>${esc(e.what)}</span>${e.when ? `<small>${esc(e.when)}</small>` : ''}</li>`).join('')}</ol>` }),
+    education: () => ({
+      title: 'Education', ach: 'education',
+      body: `<ol class="wlist">${EDUCATION.map((e) => `<li><b>${esc(e.place)}</b><span>${esc(e.what)}</span>${e.when ? `<small>${esc(e.when)}</small>` : ''}${(e.notes || []).map((x) => `<p class="wnote">${esc(x)}</p>`).join('')}${e.modules ? `<h4>Year 2 modules</h4><div class="wmods">${e.modules.map((m) => `<i>${esc(m)}</i>`).join('')}</div>` : ''}</li>`).join('')}</ol>`,
+    }),
     stack: () => ({ title: 'Tech Stack', ach: 'stack', body: `<div class="wstack">${STACK.map(([t, d, icon, c]) => `<div><i style="background:${c}">${svg(icon)}</i><span><b>${esc(t)}</b><small>${esc(d)}</small></span></div>`).join('')}</div>` }),
     projects: () => ({
       title: 'All Projects', ach: 'projects',
