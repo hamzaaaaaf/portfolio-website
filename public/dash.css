@@ -226,6 +226,10 @@ img { display: block; -webkit-user-drag: none; }
 .wlist b { display: block; font-size: 26px; font-weight: 300; }
 .wlist span { display: block; margin-top: 2px; font-size: 19px; }
 .wlist small { display: block; margin-top: 4px; font-size: 16px; color: rgba(255, 255, 255, .7); }
+.wlist .wnote { margin: 8px 0 0 !important; font-size: 17px !important; line-height: 1.35 !important; }
+.wlist h4 { margin: 14px 0 8px; }
+.wmods { display: flex; flex-wrap: wrap; gap: 8px; }
+.wmods i { padding: 5px 11px; font-style: normal; font-size: 15px; background: rgba(255, 255, 255, .1); border-left: 3px solid var(--green); }
 .wchips { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .wchips div { padding: 10px 14px; background: rgba(255, 255, 255, .1); border-left: 3px solid var(--green); }
 .wchips b { display: block; font-size: 20px; font-weight: 600; }
