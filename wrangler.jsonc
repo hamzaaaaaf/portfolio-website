@@ -14,6 +14,9 @@
   },
   // The live stats feed (src/worker.js) is cached here between refreshes.
   "kv_namespaces": [{ "binding": "FEED", "id": "171853385f764e2490b868616fcfc187" }],
+  // Messages typed on the dashboard go out through Email Routing to the
+  // CONTACT_TO secret (see /api/contact in src/worker.js).
+  "send_email": [{ "name": "MAIL" }],
   // Pull fresh stats every six hours.
   "triggers": { "crons": ["23 */6 * * *"] },
   // v1 added the Room Durable Object (live cursors, now retired). Its empty

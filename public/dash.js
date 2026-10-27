@@ -75,9 +75,12 @@
     { place: 'Aston University', what: 'BSc Computer Science', when: '2025 to now' },
     { place: 'LACAS', what: 'A-levels', when: '' },
   ];
+  // Name, what I use it for, logo, logo colour.
   const STACK = [
-    ['Python', 'Side projects and scripts'], ['Java', 'Uni modules and OOP'], ['JavaScript', 'This site and the Unliker'], ['HTML & CSS', 'Hand-built, no framework'],
-    ['Godot 4', 'Panic Pack!, in GDScript'], ['Cloudflare Workers', 'Hosting and the live stats'], ['SQL', 'Databases'], ['Git & GitHub', 'Every project'],
+    ['Python', 'Side projects and scripts', 'py', '#3776ab'], ['Java', 'Uni modules and OOP', 'java', '#f89820'],
+    ['JavaScript', 'This site and the Unliker', 'js', '#f7df1e'], ['HTML & CSS', 'Hand-built, no framework', 'html', '#e34f26'],
+    ['Godot 4', 'Panic Pack!, in GDScript', 'godot', '#478cbf'], ['Cloudflare Workers', 'Hosting and the live stats', 'cfw', '#f38020'],
+    ['SQL', 'Databases', 'sql', '#4479a1'], ['Git & GitHub', 'Every project', 'git', '#f05032'],
   ];
   // Oldest first.
   const GAMES = [
@@ -88,7 +91,7 @@
   ].sort((a, b) => a[1] - b[1] || a[0].localeCompare(b[0]));
   const JOURNEY = [['Xbox 360', 'Where it started'], ['PSP', ''], ['PS4', ''], ['PC', 'Now']];
   const ORIGIN = {
-    games: [['Batman: Arkham Asylum', 2009], ['Minecraft', 2011]],
+    games: [['Batman: Arkham Asylum', 2009, `${A}themes/batman_arkham_asylum/home.webp`], ['Minecraft', 2011, `${A}tiles/minecraft.webp`]],
     art: `${A}themes/batman_arkham_asylum/home.webp`,
     text: 'The two games that got me into gaming. I’ve played every Arkham game since: City, Origins and Knight.',
   };
@@ -115,10 +118,10 @@
     ['leetcode', 'Grinding', 'Open Hamza’s LeetCode.', 10],
     ['networker', 'Networker', 'Open Hamza’s LinkedIn.', 10],
     ['messenger', 'Messenger', 'Copy Hamza’s email address or open it in your mail app.', 35],
-    ['friends', 'Friends list', 'Open Friends.', 50],
+    ['mailman', 'You’ve got mail', 'Send Hamza a message from the dashboard.', 50],
     ['origin', 'Where it all began', 'Find the game that got Hamza into gaming.', 20],
     ['journey', 'Generations', 'Look at Hamza’s console journey.', 20],
-    ['gamer', 'Player two', 'See Hamza’s favourite games.', 20],
+    ['gamer', 'Player two', 'See Hamza’s gaming journey.', 20],
     ['valorant', 'Ranked', 'Check Hamza’s Valorant rank.', 30],
     ['trophies', 'Trophy hunter', 'Open PlayStation.', 30],
     ['steam', 'Full steam ahead', 'Open Steam.', 30],
@@ -225,6 +228,14 @@
     film: 'M3 9h18v11H3Zm0-5.6 16.8-3 .7 3.6-16.8 3Z',
     pc: 'M2 4h20v13H2Zm2 2v9h16V6ZM8 19h8v2H8Z',
     // Brand marks, from Simple Icons (CC0).
+    py: 'M14.25.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.77l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.17l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05-.05-1.23.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.24-.01h.16l.06.01h8.16v-.83H6.18l-.01-2.75-.02-.37.05-.34.11-.31.17-.28.25-.26.31-.23.38-.2.44-.18.51-.15.58-.12.64-.1.71-.06.77-.04.84-.02 1.27.05zm-6.3 1.98l-.23.33-.08.41.08.41.23.34.33.22.41.09.41-.09.33-.22.23-.34.08-.41-.08-.41-.23-.33-.33-.22-.41-.09-.41.09zm13.09 3.95l.28.06.32.12.35.18.36.27.36.35.35.47.32.59.28.73.21.88.14 1.04.05 1.23-.06 1.23-.16 1.04-.24.86-.32.71-.36.57-.4.45-.42.33-.42.24-.4.16-.36.09-.32.05-.24.02-.16-.01h-8.22v.82h5.84l.01 2.76.02.36-.05.34-.11.31-.17.29-.25.25-.31.24-.38.2-.44.17-.51.15-.58.13-.64.09-.71.07-.77.04-.84.01-1.27-.04-1.07-.14-.9-.2-.73-.25-.59-.3-.45-.33-.34-.34-.25-.34-.16-.33-.1-.3-.04-.25-.02-.2.01-.13v-5.34l.05-.64.13-.54.21-.46.26-.38.3-.32.33-.24.35-.2.35-.14.33-.1.3-.06.26-.04.21-.02.13-.01h5.84l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.36.1-.35.07-.32.04-.28.02-.21V6.07h2.09l.14.01zm-6.47 14.25l-.23.33-.08.41.08.41.23.33.33.23.41.08.41-.08.33-.23.23-.33.08-.41-.08-.41-.23-.33-.33-.23-.41-.08-.41.08z',
+    java: 'M11.915 0 11.7.215C9.515 2.4 7.47 6.39 6.046 10.483c-1.064 1.024-3.633 2.81-3.711 3.551-.093.87 1.746 2.611 1.55 3.235-.198.625-1.304 1.408-1.014 1.939.1.188.823.011 1.277-.491a13.389 13.389 0 0 0-.017 2.14c.076.906.27 1.668.643 2.232.372.563.956.911 1.667.911.397 0 .727-.114 1.024-.264.298-.149.571-.33.91-.5.68-.34 1.634-.666 3.53-.604 1.903.062 2.872.39 3.559.704.687.314 1.15.664 1.925.664.767 0 1.395-.336 1.807-.9.412-.563.631-1.33.72-2.24.06-.623.055-1.32 0-2.066.454.45 1.117.604 1.213.424.29-.53-.816-1.314-1.013-1.937-.198-.624 1.642-2.366 1.549-3.236-.08-.748-2.707-2.568-3.748-3.586C16.428 6.374 14.308 2.394 12.13.215zm.175 6.038a2.95 2.95 0 0 1 2.943 2.942 2.95 2.95 0 0 1-2.943 2.943A2.95 2.95 0 0 1 9.148 8.98a2.95 2.95 0 0 1 2.942-2.942zM8.685 7.983a3.515 3.515 0 0 0-.145.997c0 1.951 1.6 3.55 3.55 3.55 1.95 0 3.55-1.598 3.55-3.55 0-.329-.046-.648-.132-.951.334.095.64.208.915.336a42.699 42.699 0 0 1 2.042 5.829c.678 2.545 1.01 4.92.846 6.607-.082.844-.29 1.51-.606 1.94-.315.431-.713.651-1.315.651-.593 0-.932-.27-1.673-.61-.741-.338-1.825-.694-3.792-.758-1.974-.064-3.073.293-3.821.669-.375.188-.659.373-.911.5s-.466.2-.752.2c-.53 0-.876-.209-1.16-.64-.285-.43-.474-1.101-.545-1.948-.141-1.693.176-4.069.823-6.614a43.155 43.155 0 0 1 1.934-5.783c.348-.167.749-.31 1.192-.425zm-3.382 4.362a.216.216 0 0 1 .13.031c-.166.56-.323 1.116-.463 1.665a33.849 33.849 0 0 0-.547 2.555 3.9 3.9 0 0 0-.2-.39c-.58-1.012-.914-1.642-1.16-2.08.315-.24 1.679-1.755 2.24-1.781zm13.394.01c.562.027 1.926 1.543 2.24 1.783-.246.438-.58 1.068-1.16 2.08a4.428 4.428 0 0 0-.163.309 32.354 32.354 0 0 0-.562-2.49 40.579 40.579 0 0 0-.482-1.652.216.216 0 0 1 .127-.03z',
+    js: 'M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z',
+    html: 'M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z',
+    godot: 'M9.5598.683c-1.096.244-2.1812.5831-3.1983 1.0951.023.8981.081 1.7582.199 2.6323-.395.253-.81.47-1.178.766-.375.288-.7581.564-1.0971.9011-.6781-.448-1.3962-.869-2.1352-1.2411C1.3532 5.6934.608 6.6186 0 7.6546c.458.7411.936 1.4352 1.4521 2.0942h.014v6.3565c.012 0 .023 0 .035.003l3.8963.376c.204.02.364.184.378.3891l.12 1.7201 3.3994.242.234-1.587c.03-.206.207-.358.415-.358h4.1114c.208 0 .385.152.415.358l.234 1.587 3.3993-.242.12-1.72a.4196.4196 0 01.378-.3891l3.8954-.376c.012 0 .023-.003.035-.003v-.5071h.002V9.7498h.014c.516-.659.994-1.3531 1.4521-2.0942-.608-1.036-1.3541-1.9611-2.1512-2.8192-.739.372-1.4571.793-2.1352 1.2411-.339-.337-.721-.613-1.096-.901-.369-.296-.7841-.5131-1.1781-.7661.117-.8741.175-1.7342.199-2.6323-1.0171-.512-2.1012-.851-3.1983-1.095-.438.736-.838 1.533-1.1871 2.3121-.414-.069-.829-.094-1.2461-.099h-.016c-.417.005-.832.03-1.2461.099-.349-.779-.749-1.576-1.1881-2.3121l.001-.001zM6.4765 9.9889c1.2971 0 2.3492 1.0511 2.3492 2.3482s-1.052 2.3482-2.3492 2.3482c-1.296 0-2.3482-1.051-2.3482-2.3482 0-1.297 1.0511-2.3482 2.3482-2.3482zm11.049 0c1.296 0 2.3482 1.0511 2.3482 2.3482s-1.0511 2.3482-2.3482 2.3482-2.3492-1.051-2.3492-2.3482c0-1.297 1.051-2.3482 2.3492-2.3482zm-10.824.9301c-.861 0-1.559.698-1.559 1.5591s.698 1.5582 1.559 1.5582c.8611 0 1.5592-.698 1.5592-1.5582 0-.86-.697-1.559-1.5591-1.559zm10.598 0c-.8611 0-1.5582.698-1.5582 1.5591s.697 1.5582 1.5581 1.5582c.8611 0 1.5592-.698 1.5592-1.5582 0-.86-.697-1.559-1.5592-1.559zm-5.2985.453c.417 0 .757.308.757.6871v2.1622c0 .379-.339.687-.757.687s-.756-.308-.756-.687V12.059c0-.379.339-.687.756-.687zM1.4601 16.9464c.002.377.006.789.006.871 0 3.7014 4.6944 5.4795 10.5269 5.5005h.014c5.8325-.02 10.5259-1.7991 10.5259-5.5004 0-.084.005-.495.007-.871l-3.5023.338-.121 1.729a.421.421 0 01-.389.3901l-4.1814.296a.4203.4203 0 01-.415-.358l-.238-1.6141h-3.3863l-.238 1.6141a.4192.4192 0 01-.4451.357l-4.1513-.296c-.208-.015-.375-.181-.389-.389l-.12-1.7292-3.5044-.337z',
+    cfw: 'm8.213.063 8.879 12.136-8.67 11.739h2.476l8.665-11.735-8.89-12.14Zm4.728 0 9.02 11.992-9.018 11.883h2.496L24 12.656v-1.199L15.434.063ZM7.178 2.02.01 11.398l-.01 1.2 7.203 9.644 1.238-1.676-6.396-8.556 6.361-8.313Z',
+    sql: 'M16.405 5.501c-.115 0-.193.014-.274.033v.013h.014c.054.104.146.18.214.273.054.107.1.214.154.32l.014-.015c.094-.066.14-.172.14-.333-.04-.047-.046-.094-.08-.14-.04-.067-.126-.1-.18-.153zM5.77 18.695h-.927a50.854 50.854 0 00-.27-4.41h-.008l-1.41 4.41H2.45l-1.4-4.41h-.01a72.892 72.892 0 00-.195 4.41H0c.055-1.966.192-3.81.41-5.53h1.15l1.335 4.064h.008l1.347-4.064h1.095c.242 2.015.384 3.86.428 5.53zm4.017-4.08c-.378 2.045-.876 3.533-1.492 4.46-.482.716-1.01 1.073-1.583 1.073-.153 0-.34-.046-.566-.138v-.494c.11.017.24.026.386.026.268 0 .483-.075.647-.222.197-.18.295-.382.295-.605 0-.155-.077-.47-.23-.944L6.23 14.615h.91l.727 2.36c.164.536.233.91.205 1.123.4-1.064.678-2.227.835-3.483zm12.325 4.08h-2.63v-5.53h.885v4.85h1.745zm-3.32.135l-1.016-.5c.09-.076.177-.158.255-.25.433-.506.648-1.258.648-2.253 0-1.83-.718-2.746-2.155-2.746-.704 0-1.254.232-1.65.697-.43.508-.646 1.256-.646 2.245 0 .972.19 1.686.574 2.14.35.41.877.615 1.583.615.264 0 .506-.033.725-.098l1.325.772.36-.622zM15.5 17.588c-.225-.36-.337-.94-.337-1.736 0-1.393.424-2.09 1.27-2.09.443 0 .77.167.977.5.224.362.336.936.336 1.723 0 1.404-.424 2.108-1.27 2.108-.445 0-.77-.167-.978-.5zm-1.658-.425c0 .47-.172.856-.516 1.156-.344.3-.803.45-1.384.45-.543 0-1.064-.172-1.573-.515l.237-.476c.438.22.833.328 1.19.328.332 0 .593-.073.783-.22a.754.754 0 00.3-.615c0-.33-.23-.61-.648-.845-.388-.213-1.163-.657-1.163-.657-.422-.307-.632-.636-.632-1.177 0-.45.157-.81.47-1.085.315-.278.72-.415 1.22-.415.512 0 .98.136 1.4.41l-.213.476a2.726 2.726 0 00-1.064-.23c-.283 0-.502.068-.654.206a.685.685 0 00-.248.524c0 .328.234.61.666.85.393.215 1.187.67 1.187.67.433.305.648.63.648 1.168zm9.382-5.852c-.535-.014-.95.04-1.297.188-.1.04-.26.04-.274.167.055.053.063.14.11.214.08.134.218.313.346.407.14.11.28.216.427.31.26.16.555.255.81.416.145.094.293.213.44.313.073.05.12.14.214.172v-.02c-.046-.06-.06-.147-.105-.214-.067-.067-.134-.127-.2-.193a3.223 3.223 0 00-.695-.675c-.214-.146-.682-.35-.77-.595l-.013-.014c.146-.013.32-.066.46-.106.227-.06.435-.047.67-.106.106-.027.213-.06.32-.094v-.06c-.12-.12-.21-.283-.334-.395a8.867 8.867 0 00-1.104-.823c-.21-.134-.476-.22-.697-.334-.08-.04-.214-.06-.26-.127-.12-.146-.19-.34-.275-.514a17.69 17.69 0 01-.547-1.163c-.12-.262-.193-.523-.34-.763-.69-1.137-1.437-1.826-2.586-2.5-.247-.14-.543-.2-.856-.274-.167-.008-.334-.02-.5-.027-.11-.047-.216-.174-.31-.235-.38-.24-1.364-.76-1.644-.072-.18.434.267.862.422 1.082.115.153.26.328.34.5.047.116.06.235.107.356.106.294.207.622.347.897.073.14.153.287.247.413.054.073.146.107.167.227-.094.136-.1.334-.154.5-.24.757-.146 1.693.194 2.25.107.166.362.534.703.393.3-.12.234-.5.32-.835.02-.08.007-.133.048-.187v.015c.094.188.188.367.274.555.206.328.566.668.867.895.16.12.287.328.487.402v-.02h-.015c-.043-.058-.1-.086-.154-.133a3.445 3.445 0 01-.35-.4 8.76 8.76 0 01-.747-1.218c-.11-.21-.202-.436-.29-.643-.04-.08-.04-.2-.107-.24-.1.146-.247.273-.32.453-.127.288-.14.642-.188 1.01-.027.007-.014 0-.027.014-.214-.052-.287-.274-.367-.46-.2-.475-.233-1.238-.06-1.785.047-.14.247-.582.167-.716-.042-.127-.174-.2-.247-.303a2.478 2.478 0 01-.24-.427c-.16-.374-.24-.788-.414-1.162-.08-.173-.22-.354-.334-.513-.127-.18-.267-.307-.368-.52-.033-.073-.08-.194-.027-.274.014-.054.042-.075.094-.09.088-.072.335.022.422.062.247.1.455.194.662.334.094.066.195.193.315.226h.14c.214.047.455.014.655.073.355.114.675.28.962.46a5.953 5.953 0 012.085 2.286c.08.154.115.295.188.455.14.33.313.663.455.982.14.315.275.636.476.897.1.14.502.213.682.286.133.06.34.115.46.188.23.14.454.3.67.454.11.076.443.243.463.378z',
+    git: 'M13.09 23.549a1.54 1.54 0 0 1-2.18 0L.451 13.089a1.54 1.54 0 0 1 0-2.179l7.191-7.19 2.733 2.733a1.85 1.85 0 0 0 .964 2.326v6.66a1.849 1.849 0 1 0 1.54 0V8.957l2.508 2.508a1.85 1.85 0 1 0 1.09-1.09l-2.634-2.634a1.85 1.85 0 0 0-2.378-2.377L8.73 2.63 10.91.451a1.54 1.54 0 0 1 2.179 0l10.459 10.46a1.54 1.54 0 0 1 0 2.179z',
     valorant: 'M23.792 2.152a.252.252 0 0 0-.098.083c-3.384 4.23-6.769 8.46-10.15 12.69-.107.093-.025.288.119.265 2.439.003 4.877 0 7.316.001a.66.66 0 0 0 .552-.25c.774-.967 1.55-1.934 2.324-2.903a.72.72 0 0 0 .144-.49c-.002-3.077 0-6.153-.003-9.23.016-.11-.1-.206-.204-.167zM.077 2.166c-.077.038-.074.132-.076.205.002 3.074.001 6.15.001 9.225a.679.679 0 0 0 .158.463l7.64 9.55c.12.152.308.25.505.247 2.455 0 4.91.003 7.365 0 .142.02.222-.174.116-.265C10.661 15.176 5.526 8.766.4 2.35c-.08-.094-.174-.272-.322-.184z',
     playstation: 'M8.984 2.596v17.547l3.915 1.261V6.688c0-.69.304-1.151.794-.991.636.18.76.814.76 1.505v5.875c2.441 1.193 4.362-.002 4.362-3.152 0-3.237-1.126-4.675-4.438-5.827-1.307-.448-3.728-1.186-5.39-1.502zm4.656 16.241l6.296-2.275c.715-.258.826-.625.246-.818-.586-.192-1.637-.139-2.357.123l-4.205 1.5V14.98l.24-.085s1.201-.42 2.913-.615c1.696-.18 3.785.03 5.437.661 1.848.601 2.04 1.472 1.576 2.072-.465.6-1.622 1.036-1.622 1.036l-8.544 3.107V18.86zM1.807 18.6c-1.9-.545-2.214-1.668-1.352-2.32.801-.586 2.16-1.052 2.16-1.052l5.615-2.013v2.313L4.205 17c-.705.271-.825.632-.239.826.586.195 1.637.15 2.343-.12L8.247 17v2.074c-.12.03-.256.044-.39.073-1.939.331-3.996.196-6.038-.479z',
     steam: 'M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z',
@@ -273,7 +284,9 @@
   const live = (key, fallback = '', cls = '') => `<span${cls ? ` class="${cls}"` : ''} data-live="${key}">${esc(fallback)}</span>`;
   const livePic = (key, style = '') => `<img class="fill" data-live-src="${key}" alt="" draggable="false" hidden${style ? ` style="${style}"` : ''}>`;
   const LINKEDIN = `<span class="logo" style="display:flex;align-items:center;gap:3px;font-size:30px;font-weight:700;color:#0a66c2;letter-spacing:-.5px">Linked<span style="display:grid;place-items:center;width:34px;height:34px;border-radius:5px;background:#0a66c2;color:#fff;font-size:26px">in</span></span>`;
-  const VAL_BG = grad('#ff5a63 0%,#d1323e 45%,#5a1016 100%');
+  // Valorant's red over its navy; Fortnite's sky blue.
+  const VAL_BG = grad('#ff4655 0%,#c8303d 42%,#0f1923 100%');
+  const FN_BG = grad('#45c7ff 0%,#1f7ae0 50%,#0b2a7a 100%');
 
   // Open Tray, in the Guide, as on a console with no disc in the drive.
   let trayOpen = false;
@@ -302,7 +315,7 @@
     return `<div class="page" data-tab="about">
       ${tile('about.me', 224, 31, 466, 397, `<span class="hello"><img src="/favicon.svg" alt=""><b>${esc(ME.tag)}</b><span>${esc(ME.short)}</span><em>${esc(ME.motto)}</em></span>${bar(30, 'rgba(0,0,0,.35)')}${tx('About Me', { left: 10, bottom: 6, 'font-size': 17 })}`, { label: 'About Me', bg: 'radial-gradient(120% 90% at 20% 0%,#3d93f0 0%,#1b6fd1 38%,#0b3f86 75%,#062a5c 100%)', def: true })}
       ${tile('about.education', c0, 31, w, 131, glyph('cap', w, 131, 42) + label('Education'), { label: 'Education', bg: grad('#18c2b4 0%,#0b958b 55%,#06635c 100%') })}
-      ${tile('about.stack', c1, 31, w, 131, glyph('layers', w, 131, 42) + label('Tech Stack'), { label: 'Tech Stack', bg: grad('#f7923a 0%,#e5650c 55%,#a8430a 100%') })}
+      ${tile('about.stack', c1, 31, w, 131, `<span class="stackrow">${['py', 'java', 'js', 'godot'].map((i) => svg(i)).join('')}</span>${label('Tech Stack')}`, { label: 'Tech Stack', bg: grad('#f7923a 0%,#e5650c 55%,#a8430a 100%') })}
       ${tile('about.message', c0, 164, w, 130, glyph('mail', w, 130, 42) + label('Message Me'), { label: 'Message Me' })}
       ${tile('about.linkedin', c1, 164, w, 130, `${LINKEDIN}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,0) 58%,rgba(0,0,0,.4) 100%')}`, { label: 'LinkedIn', bg: '#fff' })}
       ${tile('about.achievements', c0, 296, w * 2 + 2, 132, `${glyph('trophy', w * 2 + 2, 132, 42, '0 0 30 32')}<span class="tile__note"><span data-gs>0</span> of 1000G</span>${label('Achievements')}`, { label: 'Achievements', bg: grad('#9a5ce0 0%,#7b3fbf 50%,#4b1f8a 100%') })}
@@ -311,11 +324,11 @@
 
   function pageProjects() {
     return `<div class="page" data-tab="projects">
-      ${tile('projects.list', 224, 31, 185, 197, `${img(`${A}icons/mygames.webp`, icoBox(185, 197, 72, 72, { mt: -24 }))}${label('All Projects', 19)}`, { label: 'All Projects', bg: grad('#f7923a 0%,#e5650c 55%,#a8430a 100%') })}
+      ${tile('projects.list', 224, 31, 185, 197, `${img(`${A}icons/mygames.webp`, icoBox(185, 197, 72, 72, { mt: -24 }))}${label('All Projects', 19)}`, { label: 'All Projects' })}
       ${tile('projects.github', 224, 230, 185, 198, githubArt(185, 198), { label: 'GitHub', bg: '#1b1f23' })}
       ${tile('projects.panic', 411, 31, 466, 263, picture(`${A}tiles/panic-pack.webp`, 'Panic Pack!', 'Godot 4 · Free download for Windows'), { label: 'Panic Pack!', bg: grad('#2d100d 0%,#e27522 50%,#321a16 100%'), def: true })}
       ${tile('projects.unliker', 411, 296, 232, 132, picture(`${A}tiles/instagram-unliker.webp`, 'Instagram Unliker'), { label: 'Instagram Unliker', bg: grad('#ff78aa 0%,#d62976 50%,#4f0c4a 100%') })}
-      ${tile('projects.site', 645, 296, 232, 132, `<img class="ico" src="/favicon.svg" alt="" style="${px(icoBox(232, 132, 62, 62, { mt: -26 }))}">${label('byhamza.dev')}`, { label: 'byhamza.dev', bg: grad('#4a5054 0%,#2a2e30 60%,#151718 100%') })}
+      ${tile('projects.site', 645, 296, 232, 132, picture(`${A}tiles/byhamza-dev.webp`, 'byhamza.dev'), { label: 'byhamza.dev', bg: '#3c4143' })}
       ${tile('projects.stats', 879, 31, 179, 397, `<span class="statcol"><b>${live('lc', '·')}</b><span>LeetCode solved</span><b>${live('ghRepos', '·')}</b><span>Public repos</span><b>${live('lcDays', '·')}</b><span>Active days</span></span>${label('Stats')}${brand('leetcode', 22)}`, { label: 'Stats', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}
     </div>`;
   }
@@ -327,8 +340,8 @@
     return `<div class="page" data-tab="hobbies">
       ${tile('hobbies.origin', c[0], 31, w * 2 + 2, 263, picture(ORIGIN.art, 'Where It Began', ORIGIN.games.map(([g]) => g).join(' and ')), { label: 'Where it began', bg: '#1a120c', def: true })}
       ${tile('hobbies.valorant', c[2], 31, w, 131, valorantArt(), { label: 'Valorant', bg: VAL_BG })}
-      ${tile('hobbies.fortnite', c[2], 164, w, 130, `<span class="tile__big">${live('fnBig', 'Fortnite')}</span><span class="tile__note">${live('fnSub', '')}</span>${label('Fortnite')}${brand('fortnite', 24)}`, { label: 'Fortnite', bg: grad('#6a3fd6 0%,#3a1f8f 55%,#160b3d 100%') })}
-      ${tile('hobbies.played', c[3], 31, w, 131, `${journeyArt()}${label('My Favourite Games')}`, { label: 'My Favourite Games' })}
+      ${tile('hobbies.fortnite', c[2], 164, w, 130, `<span class="tile__big">${live('fnBig', 'Fortnite')}</span><span class="tile__note">${live('fnSub', '')}</span>${label('Fortnite')}${brand('fortnite', 24)}`, { label: 'Fortnite', bg: FN_BG })}
+      ${tile('hobbies.played', c[3], 31, w, 131, `${journeyArt()}${label('My Gaming Journey')}`, { label: 'My Gaming Journey' })}
       ${tile('hobbies.most', c[3], 164, w, 130, `${livePic('mostArt')}${shade('rgba(10,14,16,.86) 0%,rgba(10,14,16,.7) 60%,rgba(10,14,16,.9) 100%')}<span class="lines">${live('most0', '', 'li')}${live('most1', '', 'li')}${live('most2', '', 'li')}</span>${label('Most Played')}`, { label: 'Most Played', bg: grad('#3d4a52 0%,#20282d 100%') })}
       ${tile('hobbies.psn', c[0], 296, w, 132, `<span class="tile__big">${live('psnLevel', 'Trophies')}</span><span class="tile__note">${live('psnSub', '')}</span>${label('PlayStation')}${brand('playstation', 28)}`, { label: 'PlayStation', bg: grad('#2b6fd6 0%,#0f3f8f 55%,#081d45 100%') })}
       ${tile('hobbies.steam', c[1], 296, w, 132, `<span class="tile__big">${live('steamBig', 'Steam')}</span><span class="tile__note">${live('steamSub', '')}</span>${label('Steam')}${brand('steam')}`, { label: 'Steam', bg: grad('#2a475e 0%,#1b2838 60%,#0e141b 100%') })}
@@ -342,7 +355,7 @@
     return `<div class="page" data-tab="social">
       ${img(`${A}tiles/avatars.webp`, { left: fx + 219, top: fy + 87, width: 300, height: 256, opacity: 0.96, 'object-fit': 'contain' }, 'abs')}
       <div class="say" style="left:${fx + 540}px;top:${fy + 120}px"><b>Say hello</b><span>Message me about projects, uni or games.</span><em>${esc(LINKS.email)}</em></div>
-      ${tile('social.friends', fx, fy, 177, 122, img(`${A}icons/friends.webp`, icoBox(177, 122, 58, 58, { mt: -15 })) + lab('Friends'), { label: 'Friends' })}
+      ${tile('social.github', fx, fy, 177, 122, glyph('github', 177, 122, 46) + lab('GitHub'), { label: 'GitHub', bg: grad('#3a4148 0%,#24292f 55%,#121518 100%') })}
       ${tile('social.message', fx, fy + 123, 177, 122, glyph('mail', 177, 122, 46) + lab('Message Me'), { label: 'Message Me', def: true })}
       ${tile('social.linkedin', fx, fy + 246, 177, 122, glyph('linkedin', 177, 122, 44) + lab('LinkedIn'), { label: 'LinkedIn' })}
     </div>`;
@@ -365,7 +378,7 @@
       <nav class="tabs" role="tablist" aria-label="Dashboard">${TABS.map((t, i) => `<button class="tab" role="tab" data-i="${i}"><span>${t.k}</span></button>`).join('')}</nav>
       <div class="me">
         <div class="me__state me__plain"><span class="me__tag">${esc(ME.tag)}</span></div>
-        <div class="me__state me__stats"><svg viewBox="0 0 24 24"><path d="${P.people}"/></svg><span class="n">4</span><span data-gs>0</span><b>G</b></div>
+        <div class="me__state me__stats"><span data-gs>0</span><b>G</b></div>
         <span class="me__pic"><img src="${ME.pic}" alt=""></span>
         <button type="button" aria-label="Open the Xbox Guide" data-guide></button>
       </div>
@@ -483,17 +496,23 @@
   function bestInDirection(cands, cur, dir) {
     const c = cands.find((x) => x.el === cur);
     if (!c) return null;
-    const cx = c.x + c.w / 2, cy = c.y + c.h / 2;
-    const [vx, vy] = { left: [-1, 0], right: [1, 0], up: [0, -1], down: [0, 1] }[dir];
-    const horiz = dir === 'left' || dir === 'right';
-    let best = null, bestScore = Infinity, bestPrimary = Infinity;
+    // Only what lies past the current tile's edge counts, so moving left from
+    // a wide tile never drops to the row below, and nothing to the left means
+    // the previous tab. Tiles that line up with this one win, then the nearest.
+    const tol = 8, horiz = dir === 'left' || dir === 'right';
+    const beyond = {
+      left: (k) => k.x + k.w <= c.x + tol, right: (k) => k.x >= c.x + c.w - tol,
+      up: (k) => k.y + k.h <= c.y + tol, down: (k) => k.y >= c.y + c.h - tol,
+    }[dir];
+    const gap = (a0, a1, b0, b1) => Math.max(0, b0 - a1, a0 - b1);
+    let best = null, bestKey = null;
     for (const k of cands) {
-      if (k.el === cur) continue;
-      const kx = k.x + k.w / 2, ky = k.y + k.h / 2, dx = kx - cx, dy = ky - cy;
-      if (dx * vx + dy * vy <= 1) continue;
-      const primary = horiz ? Math.abs(dx) : Math.abs(dy), secondary = horiz ? Math.abs(dy) : Math.abs(dx);
-      const score = secondary * 2.4 + primary;
-      if (score < bestScore || (score === bestScore && primary < bestPrimary)) { best = k.el; bestScore = score; bestPrimary = primary; }
+      if (k.el === cur || !beyond(k)) continue;
+      const primary = horiz ? gap(c.x, c.x + c.w, k.x, k.x + k.w) : gap(c.y, c.y + c.h, k.y, k.y + k.h);
+      const secondary = horiz ? gap(c.y, c.y + c.h, k.y, k.y + k.h) : gap(c.x, c.x + c.w, k.x, k.x + k.w);
+      const align = horiz ? Math.abs(k.y + k.h / 2 - (c.y + c.h / 2)) : Math.abs(k.x + k.w / 2 - (c.x + c.w / 2));
+      const key = [secondary * 2.4 + primary, align];
+      if (!best || key[0] < bestKey[0] || (key[0] === bestKey[0] && key[1] < bestKey[1])) { best = k.el; bestKey = key; }
     }
     return best;
   }
@@ -660,7 +679,7 @@
     'hobbies.steam': () => Win.open('steam'),
     'hobbies.favs': () => Win.open('favs'),
     'hobbies.recent': () => Win.open('recent'),
-    'social.friends': () => Guide.open('friends'),
+    'social.github': () => openLink(LINKS.github, 'source'),
     'social.message': () => Win.open('message'),
     'social.linkedin': () => openLink(LINKS.linkedin, 'networker'),
   };
@@ -715,6 +734,9 @@
   function dashReturn() {
     if (leaving) { leaving.cancel(); leaving = null; }
     host.style.visibility = '';
+    // Focus set while the dashboard was hidden didn't take; give it to the
+    // highlighted tile now, so the next press moves from there.
+    if (activeEl && host.contains(activeEl) && document.activeElement !== activeEl) { try { activeEl.focus({ preventScroll: true }); } catch (e) { /* not focusable */ } }
     if (quietReturn || reduced.matches || booting) return;
     tilesIn(-96);
   }
@@ -798,11 +820,14 @@
       const f = $('[data-nav]', box);
       if (f && f.dataset.tip) describe(...f.dataset.tip.split('|'));
     }
-    function showCategories() {
+    // Backing out of a category lands on that category again.
+    function showCategories(from) {
       cat = null;
       $('.set__title', el).textContent = 'System Settings';
       describe('System Settings', 'Choose a settings category.');
       list(CATS.map(([k, t, d]) => `<button type="button" class="mbtn" data-nav data-cat="${k}" data-tip="${esc(t)}|${esc(d)}">${esc(t)}</button>`));
+      const back = from && $(`[data-cat="${from}"]`, el);
+      if (back) { focusEl(back); describe(...back.dataset.tip.split('|')); }
     }
     const chk = (key, label, tip) => `<button type="button" class="ochk${S[key] ? ' chk' : ''}" data-nav data-chk="${key}" data-tip="${esc(label)}|${esc(tip)}"><i></i>${esc(label)}</button>`;
     const btn = (id, label, tip) => `<button type="button" class="obtn" data-nav data-btn="${id}" data-tip="${esc(label)}|${esc(tip)}">${esc(label)}</button>`;
@@ -925,7 +950,7 @@
           return true;
         }
         if (a === 'a') { if (activeEl && el.contains(activeEl)) onClick(activeEl); return true; }
-        if (a === 'b') { if (cat && !direct) { sfx('menu-out'); showCategories(); } else close(); return true; }
+        if (a === 'b') { if (cat && !direct) { sfx('menu-out'); showCategories(cat); } else close(); return true; }
         return true;
       },
       refocus() { if (!el) return; const f = $('.set__left [data-nav]', el); if (f) focusEl(f); },
@@ -1013,7 +1038,8 @@
   const pick = (i, title, sub = '', side = '') => `<button type="button" class="wpick" data-nav data-i="${i}"><span><b>${esc(title)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span>${side ? `<em>${esc(side)}</em>` : ''}</button>`;
   const filmRow = (f) => `<li class="film">${f.poster ? `<img src="${esc(f.poster)}" alt="" loading="lazy" onerror="this.replaceWith(document.createElement('i'))">` : '<i></i>'}<span><b>${esc(f.title)}</b><small>${[f.year, f.watched ? `watched ${when(f.watched)}` : ''].filter(Boolean).join(' · ')}</small></span><em>${f.rating ? `<span class="mine">${stars(f.rating)}</span>` : ''}${f.imdb ? `<span class="imdb">IMDb ${esc(f.imdb)}</span>` : ''}</em></li>`;
   // Riot's short season names: e9a2 is Episode 9 Act 2.
-  const season = (s) => String(s).replace(/^e(\d+)a(\d+)$/i, 'Episode $1 Act $2');
+  // Riot's short season names: e9a2 is Episode 9 Act 2, v25a1 is V25 Act 1.
+  const season = (s) => String(s).replace(/^e(\d+)a(\d+)$/i, 'Episode $1 Act $2').replace(/^v(\d+)a(\d+)$/i, 'V$1 Act $2');
   // PlayStation counts every hour the game was open there; the stats add PC
   // (keyboard and mouse) matches. Without PlayStation, the stats' own total.
   const fortniteHours = () => {
@@ -1057,7 +1083,7 @@
   const WINDOWS = {
     about: () => ({ title: 'About Me', ach: 'about', body: `<div class="wme"><img src="${ME.pic}" alt=""><div>${ABOUT.map((p) => `<p>${esc(p)}</p>`).join('')}</div></div>${rows(FACTS)}` }),
     education: () => ({ title: 'Education', ach: 'education', body: `<ol class="wlist">${EDUCATION.map((e) => `<li><b>${esc(e.place)}</b><span>${esc(e.what)}</span>${e.when ? `<small>${esc(e.when)}</small>` : ''}</li>`).join('')}</ol>` }),
-    stack: () => ({ title: 'Tech Stack', ach: 'stack', body: `<div class="wchips">${STACK.map(([t, d]) => `<div><b>${esc(t)}</b><span>${esc(d)}</span></div>`).join('')}</div>` }),
+    stack: () => ({ title: 'Tech Stack', ach: 'stack', body: `<div class="wstack">${STACK.map(([t, d, icon, c]) => `<div><i style="background:${c}">${svg(icon)}</i><span><b>${esc(t)}</b><small>${esc(d)}</small></span></div>`).join('')}</div>` }),
     projects: () => ({
       title: 'All Projects', ach: 'projects',
       body: PROJECTS.map((p, i) => pick(i, p.title, p.line)).join('') + pick(PROJECTS.length, 'More on GitHub', 'Everything else I’ve built'),
@@ -1076,24 +1102,51 @@
     },
     message: () => ({
       title: 'Message Me',
-      body: `<p class="wbig wbig--mail">${esc(LINKS.email)}</p><p>Message me about projects, uni or games.</p>${pick(0, 'Copy email address')}${pick(1, 'Open in your mail app')}${pick(2, 'LinkedIn')}`,
-      run: (i) => [copyEmail, () => openLink(`mailto:${LINKS.email}`, 'messenger'), () => openLink(LINKS.linkedin, 'networker')][i](),
+      body: `<p class="wbig wbig--mail">${esc(LINKS.email)}</p><p>Message me about projects, uni or games.</p>${pick(0, 'Write a message', 'Type it here and it comes straight to my inbox')}${pick(1, 'Copy email address')}${pick(2, 'Open in your mail app')}${pick(3, 'LinkedIn')}`,
+      run: (i) => [() => Win.open('compose'), copyEmail, () => openLink(`mailto:${LINKS.email}`, 'messenger'), () => openLink(LINKS.linkedin, 'networker')][i](),
       a: 'Select',
     }),
-    origin: () => ({ title: 'Where It Began', ach: 'origin', body: `<div class="wart"><img src="${ORIGIN.art}" alt=""></div>${ORIGIN.games.map(([g, y]) => `<h3>${esc(g)} <small>${y}</small></h3>`).join('')}<p>${esc(ORIGIN.text)}</p>` }),
+    compose: () => {
+      if (!draft.opened) draft.opened = Date.now();
+      const field = (i) => {
+        const [k, label, , multi] = FIELDS[i], v = draft[k];
+        return `<button type="button" class="wfield${multi ? ' wfield--multi' : ''}" data-nav data-i="${i}"><small>${esc(label)}</small><span>${v ? esc(v) : '<i>Select to type</i>'}</span></button>`;
+      };
+      return {
+        title: 'Message Hamza',
+        body: `${field(0)}${field(1)}${field(2)}<div class="wsend">${pick(3, draft.sending ? 'Sending…' : 'Send message')}${draft.status ? `<p class="wdim">${esc(draft.status)}</p>` : ''}</div>`,
+        run: (i) => (i < 3 ? Keyboard.open(i) : sendDraft()),
+        a: 'Select', focus: draft.focus,
+      };
+    },
+    origin: () => ({ title: 'Where It Began', ach: 'origin', body: `<div class="wpair">${ORIGIN.games.map(([g, y, art]) => `<figure><img src="${art}" alt=""><figcaption><b>${esc(g)}</b><small>${y}</small></figcaption></figure>`).join('')}</div><p>${esc(ORIGIN.text)}</p>` }),
     played: () => {
       achieve('journey');
       return {
-        title: 'My Favourite Games', ach: 'gamer',
+        title: 'My Gaming Journey', ach: 'gamer',
         body: `<h4>Console journey</h4><ol class="wjourney">${JOURNEY.map(([c, t]) => `<li><b>${esc(c)}</b>${t ? `<small>${esc(t)}</small>` : ''}</li>`).join('')}</ol>
           <h4>Favourites, oldest first</h4><ul class="wgames wgames--tight">${GAMES.map(([t, y]) => `<li${isOrigin(t) ? ' class="fav"' : ''}><span>${esc(t)}</span><small>${y}</small></li>`).join('')}</ul>`,
       };
     },
     valorant: () => {
       const v = F('valorant', (d) => d);
+      if (!v) return { title: 'Valorant', ach: 'valorant', body: waiting('Valorant') };
+      const st = v.stats, ms = v.mostSeason;
+      const stat = (big, small) => (big === null || big === undefined || big === '' ? '' : `<div><b>${esc(big)}</b><small>${esc(small)}</small></div>`);
       return {
         title: 'Valorant', ach: 'valorant',
-        body: v ? `<div class="wrank"><small>Current rank</small><b>${esc(v.rank || 'Unranked')}</b>${v.rr !== null ? `<span>${v.rr} RR</span>` : ''}</div>${rows([['Peak rank', v.peak ? `${v.peak}${v.peakSeason ? `, ${season(v.peakSeason)}` : ''}` : ''], ['Competitive wins', v.games ? `${n(v.wins)} of ${n(v.games)} games` : ''], ['Ranked hours', v.hours ? `About ${n(v.hours)}` : ''], ['Account level', v.level || '']])}${v.hours ? '<p class="wdim">Riot doesn’t publish play time, so ranked hours are worked out from the number of ranked games and how long the latest ones lasted.</p>' : ''}` : waiting('Valorant'),
+        body: `<div class="wcols wcols--val"><section><div class="wrank"><small>Current rank</small><b>${esc(v.rank || 'Unranked')}</b>${v.rr !== null ? `<span>${v.rr} RR</span>` : ''}</div>${rows([
+          ['Peak rank', v.peak ? `${v.peak}${v.peakSeason ? `, ${season(v.peakSeason)}` : ''}` : ''],
+          ['Most played act', ms && ms.season ? `${season(ms.season)}, ${n(ms.games)} games` : ''],
+          ['Ranked wins', v.games ? `${n(v.wins)} of ${n(v.games)}` : ''],
+          ['Hours played', v.hours ? `About ${n(v.hours)}` : ''],
+          ['Account level', v.level || ''],
+        ])}</section>
+        ${st ? `<section><h4>Last ${n(st.games)} ranked games</h4><div class="wstats">${[
+          stat(st.headshot !== null ? `${st.headshot}%` : null, 'Headshots'), stat(st.kd, 'K/D'), stat(st.acs, 'Combat score'), stat(st.adr, 'Damage a round'),
+          stat(st.winRate !== null ? `${st.winRate}%` : null, 'Win rate'), stat(st.mostKills, 'Most kills in a game'), stat(st.agent, 'Main agent'), stat(st.map, 'Most played map'),
+        ].join('')}</div></section>` : ''}</div>
+        ${v.rankedHours ? `<p class="wdim wsmall">Riot doesn’t publish play time. Hours are ${n(v.games)} ranked games at the length of the latest ones, plus about three minutes each for queue and agent select (${n(v.rankedHours)} hours), and about ${n(v.otherHours)} more on other accounts.</p>` : ''}`,
       };
     },
     psn: () => {
@@ -1119,7 +1172,10 @@
     },
     favs: () => {
       const m = F('movies', (d) => d);
-      return { title: 'Favourite Films', ach: 'cinephile', body: m && m.favourites.length ? `${filmCounts(m)}<ul class="wfilms">${m.favourites.map(filmRow).join('')}</ul>` : waiting('Letterboxd') };
+      return {
+        title: 'Favourite Films', ach: 'cinephile',
+        body: m && m.favourites.length ? `${filmCounts(m)}<div class="wposters">${m.favourites.map((f) => `<figure>${f.poster ? `<img src="${esc(f.poster)}" alt="" onerror="this.replaceWith(document.createElement('i'))">` : '<i></i>'}<figcaption><b>${esc(f.title)}</b><small>${f.year || ''}</small><span>${f.rating ? `<em class="mine">${stars(f.rating)}</em>` : ''}${f.imdb ? `<em class="imdb">IMDb ${esc(f.imdb)}</em>` : ''}</span></figcaption></figure>`).join('')}</div>` : waiting('Letterboxd'),
+      };
     },
     recent: () => {
       const m = F('movies', (d) => d);
@@ -1166,8 +1222,8 @@
         b.addEventListener('mouseenter', () => hover(b));
         b.addEventListener('click', () => spec.run(+b.dataset.i));
       });
-      const first = $('[data-nav]', body);
-      if (first) focusEl(first);
+      const first = (spec.focus != null && $(`[data-nav][data-i="${spec.focus}"]`, body)) || $('[data-nav]', body);
+      if (first) { focusEl(first); first.scrollIntoView({ block: 'nearest' }); }
     }
     function close() {
       if (!el) return;
@@ -1200,14 +1256,178 @@
     };
     // Repaint when the live stats arrive while a window is open.
     const refresh = () => { if (el) paint(); };
-    return { open, refresh };
+    return { open, refresh, close };
   })();
+  /* ================= Message Hamza: compose and the on-screen keyboard ================= */
+  // The draft stays put if the window closes, so a slip of B loses nothing.
+  const draft = { name: '', email: '', message: '', opened: 0, focus: 0, status: '', sending: false };
+  // Field, label, longest allowed, more than one line.
+  const FIELDS = [['name', 'Your name', 60, false], ['email', 'Your email, so I can reply', 120, false], ['message', 'Message', 2000, true]];
+  async function sendDraft() {
+    if (draft.sending) return;
+    const fail = (msg, focus) => { draft.status = msg; draft.focus = focus; sfx('back'); Win.refresh(); };
+    if (draft.message.trim().length < 2) return fail('Write a message first.', 2);
+    if (!/^[A-Za-z0-9._%+'-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(draft.email.trim())) return fail('Add your email so I can reply.', 1);
+    draft.sending = true; draft.status = ''; draft.focus = 3;
+    sfx('select');
+    Win.refresh();
+    let res = null;
+    try {
+      const r = await fetch('/api/contact', {
+        method: 'POST', headers: { 'content-type': 'application/json' }, signal: AbortSignal.timeout(20000),
+        body: JSON.stringify({ name: draft.name, email: draft.email.trim(), message: draft.message, elapsed: Date.now() - draft.opened, website: '' }),
+      });
+      res = await r.json().catch(() => null);
+      if (!r.ok || !res || !res.ok) throw new Error((res && res.message) || 'failed');
+    } catch (err) {
+      draft.sending = false;
+      return fail(`${err.message && err.message !== 'failed' && !/abort|fetch|network/i.test(err.message) ? err.message : 'It didn’t send.'} You can also email ${LINKS.email}.`, 3);
+    }
+    Object.assign(draft, { name: '', email: '', message: '', opened: 0, focus: 0, status: '', sending: false });
+    achieve('mailman');
+    Win.close();
+    toast('Message sent', 'Hamza will reply by email');
+  }
+
+  // The Xbox 360 keyboard: letters and numbers in a grid, then Shift, Symbols,
+  // Space, Backspace and Done. A real keyboard types straight in.
+  const Keyboard = (() => {
+    const ROWS = { abc: ['abcdefg123', 'hijklmn456', 'opqrstu789', "vwxyz.'-0@"], sym: ['!?#$%&*()_', '+=/\\:;"<>~', ',.[]{}^|`€', '£¥°§•¿¡«»…'] };
+    const KEYS = [['shift', 'Shift', 'LT'], ['sym', 'Symbols', 'RT'], ['space', 'Space', 'Y'], ['back', 'Backspace', 'X'], ['done', 'Done', 'Start']];
+    let el = null, field = 0, text = '', shift = false, sym = false, sel = 0;
+    const isOpen = () => !!el;
+    const spec = () => FIELDS[field];
+    function open(i) {
+      if (el) return;
+      field = i; text = draft[FIELDS[i][0]]; shift = false; sym = false; sel = 0;
+      el = overlayEl('kb');
+      el.innerHTML = `<div class="kb__panel"><div class="kb__label"></div><div class="kb__box"><span class="kb__text"></span><i class="kb__caret"></i></div><div class="kb__count"></div><div class="kb__keys"></div></div>
+        <div class="hints ofoot kb__foot"><span class="h" data-act="a">${G('A')} Select   </span><span class="h" data-act="b">${G('B')} Back   </span><span class="h" data-act="x">${G('X')} Backspace   </span><span class="h" data-act="y">${G('Y')} Space   </span><span class="h" data-act="start"><i class="kpill">Start</i> Done</span></div>`;
+      el.addEventListener('click', (e) => {
+        const k = e.target.closest('[data-k]');
+        if (k) { sel = +k.dataset.k; press(); return; }
+        const h = e.target.closest('[data-act]');
+        if (h) handle(h.dataset.act);
+      });
+      el.addEventListener('mousemove', (e) => { const k = e.target.closest('[data-k]'); if (k && +k.dataset.k !== sel) { sel = +k.dataset.k; sfx('focus'); paint(); } });
+      Overlays.push('kb', api);
+      paint();
+      sfx('menu-in');
+      if (!reduced.matches) { layerIn(el, 0, 120, 0); layerIn($('.kb__panel', el), 0, 260, 0); anim($('.kb__panel', el), [{ translate: '0 40px' }, { translate: '0 0' }], 260, E.cubicOut); }
+    }
+    const chars = () => ROWS[sym ? 'sym' : 'abc'].map((r) => [...r].map((c) => (shift && !sym ? c.toUpperCase() : c)));
+    function paint() {
+      if (!el) return;
+      const [, label, max, multi] = spec();
+      $('.kb__label', el).textContent = label;
+      $('.kb__box', el).classList.toggle('kb__box--multi', multi);
+      const t = $('.kb__text', el);
+      t.textContent = text;
+      $('.kb__box', el).scrollTop = $('.kb__box', el).scrollHeight;
+      $('.kb__count', el).textContent = `${text.length} / ${max}`;
+      const grid = chars();
+      $('.kb__keys', el).innerHTML = grid.map((row, r) => row.map((c, i) => `<button type="button" class="kkey${sel === r * 10 + i ? ' on' : ''}" data-k="${r * 10 + i}">${esc(c)}</button>`).join('')).join('')
+        + KEYS.map(([k, name, btn], j) => `<button type="button" class="kkey kkey--wide${sel === 40 + j ? ' on' : ''}${(k === 'shift' && shift) || (k === 'sym' && sym) ? ' lit' : ''}" data-k="${40 + j}"><small>${btn}</small>${name}</button>`).join('');
+    }
+    function insert(s) {
+      const [, , max, multi] = spec();
+      s = multi ? s.replace(/\r\n?/g, '\n') : s.replace(/[\r\n]+/g, ' ');
+      s = s.replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, '');
+      if (!s) return;
+      const room = max - text.length;
+      if (room <= 0) { sfx('back'); return; }
+      text += s.slice(0, room);
+      paint();
+    }
+    function backspace() { if (text) { text = [...text].slice(0, -1).join(''); paint(); } }
+    function press() {
+      if (sel < 40) {
+        const r = Math.floor(sel / 10), c = sel % 10;
+        insert(chars()[r][c]);
+        sfx('focus');
+        if (shift && !sym) { shift = false; paint(); }
+        return;
+      }
+      const k = KEYS[sel - 40][0];
+      if (k === 'shift') { shift = !shift; sym = false; sfx('select'); paint(); }
+      else if (k === 'sym') { sym = !sym; shift = false; sfx('select'); paint(); }
+      else if (k === 'space') { insert(' '); sfx('focus'); }
+      else if (k === 'back') { backspace(); sfx('focus'); }
+      else if (k === 'done') close(true);
+    }
+    function move(a) {
+      let n = sel;
+      if (sel < 40) {
+        const r = Math.floor(sel / 10), c = sel % 10;
+        if (a === 'left') n = r * 10 + Math.max(0, c - 1);
+        if (a === 'right') n = r * 10 + Math.min(9, c + 1);
+        if (a === 'up') n = r > 0 ? sel - 10 : sel;
+        if (a === 'down') n = r < 3 ? sel + 10 : 40 + Math.floor(c / 2);
+      } else {
+        const j = sel - 40;
+        if (a === 'left') n = 40 + Math.max(0, j - 1);
+        if (a === 'right') n = 40 + Math.min(KEYS.length - 1, j + 1);
+        if (a === 'up') n = 30 + j * 2;
+      }
+      if (n !== sel) { sel = n; sfx('focus'); paint(); }
+    }
+    // done: Start or Done moves on to the next field; B stays on this one.
+    function close(done) {
+      if (!el) return;
+      const [k] = spec();
+      draft[k] = text;
+      if (!draft.opened) draft.opened = Date.now();
+      draft.status = '';
+      draft.focus = done ? Math.min(field + 1, 3) : field;
+      const node = el;
+      el = null;
+      sfx(done ? 'select' : 'menu-out');
+      Overlays.pop('kb');
+      Win.refresh();
+      overlayOut(node, 'fade');
+    }
+    function handle(a) {
+      if (!el) return true;
+      if (['up', 'down', 'left', 'right'].includes(a)) move(a);
+      else if (a === 'a') press();
+      else if (a === 'b') close(false);
+      else if (a === 'x') { backspace(); sfx('focus'); }
+      else if (a === 'y') { insert(' '); sfx('focus'); }
+      else if (a === 'lt') { shift = !shift; sym = false; sfx('select'); paint(); }
+      else if (a === 'rt') { sym = !sym; shift = false; sfx('select'); paint(); }
+      else if (a === 'start') close(true);
+      return true;
+    }
+    const api = { handle, refocus() {}, dismiss() { if (el) { overlayOut(el, 'fade'); el = null; } } };
+    // Typing on a real keyboard goes straight into the box. Enter finishes a
+    // one-line field and starts a new line in the message; Ctrl or Cmd + Enter
+    // finishes either. Arrow keys still move around the keys on screen.
+    addEventListener('keydown', (e) => {
+      if (!el || Guide.isOpen) return;
+      const [, , , multi] = spec();
+      const arrows = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
+      let used = true;
+      if (arrows[e.key]) { inputMode = 'key'; setPadMode(true); move(arrows[e.key]); }
+      else if (e.key === 'Escape') close(false);
+      else if (e.key === 'Enter') { if (e.metaKey || e.ctrlKey || !multi) close(true); else insert('\n'); }
+      else if (e.key === 'Backspace') backspace();
+      else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'v') used = false;
+      else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) insert(e.key);
+      else if (e.key.length === 1 && e.altKey && !e.metaKey && !e.ctrlKey) insert(e.key);
+      else if (e.key !== 'Tab' && e.key !== 'Home' && e.key !== 'F1') used = false;
+      if (used || e.key === 'Tab') { e.preventDefault(); e.stopImmediatePropagation(); }
+    }, true);
+    addEventListener('paste', (e) => { if (!el || Guide.isOpen) return; e.preventDefault(); insert((e.clipboardData || window.clipboardData).getData('text') || ''); }, true);
+    return { open, isOpen };
+  })();
+
 
   /* ================= Xbox Guide ================= */
   const Guide = (() => {
     const layer = $('#guide'), canvas = $('.canvas', layer);
     let open_ = false, busy = false, tab = 2, sel = 0, screen = 'main', bladeSound = 0;
-    let achSel = 0, achDetail = false, frSel = 0, returnFocus = null;
+    // direct: a screen opened straight from a tile, so backing out leaves the Guide.
+    let achSel = 0, achDetail = false, returnFocus = null, direct = false;
     const NAMES = ['Games & Apps', ME.tag, 'Xbox Home', 'Media', 'Settings'];
     const closeThen = (fn) => () => { close(false); fn(); };
     const win = (id) => closeThen(() => Win.open(id));
@@ -1216,7 +1436,7 @@
         case 0: return [
           ['All Projects', 'games', win('projects')],
           ['Stats', 'layers', win('stats')],
-          ['My Favourite Games', 'games', win('played')],
+          ['My Gaming Journey', 'games', win('played')],
           ['Valorant', '', win('valorant')],
           ['Fortnite', '', win('fortnite')],
         ];
@@ -1238,19 +1458,12 @@
         ];
         default: return [
           ['Xbox Home', '', xboxHome],
-          ['Friends', 'contact', () => openScreen('friends'), String(FRIENDS().length)],
           ['Messages', 'mail', win('message')],
           ['Minimize', 'minimize', () => close(false)],
           [trayLabel(), 'eject', () => { toggleTray(); paint(); }],
         ];
       }
     }
-    const FRIENDS = () => [
-      { tag: 'GitHub', sub: 'Projects and code', status: 'Online: Shipping code', pic: 'github', go: () => openLink(LINKS.github, 'source', true) },
-      { tag: 'LeetCode', sub: 'Problem solving', status: `Online: ${F('leetcode', (d) => `${d.solved.All} problems solved`) || 'Solving problems'}`, pic: 'leetcode', go: () => { close(false); Win.open('stats'); } },
-      { tag: 'LinkedIn', sub: 'Hamza Faisal', status: 'Online: Networking', pic: 'linkedin', go: () => openLink(LINKS.linkedin, 'networker', true) },
-      { tag: 'Message Hamza', sub: LINKS.email, status: 'Send a message', pic: 'mail', go: () => { close(false); Win.open('message'); } },
-    ];
     function clockText() { const d = new Date(); let h = d.getHours(); const ap = h < 12 ? 'AM' : 'PM'; h = h % 12 || 12; return `${h}:${String(d.getMinutes()).padStart(2, '0')}  ${ap}`; }
     // The button bar sits where it does on every other screen.
     const hints = (list) => list.map(([k, t]) => `<span class="h" data-act="${k}">${G(k.toUpperCase())} ${esc(t)}   </span>`).join('');
@@ -1294,10 +1507,20 @@
       if (open_ || busy || booting) return;
       busy = true; open_ = true;
       returnFocus = activeEl;
-      tab = 2; sel = 0; screen = 'main';
+      tab = 2; sel = 0; screen = 'main'; direct = !!sub;
       build(); paint();
       layer.hidden = false;
+      layer.classList.toggle('direct', direct);
       if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
+      if (direct) {
+        // Like Achievements from a game's hub: just that screen, no Guide behind it.
+        $('.gd', canvas).classList.add('gd--direct');
+        busy = false;
+        sfx('select');
+        anim(layer, [{ opacity: 0 }, { opacity: 1 }], 120, E.sineOut);
+        openScreen(sub);
+        return;
+      }
       sfx('guide-open');
       achieve('guide');
       const gd = $('.gd', canvas);
@@ -1307,7 +1530,6 @@
       anim($('.gd__list', canvas), [{ opacity: 0 }, { opacity: 1 }], 145, E.sineOut, 285);
       user.forEach((u) => anim(u, [{ opacity: 0 }, { opacity: 1 }], 120, E.sineOut, 250));
       const last = sides.map((s) => anim(s, [{ opacity: 0 }, { opacity: 1 }], 145, E.sineOut, 430));
-      if (sub) { busy = false; openScreen(sub); }
       await (last[0] ? last[0].finished : Promise.resolve());
       busy = false;
       if (open_) sfx('guide-blade-open');
@@ -1315,7 +1537,7 @@
     // CloseGuide: 165 ms fade, content rising 10 px.
     function close(playSound = true, instant = false) {
       if (!open_) return;
-      if (playSound) sfx('guide-close');
+      if (playSound) sfx(direct ? 'back' : 'guide-close');
       open_ = false; busy = true;
       const gd = $('.gd', canvas);
       const done = () => {
@@ -1358,11 +1580,10 @@
       it[2]();
     }
 
-    /* ----- Achievements and Friends (community overlays) ----- */
+    /* ----- Achievements (community overlay) ----- */
     function openScreen(name) {
       screen = name;
       if (name === 'achievements') { achDetail = false; achSel = 0; }
-      if (name === 'friends') { frSel = 0; achieve('friends'); }
       const over = $('.gd__over', canvas);
       over.innerHTML = `<div class="gx__dim"></div><div class="gx gx--${name}"><div class="gx__head"></div><div class="gx__body"></div></div>`;
       paintScreen();
@@ -1375,6 +1596,7 @@
       }
     }
     function closeScreen() {
+      if (direct) { close(); return; }
       screen = 'main';
       $('.gd__over', canvas).innerHTML = '';
       sfx('guide-back');
@@ -1402,17 +1624,6 @@
           grid.style.transform = `translateY(${-Math.max(0, row - 2) * 104}px)`;
         }
         setFoot([['a', 'Select'], ['b', 'Back']]);
-      } else if (screen === 'friends') {
-        const fr = FRIENDS();
-        head.innerHTML = `<span>Friends</span><img src="${ME.pic}" alt=""><span>${clockText()}</span>`;
-        body.innerHTML = `<div class="fr__tabs"><div>${svg('people')}</div><div class="act">${svg('people')}Friends (${fr.length})</div><div>${svg('mail')}0</div><div>${svg('games')}0</div></div>
-          <div class="fr__list">${fr.map((f, i) => `<button type="button" class="frow${i === frSel ? ' sel' : ''}" data-i="${i}"><span style="width:48px;height:48px;margin:2px 10px 2px 0;display:grid;place-items:center;background:${f.pic === 'linkedin' ? '#0a66c2' : f.pic === 'leetcode' ? '#ffa116' : f.pic === 'mail' ? 'var(--green)' : '#24292f'};border:1px solid #9ea8ad"><svg viewBox="0 0 24 24" style="width:30px;height:30px;fill:#fff"><path d="${P[f.pic]}"/></svg></span><span><b>${esc(f.tag)}</b><small>${esc(f.sub)}</small></span><span class="st">${svg('contact')}${esc(f.status)}</span></button>`).join('')}</div>
-          <div class="fr__foot">Sorted by online status</div>`;
-        $$('.frow', body).forEach((r) => {
-          r.addEventListener('mouseenter', () => { if (+r.dataset.i !== frSel) { frSel = +r.dataset.i; paintScreen(); } });
-          r.addEventListener('click', () => { frSel = +r.dataset.i; handle('a'); });
-        });
-        setFoot([['a', 'Select'], ['b', 'Back']]);
       }
     }
     function handleScreen(a) {
@@ -1430,13 +1641,6 @@
         if (a === 'down') i = achSel + 7 >= total ? Math.min(Math.floor((total - 1) / 7) * 7 + col, total - 1) : achSel + 7;
         if (i !== achSel) { achSel = i; sfx('guide-hover'); paintScreen(); }
         if (a === 'b') { achDetail = false; sfx('guide-back'); paintScreen(); }
-        return true;
-      }
-      if (screen === 'friends') {
-        const fr = FRIENDS();
-        if (a === 'up' || a === 'down') { const i = clamp(frSel + (a === 'up' ? -1 : 1), 0, fr.length - 1); if (i !== frSel) { frSel = i; sfx('guide-hover'); paintScreen(); } }
-        if (a === 'a') { sfx('guide-select'); fr[frSel].go(); }
-        if (a === 'b') closeScreen();
         return true;
       }
       return false;
@@ -1555,14 +1759,18 @@
   dashCanvas.addEventListener('click', (e) => { const h = e.target.closest('[data-act]'); if (h && !e.target.closest('.t, .dbtn, [data-nav]')) act(h.dataset.act); });
   $('#guide').addEventListener('click', (e) => { if (e.target === $('#guide') || e.target === $('#guide .canvas') || e.target.classList.contains('gd')) Guide.close(); });
 
-  // Wheel and swipe change tabs.
-  let wheelAt = 0;
+  // Wheel and swipe change tabs, one tab per gesture. A trackpad swipe keeps
+  // sending wheel events while it coasts, so the gesture only ends once they
+  // stop for a moment.
+  let wheelSpent = false, wheelQuiet = 0;
   addEventListener('wheel', (e) => {
     if (booting || Guide.isOpen || overlayOpen()) return;
+    clearTimeout(wheelQuiet);
+    wheelQuiet = setTimeout(() => { wheelSpent = false; }, 240);
     const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    if (Math.abs(d) < 12 || performance.now() - wheelAt < 450) return;
-    wheelAt = performance.now();
-    moveTab(d > 0 ? 1 : -1);
+    if (wheelSpent || Math.abs(d) < 12) return;
+    wheelSpent = true;
+    if (!animatingTab) moveTab(d > 0 ? 1 : -1);
   }, { passive: true });
   let touch = null;
   addEventListener('touchstart', (e) => { touch = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() } : null; }, { passive: true });
@@ -1646,7 +1854,7 @@
       prev[`dir_${d}`] = on;
     }
     const fire = (btn, a) => { if (st[btn] && !prev[btn]) press(a); };
-    fire('a', 'a'); fire('b', 'b'); fire('x', 'x'); fire('y', 'y');
+    fire('a', 'a'); fire('b', 'b'); fire('x', 'x'); fire('y', 'y'); fire('start', 'start');
     fire('back', 'b'); fire('lb', 'lb'); fire('rb', 'rb'); fire('guide', 'guide'); fire('touch', 'guide');
     if (st.lt > 0.47 && !prev.ltOn) press('lt');
     if (st.rt > 0.47 && !prev.rtOn) press('rt');
@@ -1666,7 +1874,7 @@
     ghRepos: () => F('github', (d) => n(d.repos)),
     valRank: () => F('valorant', (d) => d.rank),
     valPeak: () => F('valorant', (d) => d.peak && `Peak ${d.peak}`),
-    psnLevel: () => F('psn', (d) => d.level && `Trophy level ${d.level}`),
+    psnLevel: () => F('psn', (d) => d.level && `Level ${d.level}`),
     psnSub: () => F('psn', (d) => `${d.trophies.platinum} platinum · ${n(d.totalHours)} hours`),
     steamBig: () => F('steam', (d) => (d.totalHours ? `${n(d.totalHours)} hours` : null)),
     steamSub: () => F('steam', (d) => (d.games ? `${d.games} games` : d.recent[0] ? `Lately: ${d.recent[0].name}` : null)),

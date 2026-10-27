@@ -72,13 +72,8 @@ def fit(rel, w, h, crop=None, name=None):
 # ---------- DashX360 artwork ----------
 T = 'Tiles/'
 M = 'Misc/'
-fit(M + 'disc-tray.png', 74, 74, name='icons/disc-tray.webp')
-fit(M + 'music.png', 58, 58, crop=(250, 210, 460, 540), name='icons/music.webp')
 fit(T + 'Marketplace/mygames.png', 72, 72, name='icons/mygames.webp')
-fit(T + 'Social/friends.png', 58, 58, name='icons/friends.webp')
 fit(T + 'Social/transparent_avatars.png', 300, 256, name='tiles/avatars.webp')
-for k in ['system', 'preferences', 'privacy', 'turnoff']:
-    fit(M + f'SettingsIcons/{k}.png', 85, 85, name=f'icons/settings-{k}.webp')
 fit(M + 'SignIn/xbox-orb.png', 64, 64, name='ui/xbox-orb.webp')
 fit(M + 'SignIn/live-alert.png', 64, 64, name='ui/live-alert.webp')
 for theme in sorted(t for t in os.listdir(os.path.join(SRC, 'Custom Files', 'Themes')) if not t.startswith('.')):
