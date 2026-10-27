@@ -1164,7 +1164,7 @@
           stat(st.headshot !== null ? `${st.headshot}%` : null, 'Headshots'), stat(st.kd, 'K/D'), stat(st.acs, 'Combat score'), stat(st.adr, 'Damage a round'),
           stat(st.winRate !== null ? `${st.winRate}%` : null, 'Win rate'), stat(st.mostKills, 'Most kills in a game'), stat(st.agent, 'Main agent'), stat(st.map, 'Most played map'),
         ].join('')}</div></section>` : ''}</div>
-        ${v.rankedHours ? `<p class="wdim wsmall">Riot doesn’t publish play time. Hours are ${n(v.games)} ranked games at the length of the latest ones, plus about three minutes each for queue and agent select (${n(v.rankedHours)} hours), and about ${n(v.otherHours)} more on other accounts.</p>` : ''}`,
+        ${v.rankedHours ? `<p class="wdim wsmall">Riot doesn’t publish play time. Ranked is ${n(v.games)} games at about 34 minutes each, tracker.gg’s average for this account (${n(v.rankedHours)} hours). Other modes add ${n(v.modeHours || 0)} hours, and other accounts about ${n(v.otherHours)}.</p>` : ''}`,
       };
     },
     psn: () => {
