@@ -265,11 +265,12 @@ img { display: block; -webkit-user-drag: none; }
 .wsend p { margin: 0 !important; font-size: 16px !important; }
 .kb::before { content: ""; position: absolute; inset: -4000px; background: rgba(0, 0, 0, .62); }
 .kb__panel { position: absolute; left: 240px; top: 92px; width: 800px; padding: 22px 26px 26px; background: linear-gradient(#f3f5f5, #dfe3e4); color: #2b2f31; box-shadow: 0 18px 50px rgba(0, 0, 0, .5); }
-.kb__label { font-size: 20px; line-height: 1.3; }
-.kb__box { position: relative; margin-top: 8px; height: 48px; padding: 9px 12px; overflow: hidden auto; background: #fff; border: 1px solid #b9c1c4; font-size: 21px; line-height: 1.3; white-space: pre-wrap; overflow-wrap: anywhere; scrollbar-width: thin; }
-.kb__box--multi { height: 112px; }
-.kb__caret { display: inline-block; width: 2px; height: 1.15em; margin-left: 1px; vertical-align: text-bottom; background: #2b2f31; animation: caret 1s steps(1) infinite; }
-@keyframes caret { 50% { opacity: 0; } }
+.kb__label { display: block; font-size: 20px; line-height: 1.3; }
+/* A real text field, so it has to opt back in to being selectable. */
+.kb__input { display: block; width: 100%; height: 48px; margin: 8px 0 0; padding: 9px 12px; background: #fff; border: 1px solid #b9c1c4; border-radius: 0; color: #2b2f31; caret-color: #2b2f31; font: inherit; font-size: 21px; line-height: 1.3; color-scheme: light; -webkit-appearance: none; appearance: none; -webkit-user-select: text; user-select: text; cursor: text; outline: none; resize: none; scrollbar-width: thin; }
+.kb__input--multi { height: 112px; overflow: hidden auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.kb__input::placeholder { color: #9aa2a5; opacity: 1; }
+.kb__input::selection { background: var(--green); color: #fff; }
 .kb__count { margin: 6px 0 12px; text-align: right; font-size: 13px; color: #6b7376; }
 .kb__keys { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
 .kkey { height: 50px; display: grid; place-items: center; background: #fbfcfc; border: 1px solid #c3cacc; color: #2b2f31; font-size: 22px; line-height: 1; text-align: center; transition: transform .1s var(--sine-out); }
