@@ -58,6 +58,8 @@
     pic: '/assets/gamerpics/hamza.webp',
     motto: 'Turning curious ideas into real software.',
     short: 'Second-year Computer Science student at Aston University in Birmingham.',
+    // Shown like an Xbox LIVE presence line on the About tile.
+    status: 'Looking for a placement year in 2027-28',
   };
   const A = '/assets/';
   // A click on a project goes straight to its page.
@@ -133,7 +135,7 @@
     ['critic', 'Critic', 'Open Hamza’s latest films.', 30],
     ['cinephile', 'Cinephile', 'Open Favourite Films.', 40],
     ['tray', 'No disc', 'Open the disc tray.', 15],
-    ['colour', 'Paint job', 'Change the tile color.', 30],
+    ['colour', 'Paint job', 'Change the tile colour.', 30],
     ['themes', 'Interior designer', 'Change the dashboard theme.', 30],
     ['sysset', 'Under the hood', 'Open System Settings.', 20],
     ['tidy', 'Plug and play', 'Navigate with a controller.', 75],
@@ -152,8 +154,15 @@
   const saveSettings = () => store.set('settings', S);
 
   /* ================= Scale ================= */
-  function fit() { root.style.setProperty('--s', Math.min(innerWidth / 1280, innerHeight / 720)); }
-  addEventListener('resize', fit);
+  // EXTRA: canvas pixels of spare room on each side when the window is wider
+  // than 16:9, which the side previews spread into.
+  let EXTRA = 0;
+  function fit() {
+    const s = Math.min(innerWidth / 1280, innerHeight / 720);
+    EXTRA = Math.max(0, Math.round((innerWidth / s - 1280) / 2));
+    root.style.setProperty('--s', s);
+    root.style.setProperty('--extra', `${EXTRA}px`);
+  }
   fit();
 
   /* ================= Sound (DashX360's AudioService map) ================= */
@@ -220,17 +229,15 @@
     power: 'M11 2h2v10h-2Zm-4.4 3.4 1.4 1.4a6 6 0 1 0 8 0l1.4-1.4A8 8 0 1 1 6.6 5.4Z',
     minimize: 'M4 11h16v2H4Z',
     eject: 'M12 4 21 15H3Zm-9 13h18v3H3Z',
-    people: 'M9 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm8 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM9 13c4.4 0 7 2 7 5v3H2v-3c0-3 2.6-5 7-5Zm8.5.5c3 .3 5.5 1.8 5.5 4.5v3h-5v-3c0-1.7-.2-3.2-.5-4.5Z',
     mail: 'M2 5h20v14H2Zm2 2v.5l8 5.5 8-5.5V7Zm0 2.9V17h16V9.9l-8 5.5Z',
-    contact: 'M12 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm0 10c4.4 0 8 2 8 5v3H4v-3c0-3 3.6-5 8-5Z',
     trophy: 'M8,2 L22,2 L20,17 C19,22 16,25 15,25 C14,25 11,22 10,17 M3,5 L8,5 L8,9 L5,9 C4,9 4,10 4,11 C4,14 6,16 9,16 L10,20 C4,19 0,15 0,10 C0,7 1,5 3,5 M22,5 L27,5 C29,5 30,7 30,10 C30,15 26,19 20,20 L21,16 C24,16 26,14 26,11 C26,10 26,9 25,9 L22,9 M12,25 L18,25 L18,29 L23,29 L23,32 L7,32 L7,29 L12,29',
     lock: 'M8,14 L8,10 C8,4 12,0 18,0 C24,0 28,4 28,10 L28,14 L24,14 L24,10 C24,6 22,4 18,4 C14,4 12,6 12,10 L12,14 M4,14 L32,14 L32,32 L4,32',
     github: 'M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5Z',
-    leetcode: 'M13.5 2 5.7 10.3a3.4 3.4 0 0 0 0 4.7l4.3 4.6a3.4 3.4 0 0 0 4.8.2l2.4-2.3-1.4-1.5-2.4 2.3a1.4 1.4 0 0 1-2-.1L7.2 13.6a1.4 1.4 0 0 1 0-1.9l7.8-8.3ZM10 12.5h10v2H10Z',
     linkedin: 'M4 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM2.3 8.5h3.4V21H2.3Zm6 0h3.3v1.7c.5-.9 1.7-2 3.6-2 3.8 0 4.5 2.5 4.5 5.8V21h-3.4v-6.2c0-1.5 0-3.3-2-3.3s-2.3 1.6-2.3 3.2V21H8.3Z',
     layers: 'M12 2 22 7l-10 5L2 7Zm-7.6 8.3L12 14l7.6-3.7L22 11.5 12 16.5 2 11.5Zm0 4.5L12 18.5l7.6-3.7L22 16 12 21 2 16Z',
     film: 'M3 9h18v11H3Zm0-5.6 16.8-3 .7 3.6-16.8 3Z',
     pc: 'M2 4h20v13H2Zm2 2v9h16V6ZM8 19h8v2H8Z',
+    full: 'M3 3h7v2H5v5H3Zm11 0h7v7h-2V5h-5ZM3 14h2v5h5v2H3Zm16 0h2v7h-7v-2h5Z',
     // Brand marks, from Simple Icons (CC0).
     py: 'M14.25.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.77l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.17l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05-.05-1.23.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.24-.01h.16l.06.01h8.16v-.83H6.18l-.01-2.75-.02-.37.05-.34.11-.31.17-.28.25-.26.31-.23.38-.2.44-.18.51-.15.58-.12.64-.1.71-.06.77-.04.84-.02 1.27.05zm-6.3 1.98l-.23.33-.08.41.08.41.23.34.33.22.41.09.41-.09.33-.22.23-.34.08-.41-.08-.41-.23-.33-.33-.22-.41-.09-.41.09zm13.09 3.95l.28.06.32.12.35.18.36.27.36.35.35.47.32.59.28.73.21.88.14 1.04.05 1.23-.06 1.23-.16 1.04-.24.86-.32.71-.36.57-.4.45-.42.33-.42.24-.4.16-.36.09-.32.05-.24.02-.16-.01h-8.22v.82h5.84l.01 2.76.02.36-.05.34-.11.31-.17.29-.25.25-.31.24-.38.2-.44.17-.51.15-.58.13-.64.09-.71.07-.77.04-.84.01-1.27-.04-1.07-.14-.9-.2-.73-.25-.59-.3-.45-.33-.34-.34-.25-.34-.16-.33-.1-.3-.04-.25-.02-.2.01-.13v-5.34l.05-.64.13-.54.21-.46.26-.38.3-.32.33-.24.35-.2.35-.14.33-.1.3-.06.26-.04.21-.02.13-.01h5.84l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.36.1-.35.07-.32.04-.28.02-.21V6.07h2.09l.14.01zm-6.47 14.25l-.23.33-.08.41.08.41.23.33.33.23.41.08.41-.08.33-.23.23-.33.08-.41-.08-.41-.23-.33-.33-.23-.41-.08-.41.08z',
     java: 'M11.915 0 11.7.215C9.515 2.4 7.47 6.39 6.046 10.483c-1.064 1.024-3.633 2.81-3.711 3.551-.093.87 1.746 2.611 1.55 3.235-.198.625-1.304 1.408-1.014 1.939.1.188.823.011 1.277-.491a13.389 13.389 0 0 0-.017 2.14c.076.906.27 1.668.643 2.232.372.563.956.911 1.667.911.397 0 .727-.114 1.024-.264.298-.149.571-.33.91-.5.68-.34 1.634-.666 3.53-.604 1.903.062 2.872.39 3.559.704.687.314 1.15.664 1.925.664.767 0 1.395-.336 1.807-.9.412-.563.631-1.33.72-2.24.06-.623.055-1.32 0-2.066.454.45 1.117.604 1.213.424.29-.53-.816-1.314-1.013-1.937-.198-.624 1.642-2.366 1.549-3.236-.08-.748-2.707-2.568-3.748-3.586C16.428 6.374 14.308 2.394 12.13.215zm.175 6.038a2.95 2.95 0 0 1 2.943 2.942 2.95 2.95 0 0 1-2.943 2.943A2.95 2.95 0 0 1 9.148 8.98a2.95 2.95 0 0 1 2.942-2.942zM8.685 7.983a3.515 3.515 0 0 0-.145.997c0 1.951 1.6 3.55 3.55 3.55 1.95 0 3.55-1.598 3.55-3.55 0-.329-.046-.648-.132-.951.334.095.64.208.915.336a42.699 42.699 0 0 1 2.042 5.829c.678 2.545 1.01 4.92.846 6.607-.082.844-.29 1.51-.606 1.94-.315.431-.713.651-1.315.651-.593 0-.932-.27-1.673-.61-.741-.338-1.825-.694-3.792-.758-1.974-.064-3.073.293-3.821.669-.375.188-.659.373-.911.5s-.466.2-.752.2c-.53 0-.876-.209-1.16-.64-.285-.43-.474-1.101-.545-1.948-.141-1.693.176-4.069.823-6.614a43.155 43.155 0 0 1 1.934-5.783c.348-.167.749-.31 1.192-.425zm-3.382 4.362a.216.216 0 0 1 .13.031c-.166.56-.323 1.116-.463 1.665a33.849 33.849 0 0 0-.547 2.555 3.9 3.9 0 0 0-.2-.39c-.58-1.012-.914-1.642-1.16-2.08.315-.24 1.679-1.755 2.24-1.781zm13.394.01c.562.027 1.926 1.543 2.24 1.783-.246.438-.58 1.068-1.16 2.08a4.428 4.428 0 0 0-.163.309 32.354 32.354 0 0 0-.562-2.49 40.579 40.579 0 0 0-.482-1.652.216.216 0 0 1 .127-.03z',
@@ -248,7 +255,6 @@
     ps4: 'M12.302 13.18v-2.387c0-.486.227-.834.712-.834h2.99c.017 0 .035-.018.035-.036v-.475c0-.004 0-.008-.003-.012h-3.66c-.792.1-1.18.653-1.18 1.357v2.386c0 .482-.233.831-.71.831H7.332c-.018 0-.036.012-.036.036v.475c0 .02.01.035.023.04h3.584c.933-.025 1.393-.62 1.393-1.385zM.024 14.564h1.05a.042.042 0 00.025-.04v-1.52c0-.487.275-.823.676-.823h4.323c.974 0 1.445-.6 1.445-1.384 0-.705-.386-1.257-1.18-1.357H.006c0 .003-.006.005-.006.01v.475c0 .024.013.036.037.036h5.697c.484 0 .712.35.712.833 0 .484-.227.836-.712.836H1.226c-.7 0-1.226.592-1.226 1.373v1.519c0 .02.01.036.028.04zm15.998-.55h5.738c.017 0 .03.012.03.024v.483c0 .024.017.036.035.036h1.035c.018 0 .036-.01.036-.036v-.475c0-.018.02-.036.04-.036h1.028c.024 0 .036-.018.036-.036v-.484c0-.018-.01-.036-.035-.036h-1.03c-.02 0-.037-.017-.037-.035V9.96c0-.283-.104-.463-.28-.523h-.3a1.153 1.153 0 00-.303.132l-6.18 3.815c-.24.15-.323.318-.263.445.048.104.185.182.454.182zm.895-.637l4.79-2.961c.03-.024.09-.018.09.048v2.961c0 .018-.016.036-.034.036h-4.817c-.04 0-.06-.012-.065-.024-.006-.024.005-.042.036-.06z',
     leetcode: 'M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z',
     cap: 'M12 3 1 8.5 12 14l9-4.5V16h2V8.5ZM5 12.2V16c0 2 3.1 3.5 7 3.5s7-1.5 7-3.5v-3.8L12 15.7Z',
-    info: 'M10.5 4h3v3h-3Zm0 5h3v11h-3Z',
   };
   const svg = (name, vb = '0 0 24 24', cls = '') => `<svg viewBox="${vb}"${cls ? ` class="${cls}"` : ''} aria-hidden="true"><path d="${P[name]}"/></svg>`;
   // Controller button glyphs: a glossy disc with the letter drawn as strokes,
@@ -267,8 +273,10 @@
   const HOME = 'about';
 
   const px = (o) => Object.entries(o).map(([k, v]) => `${k}:${typeof v === 'number' ? `${v}px` : v}`).join(';');
+  // A focused tile grows 7%, but never more than 7 px a side, so a big tile
+  // can't cover the start of its neighbours' labels.
   const tile = (id, x, y, w, h, inner, { label = '', bg = '', cls = '', def = false } = {}) =>
-    `<button class="t${cls ? ` ${cls}` : ''}" data-t="${id}"${def ? ' data-default' : ''} data-x="${x}" data-y="${y}" data-w="${w}" data-h="${h}" style="${px({ left: x, top: y, width: w, height: h })}" aria-label="${esc(label)}"><span class="f"${bg ? ` style="background:${bg}"` : ''}>${inner}</span></button>`;
+    `<button class="t${cls ? ` ${cls}` : ''}" data-t="${id}"${def ? ' data-default' : ''} data-x="${x}" data-y="${y}" data-w="${w}" data-h="${h}" style="${px({ left: x, top: y, width: w, height: h })};--g:${Math.min(1.07, 1 + 14 / w).toFixed(4)}" aria-label="${esc(label)}"><span class="f"${bg ? ` style="background:${bg}"` : ''}>${inner}</span></button>`;
   const img = (src, box, cls = 'ico') => `<img class="${cls}" src="${src}" alt=""${box ? ` style="${px(box)}"` : ''} draggable="false">`;
   const fill = (src) => `<img class="fill" src="${src}" alt="" draggable="false">`;
   const tx = (text, box, extra = '') => `<span class="tx${extra}" style="${px(box)}">${esc(text)}</span>`;
@@ -317,7 +325,7 @@
   function pageAbout() {
     const c0 = 692, c1 = 876, w = 182;
     return `<div class="page" data-tab="about">
-      ${tile('about.me', 224, 31, 466, 397, `<span class="hello"><img src="/favicon.svg" alt=""><b>${esc(ME.tag)}</b><span>${esc(ME.short)}</span><em>${esc(ME.motto)}</em></span>${bar(30, 'rgba(0,0,0,.35)')}${tx('About Me', { left: 10, bottom: 6, 'font-size': 17 })}`, { label: 'About Me', bg: 'radial-gradient(120% 90% at 20% 0%,#3d93f0 0%,#1b6fd1 38%,#0b3f86 75%,#062a5c 100%)', def: true })}
+      ${tile('about.me', 224, 31, 466, 397, `<span class="hello"><img src="/favicon.svg" alt=""><b>${esc(ME.tag)}</b><span>${esc(ME.short)}</span><em>${esc(ME.motto)}</em></span>${bar(30, 'rgba(0,0,0,.35)')}${tx('About Me', { left: 10, bottom: 6, 'font-size': 17 })}<span class="presence">${esc(ME.status)}</span>`, { label: 'About Me', bg: 'radial-gradient(120% 90% at 20% 0%,#3d93f0 0%,#1b6fd1 38%,#0b3f86 75%,#062a5c 100%)', def: true })}
       ${tile('about.education', c0, 31, w, 131, glyph('cap', w, 131, 42) + label('Education'), { label: 'Education', bg: grad('#18c2b4 0%,#0b958b 55%,#06635c 100%') })}
       ${tile('about.stack', c1, 31, w, 131, `<span class="stackrow">${['py', 'java', 'js', 'godot'].map((i) => svg(i)).join('')}</span>${label('Tech Stack')}`, { label: 'Tech Stack', bg: grad('#f7923a 0%,#e5650c 55%,#a8430a 100%') })}
       ${tile('about.message', c0, 164, w, 130, glyph('mail', w, 130, 42) + label('Message Me'), { label: 'Message Me' })}
@@ -394,7 +402,7 @@
         <button class="peek-hit peek-hit--l" type="button" aria-label="Previous" tabindex="-1"></button>
         <button class="peek-hit peek-hit--r" type="button" aria-label="Next" tabindex="-1"></button>
       </div>
-      <div class="hints foot"><span class="h" data-act="a">${G('A')} Select   </span></div>
+      <div class="hints foot"><span class="h" data-act="a">${G('A')} Select   </span><span class="h" data-act="guide"><img class="gorb" src="${A}ui/xbox-orb.webp" alt=""> Guide</span></div>
     </div>
     <div class="toast" aria-live="polite">
       <span class="toast__glow"></span><span class="toast__pill"></span>
@@ -462,6 +470,8 @@
     await wait(320);
     await anim(toastEl, [{ opacity: 1 }, { opacity: 0 }], 80, E.cubicIn).finished;
   }
+  // A poster or game picture that fails to load gives way to a plain slot.
+  document.addEventListener('error', (e) => { const t = e.target; if (t && t.tagName === 'IMG' && t.hasAttribute('data-fb')) t.replaceWith(document.createElement('i')); }, true);
   function openLink(url, ach, quiet) {
     if (!quiet) sfx('select');
     if (ach) achieve(ach);
@@ -480,7 +490,7 @@
   }
   // The mouse plays the same tick as the stick when it moves onto something new.
   function hover(el) {
-    if (activeEl === el) return;
+    if (activeEl === el || touched()) return;
     setActive(el);
     sfx('focus');
   }
@@ -494,6 +504,11 @@
     document.body.classList.toggle('pad', on);
   }
   addEventListener('mousemove', (e) => { if (e.movementX || e.movementY) { inputMode = 'mouse'; setPadMode(false); } }, { passive: true });
+  // A tap sends mouse events after its touch events. Treating those as a hover
+  // would repaint what is under the finger, and iOS then drops the tap itself.
+  let touchAt = -1e9;
+  addEventListener('touchstart', () => { touchAt = performance.now(); }, { passive: true, capture: true });
+  const touched = () => performance.now() - touchAt < 900;
 
   // TryMoveDashboardFocus: nearest candidate in the pressed direction,
   // scored as secondary distance x 2.4 plus primary distance.
@@ -555,11 +570,13 @@
       inner.innerHTML = '';
       if (!t) return;
       const clone = cleanClone(pageEls[t.k]);
-      clone.style.left = `${-clamp(crop, 0, 1176)}px`;
+      clone.style.left = `${crop}px`;
       inner.appendChild(clone);
     };
-    fillPeek(peekL, prev, prev ? leftCrop(prev.k) : 0);
-    fillPeek(peekR, next, next ? rightCrop(next.k) : 0);
+    // The left preview's box starts EXTRA px left of the canvas, so its page
+    // moves right by as much to keep the same 104 px showing at the canvas edge.
+    fillPeek(peekL, prev, prev ? EXTRA - clamp(leftCrop(prev.k), 0, 1176) : 0);
+    fillPeek(peekR, next, next ? -clamp(rightCrop(next.k), 0, 1176) : 0);
   }
   function cleanClone(page) {
     const c = page.cloneNode(true);
@@ -599,8 +616,8 @@
     pagesEl.classList.add('sliding');
     animatingTab = true;
     renderPeeks();
-    anim($('.peek__in', peekL), [{ translate: '-104px 0' }, { translate: '0 0' }], 420, E.quartInOut);
-    anim($('.peek__in', peekR), [{ translate: '104px 0' }, { translate: '0 0' }], 420, E.quartInOut);
+    anim($('.peek__in', peekL), [{ translate: `${-104 - EXTRA}px 0` }, { translate: '0 0' }], 420, E.quartInOut);
+    anim($('.peek__in', peekR), [{ translate: `${104 + EXTRA}px 0` }, { translate: '0 0' }], 420, E.quartInOut);
     focusDefault();
     const slide = [{ translate: '0 0' }, { translate: `${-dir * 1280}px 0` }];
     anim(oldClone, slide, 420, E.quartInOut);
@@ -773,7 +790,7 @@
     if (t && t.refocus) t.refocus(); else if (!overlayOpen()) focusDefault();
   }
   function overlayEl(cls) {
-    const el = html(`<div class="ov ${cls}"></div>`);
+    const el = html(`<div class="ov ${cls}" role="dialog"></div>`);
     dashCanvas.appendChild(el);
     return el;
   }
@@ -784,7 +801,7 @@
     let el = null, cat = null, direct = false;
     const CATS = [
       ['console', 'Console Settings', 'Change startup, sound and controller behaviour.'],
-      ['dashboard', 'Dashboard Customization', 'Change the dashboard theme and tile colour.'],
+      ['dashboard', 'Dashboard Customisation', 'Change the dashboard theme and tile colour.'],
       ['audio', 'Audio', 'Choose how loud the dashboard sounds are.'],
       ['data', 'Data Control', 'Reset the dashboard data saved in this browser.'],
       ['about', 'About', 'Credits for the dashboard, the artwork and the font.'],
@@ -816,7 +833,7 @@
       box.style.transform = '';
       box.innerHTML = items.join('');
       $$('[data-nav]', box).forEach((b) => {
-        b.addEventListener('mouseenter', () => { hover(b); if (b.dataset.tip) describe(...b.dataset.tip.split('|')); });
+        b.addEventListener('mouseenter', () => { if (touched()) return; hover(b); if (b.dataset.tip) describe(...b.dataset.tip.split('|')); });
         b.addEventListener('focus', () => { if (b.dataset.tip) describe(...b.dataset.tip.split('|')); });
         b.addEventListener('click', (e) => onClick(b, e));
       });
@@ -853,8 +870,8 @@
         const c = COLOURS.find((x) => x[1] === S.colour) || COLOURS[0];
         list([
           btn('themes', 'Select Theme', 'Pick a dashboard theme. Themes change the dashboard background.'),
-          '<div class="opt"><label>Tile Color</label></div>',
-          `<button type="button" class="oval" data-nav data-cycle="colour" data-tip="Tile Color|Change the color of the dashboard’s system tiles."><span><i style="display:inline-block;width:14px;height:14px;margin-right:10px;vertical-align:-1px;background:${c[1]}"></i>${c[0]}</span><small>&#9666; &#9656;</small></button>`,
+          '<div class="opt"><label>Tile Colour</label></div>',
+          `<button type="button" class="oval" data-nav data-cycle="colour" data-tip="Tile Colour|Change the colour of the dashboard’s system tiles."><span><i style="display:inline-block;width:14px;height:14px;margin-right:10px;vertical-align:-1px;background:${c[1]}"></i>${c[0]}</span><small>&#9666; &#9656;</small></button>`,
         ]);
       } else if (k === 'audio') {
         list([
@@ -1040,8 +1057,7 @@
   const waiting = (what) => `<p class="wdim">${FEED ? `${what} isn’t available right now.` : 'Loading…'}</p>`;
   // A row you can select; its index points at the window's actions.
   const pick = (i, title, sub = '', side = '') => `<button type="button" class="wpick" data-nav data-i="${i}"><span><b>${esc(title)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span>${side ? `<em>${esc(side)}</em>` : ''}</button>`;
-  const filmRow = (f) => `<li class="film">${f.poster ? `<img src="${esc(f.poster)}" alt="" loading="lazy" onerror="this.replaceWith(document.createElement('i'))">` : '<i></i>'}<span><b>${esc(f.title)}</b><small>${[f.year, f.watched ? `watched ${when(f.watched)}` : ''].filter(Boolean).join(' · ')}</small></span><em>${f.rating ? `<span class="mine">${stars(f.rating)}</span>` : ''}${f.imdb ? `<span class="imdb">IMDb ${esc(f.imdb)}</span>` : ''}</em></li>`;
-  // Riot's short season names: e9a2 is Episode 9 Act 2.
+  const filmRow = (f) => `<li class="film">${f.poster ? `<img src="${esc(f.poster)}" alt="" loading="lazy" data-fb>` : '<i></i>'}<span><b>${esc(f.title)}</b><small>${[f.year, f.watched ? `watched ${when(f.watched)}` : ''].filter(Boolean).join(' · ')}</small></span><em>${f.rating ? `<span class="mine">${stars(f.rating)}</span>` : ''}${f.imdb ? `<span class="imdb">IMDb ${esc(f.imdb)}</span>` : ''}</em></li>`;
   // Riot's short season names: e9a2 is Episode 9 Act 2, v25a1 is V25 Act 1.
   const season = (s) => String(s).replace(/^e(\d+)a(\d+)$/i, 'Episode $1 Act $2').replace(/^v(\d+)a(\d+)$/i, 'V$1 Act $2');
   // PlayStation counts every hour the game was open there; the stats add PC
@@ -1051,15 +1067,14 @@
   const filmCounts = (m) => (m.films ? `<p class="wdim">${n(m.films)} films watched.</p>` : '');
   // art is a picture URL, or icon:name for a game with a logo instead.
   const gameArt = (art) => (!art ? '' : art.startsWith('icon:') ? `<i class="gico gico--${art.slice(5)}">${svg(art.slice(5))}</i>`
-    : `<img src="${esc(art)}" alt="" loading="lazy" onerror="this.replaceWith(document.createElement('i'))">`);
+    : `<img src="${esc(art)}" alt="" loading="lazy" data-fb>`);
   const gameRow = ([name, hrs, plat, art]) => `<li>${gameArt(art)}<span>${esc(name)}</span><small>${[plat && esc(plat), hrs != null ? `${n(Math.round(hrs))} h` : ''].filter(Boolean).join(' · ')}</small></li>`;
   function copyEmail() {
     const done = () => { achieve('messenger'); sfx('select'); toast(LINKS.email, 'Copied to clipboard'); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(LINKS.email).then(done, () => toast(LINKS.email, 'Copy it from here'));
     else toast(LINKS.email, 'Copy it from here');
   }
-  // Everything played on PlayStation and Steam, most hours first.
-  // One row per game: hours on PlayStation and PC add up. Names are matched
+  // Most Played: one row per game, most hours first. Hours on PlayStation and PC add up. Names are matched
   // without symbols or edition suffixes, so GTA V and GTA V Legacy are one game.
   // HITMAN 3 was renamed HITMAN World of Assassination, so they're one game.
   const ALIAS = { 'hitman 3': 'hitman world of assassination' };
@@ -1164,7 +1179,7 @@
           stat(st.headshot !== null ? `${st.headshot}%` : null, 'Headshots'), stat(st.kd, 'K/D'), stat(st.acs, 'Combat score'), stat(st.adr, 'Damage a round'),
           stat(st.winRate !== null ? `${st.winRate}%` : null, 'Win rate'), stat(st.mostKills, 'Most kills in a game'), stat(st.agent, 'Main agent'), stat(st.map, 'Most played map'),
         ].join('')}</div></section>` : ''}</div>
-        ${v.rankedHours ? `<p class="wdim wsmall">Riot doesn’t publish play time. Ranked is ${n(v.games)} games at about 34 minutes each, tracker.gg’s average for this account (${n(v.rankedHours)} hours). Other modes add ${n(v.modeHours || 0)} hours, and other accounts about ${n(v.otherHours)}.</p>` : ''}`,
+        ${v.rankedHours ? `<p class="wdim wfine">Riot doesn’t publish play time. Ranked is ${n(v.games)} games at about 34 minutes each, tracker.gg’s average for this account (${n(v.rankedHours)} hours). Other modes add ${n(v.modeHours || 0)} hours, and other accounts about ${n(v.otherHours)}.</p>` : ''}`,
       };
     },
     psn: () => {
@@ -1192,7 +1207,7 @@
       const m = F('movies', (d) => d);
       return {
         title: 'Favourite Films', ach: 'cinephile',
-        body: m && m.favourites.length ? `${filmCounts(m)}<div class="wposters">${m.favourites.map((f) => `<figure>${f.poster ? `<img src="${esc(f.poster)}" alt="" onerror="this.replaceWith(document.createElement('i'))">` : '<i></i>'}<figcaption><b>${esc(f.title)}</b><small>${f.year || ''}</small><span>${f.rating ? `<em class="mine">${stars(f.rating)}</em>` : ''}${f.imdb ? `<em class="imdb">IMDb ${esc(f.imdb)}</em>` : ''}</span></figcaption></figure>`).join('')}</div>` : waiting('Letterboxd'),
+        body: m && m.favourites.length ? `${filmCounts(m)}<div class="wposters">${m.favourites.map((f) => `<figure>${f.poster ? `<img src="${esc(f.poster)}" alt="" data-fb>` : '<i></i>'}<figcaption><b>${esc(f.title)}</b><small>${f.year || ''}</small><span>${f.rating ? `<em class="mine">${stars(f.rating)}</em>` : ''}${f.imdb ? `<em class="imdb">IMDb ${esc(f.imdb)}</em>` : ''}</span></figcaption></figure>`).join('')}</div>` : waiting('Letterboxd'),
       };
     },
     recent: () => {
@@ -1232,6 +1247,7 @@
       spec = WINDOWS[id]();
       if (spec.ach) achieve(spec.ach);
       $('.win__title', el).textContent = spec.title;
+      el.setAttribute('aria-label', spec.title);
       const body = $('.win__body', el);
       body.innerHTML = spec.body;
       body.scrollTop = 0;
@@ -1313,7 +1329,6 @@
     const ROWS = { abc: ['abcdefg123', 'hijklmn456', 'opqrstu789', "vwxyz.'-0@"], sym: ['!?#$%&*()_', '+=/\\:;"<>~', ',.[]{}^|`€', '£¥°§•¿¡«»…'] };
     const KEYS = [['shift', 'Shift', 'LT'], ['sym', 'Symbols', 'RT'], ['space', 'Space', 'Y'], ['back', 'Backspace', 'X'], ['done', 'Done', 'Start']];
     let el = null, field = 0, text = '', shift = false, sym = false, sel = 0;
-    const isOpen = () => !!el;
     const spec = () => FIELDS[field];
     function open(i) {
       if (el) return;
@@ -1327,7 +1342,7 @@
         const h = e.target.closest('[data-act]');
         if (h) handle(h.dataset.act);
       });
-      el.addEventListener('mousemove', (e) => { const k = e.target.closest('[data-k]'); if (k && +k.dataset.k !== sel) { sel = +k.dataset.k; sfx('focus'); paint(); } });
+      el.addEventListener('mousemove', (e) => { const k = e.target.closest('[data-k]'); if (k && +k.dataset.k !== sel && !touched()) { sel = +k.dataset.k; sfx('focus'); paint(); } });
       Overlays.push('kb', api);
       paint();
       sfx('menu-in');
@@ -1436,7 +1451,7 @@
       if (used || e.key === 'Tab') { e.preventDefault(); e.stopImmediatePropagation(); }
     }, true);
     addEventListener('paste', (e) => { if (!el || Guide.isOpen) return; e.preventDefault(); insert((e.clipboardData || window.clipboardData).getData('text') || ''); }, true);
-    return { open, isOpen };
+    return { open };
   })();
 
 
@@ -1472,12 +1487,13 @@
           ['System Settings', 'gear', closeThen(() => Settings.open())],
           ['Preferences', 'sliders', closeThen(() => Settings.open('dashboard'))],
           ['Themes', 'sliders', closeThen(() => Themes.open())],
+          ...(canFull ? [[document.fullscreenElement ? 'Exit Full Screen' : 'Full Screen', 'full', () => { close(false); toggleFull(); }]] : []),
           ['Turn Off', 'power', () => { close(false); powerOff(); }],
         ];
         default: return [
           ['Xbox Home', '', xboxHome],
           ['Messages', 'mail', win('message')],
-          ['Minimize', 'minimize', () => close(false)],
+          ['Minimise', 'minimize', () => close(false)],
           [trayLabel(), 'eject', () => { toggleTray(); paint(); }],
         ];
       }
@@ -1514,7 +1530,7 @@
       const list = $('.gd__list', canvas);
       list.innerHTML = items().map(([t, icon, , count], i) => `<button type="button" class="grow${i === sel ? ' sel' : ''}" role="menuitem" data-i="${i}"><span>${esc(t)}</span><span class="cnt">${count ? esc(count) : ''}</span>${icon ? svg(icon) : '<span></span>'}</button>`).join('');
       $$('.grow', list).forEach((r) => {
-        r.addEventListener('mouseenter', () => { if (+r.dataset.i !== sel) { sel = +r.dataset.i; sfx('guide-hover'); paint(true); } });
+        r.addEventListener('mouseenter', () => { if (+r.dataset.i !== sel && !touched()) { sel = +r.dataset.i; sfx('guide-hover'); paint(true); } });
         r.addEventListener('click', () => { sel = +r.dataset.i; activate(); });
       });
       if (nudge) { const s = $('.grow.sel', list); if (s) { s.classList.remove('nudge'); void s.offsetWidth; s.classList.add('nudge'); } }
@@ -1636,7 +1652,8 @@
             <div class="ach__grid"><div>${ACHIEVEMENTS.map((x, i) => `<button type="button" class="ach${g[x.id] ? '' : ' locked'}${i === achSel ? ' sel' : ''}" data-i="${i}" aria-label="${esc(x.t)}"><i>${g[x.id] ? svg('trophy', '0 0 30 32') : svg('lock', '0 0 36 32')}</i></button>`).join('')}</div></div>
             <div class="ach__foot"><b style="font-weight:400">${achSel + 1} of ${ACHIEVEMENTS.length} ${on ? 'unlocked' : 'locked'}</b><span>${gamerscore()} of 1000G</span></div>`;
           $$('.ach', body).forEach((b) => {
-            b.addEventListener('mouseenter', () => { if (+b.dataset.i !== achSel) { achSel = +b.dataset.i; paintScreen(); } });
+            b.addEventListener('mouseenter', () => { if (+b.dataset.i !== achSel && !touched()) { achSel = +b.dataset.i; paintScreen(); } });
+            b.addEventListener('click', () => { if (+b.dataset.i !== achSel) { achSel = +b.dataset.i; sfx('guide-hover'); paintScreen(); } });
           });
           const row = Math.floor(achSel / 7), grid = $('.ach__grid > div', body);
           grid.style.transform = `translateY(${-Math.max(0, row - 2) * 104}px)`;
@@ -1681,6 +1698,14 @@
     return { open, close, toggle, handle, get isOpen() { return open_; } };
   })();
 
+  /* ================= Full screen ================= */
+  const canFull = !!(root.requestFullscreen && document.fullscreenEnabled);
+  function toggleFull() {
+    if (!canFull) return;
+    if (document.fullscreenElement) document.exitFullscreen();
+    else root.requestFullscreen({ navigationUI: 'hide' }).catch(() => {});
+  }
+
   /* ================= Power ================= */
   let booting = true;
   function powerOff() {
@@ -1706,6 +1731,7 @@
     if (gateWaiting) { startFromGate(); return; }
     if (bootSkippable) { skipBoot(); return; }
     if (booting) return;
+    if (a === 'full') { toggleFull(); return; }
     if (a === 'guide') { Guide.toggle(); return; }
     if (Guide.isOpen) { Guide.handle(a); return; }
     const top = Overlays.api();
@@ -1745,7 +1771,7 @@
     KeyA: 'left', KeyD: 'right', KeyW: 'up', KeyS: 'down',
     Enter: 'a', Space: 'a', Escape: 'b', Backspace: 'b', KeyB: 'b',
     KeyX: 'x', KeyY: 'y', KeyQ: 'lb', PageUp: 'lb', KeyE: 'rb', PageDown: 'rb',
-    Home: 'guide', KeyG: 'guide', F1: 'guide',
+    Home: 'guide', KeyG: 'guide', F1: 'guide', KeyF: 'full',
   };
   addEventListener('keydown', (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -1764,7 +1790,7 @@
   // Mouse: hover makes a tile active, a click activates it.
   function wirePage(page) {
     $$('.t', page).forEach((b) => {
-      b.addEventListener('mousemove', () => { if (activeEl !== b && !animatingTab) { inputMode = 'mouse'; setPadMode(false); setActive(b); sfx('focus'); } });
+      b.addEventListener('mousemove', () => { if (activeEl !== b && !animatingTab && !touched()) { inputMode = 'mouse'; setPadMode(false); setActive(b); sfx('focus'); } });
       b.addEventListener('mouseleave', () => { if (activeEl === b && inputMode === 'mouse') setActive(null); });
       b.addEventListener('click', () => { if (animatingTab) return; focusEl(b); lastFocus[curTab()] = b; activateTile(b); });
     });
@@ -1926,16 +1952,13 @@
     .then((d) => { FEED = d; }, () => { FEED = {}; })
     .then(() => { fillLive(); renderPeeks(); Win.refresh(); });
 
-  /* ================= Clocks ================= */
-  function tickClock() {
-    const d = new Date();
-    $$('[data-clock24]').forEach((el) => { el.textContent = `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; });
-  }
-  setInterval(tickClock, 15000);
-
   /* ================= Startup: gate, boot video, fake loading, sign-in ================= */
   let gateWaiting = true, bootSkippable = false, bootEnded = null;
   const gate = $('#gate'), bootEl = $('#boot'), video = $('video', bootEl);
+  if (matchMedia('(pointer: coarse)').matches) {
+    $('p', gate).textContent = 'Tap to start';
+    $('.skip', bootEl).textContent = 'Tap to skip';
+  }
   gate.addEventListener('click', () => act('a'));
   bootEl.addEventListener('click', () => act('a'));
 
@@ -2037,6 +2060,8 @@
     };
     const wait_ = setInterval(() => { if (!booting) { clearInterval(wait_); setTimeout(after, 400); } }, 100);
   }
+
+  addEventListener('resize', () => { fit(); renderPeeks(); });
 
   /* ================= Go ================= */
   const about = $('.about');

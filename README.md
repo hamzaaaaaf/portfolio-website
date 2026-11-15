@@ -23,8 +23,11 @@ Every screen is DashX360's 1280×720 canvas scaled to fit the window, so tile po
 | Switch tabs | LB / RB | Q / E, Tab / Shift+Tab, or Page Up / Page Down |
 | Xbox Guide | Guide / PS / Home button, PlayStation touchpad, or Back + Start | Home or G |
 | Xbox Home (in the Guide) | Y | Y |
+| Full screen | in the Guide, under Settings | F |
 
-Xbox, PlayStation and Nintendo controllers are mapped by button position, so the bottom face button is always A. Mouse, trackpad swipes and touch work too.
+Xbox, PlayStation and Nintendo controllers are mapped by button position, so the bottom face button is always A. Mouse, trackpad swipes and touch work too: the Guide also opens from the Guide hint at the bottom left, or the gamerpic at the top right.
+
+On a window wider than 16:9 the side previews of the neighbouring tabs spread out to the edges. Without JavaScript, and on paper, the page is a plain summary of what's on the dashboard.
 
 ## Live stats
 
@@ -33,7 +36,7 @@ Xbox, PlayStation and Nintendo controllers are mapped by button position, so the
 | Source | Where it comes from | Needs |
 | --- | --- | --- |
 | LeetCode | LeetCode's GraphQL API | nothing |
-| GitHub | GitHub's REST API | nothing (`GITHUB_TOKEN` if Cloudflare's shared IPs hit the rate limit) |
+| GitHub | GitHub's REST API, or ungh.cc's copy of it when GitHub's rate limit turns Cloudflare's shared addresses away | nothing (`GITHUB_TOKEN` gives the Worker a limit of its own) |
 | Films | my Letterboxd profile (favourites and counts), films by date rated, and the diary RSS feed. Letterboxd puts a browser check in front of Cloudflare, so the pages go through the r.jina.ai reader and the last good read is kept | nothing (`JINA_API_KEY` if the reader's shared limit gets in the way) |
 | IMDb ratings | OMDb | `OMDB_API_KEY` |
 | Steam | the public profile, and the Web API for full library hours | `STEAM_API_KEY`, with "Game details" set to public |
@@ -56,7 +59,7 @@ Add the secrets under Workers & Pages → portfolio-website → Settings → Var
 - Email Routing turned on for byhamza.dev, with your inbox as a verified destination address.
 - A `CONTACT_TO` secret holding that inbox address (it stays out of the repo).
 
-To keep it from being abused, a visitor can send three messages an hour and the site twenty a day; messages need a valid email to reply to, can't be stuffed with links, and anything sent faster than a person could type is quietly dropped. Until `CONTACT_TO` is set, the window says messages aren't switched on and points to the email address instead.
+To keep it from being abused, only the site's own page can post to it, a visitor can send three messages an hour and the site twenty a day; messages need a valid email to reply to, can't be stuffed with links, and anything sent faster than a person could type is quietly dropped. Until `CONTACT_TO` is set, the window says messages aren't switched on and points to the email address instead.
 
 ## Stack
 
@@ -66,11 +69,17 @@ Plain HTML, CSS and JavaScript with no build step, hosted on Cloudflare Workers 
 public/index.html        page shell and a plain-text summary for search engines
 public/dash.css          DashX360's styles
 public/dash.js           dashboard, windows, Guide, sounds and input
+public/404.html, 404.js  the not-found page; old addresses open the matching screen
+public/_headers          caching and security headers for the static files
+public/site.webmanifest  name, colours and icons for Add to Home Screen
+public/og.jpg            the picture shown when the link is shared (a screenshot of the About tab)
 public/assets/           artwork, sounds, boot video and fonts (built by tools/build_assets.py)
 src/worker.js            /api/feed, /api/contact and the cron that refreshes the feed
 tools/build_assets.py    converts DashX360's assets for the web
 tools/minecraft_scene.py draws the Minecraft-style scene in Where It Began
 ```
+
+`public/_headers` keeps fonts for a year and sounds, the boot video and artwork for a day (after that they show at once while a fresh copy loads behind), and sets a Content-Security-Policy that only lets the site's own scripts run. The icons (`favicon.ico`, `apple-touch-icon.png`, `icon-*.png`) are `favicon.svg` rendered at each size.
 
 `tools/build_assets.py` takes DashX360's `Assets` folder and Microsoft's [Selawik](https://github.com/microsoft/Selawik) release (an open-source stand-in for Segoe UI), resizes everything to twice its on-screen size as WebP, crops my gamerpic from `tools/src/gamerpic.jpg`, and draws the Panic Pack! and Instagram Unliker artwork:
 
