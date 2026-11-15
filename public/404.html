@@ -6,16 +6,9 @@
   <title>Not found · Hamza</title>
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#3c4143">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <script>
-    // Addresses from earlier versions of the site open the matching dashboard screen.
-    (function () {
-      var k = location.pathname.replace(/\.html$/, '').replace(/\/$/, '').slice(1).toLowerCase();
-      var to = { about: 'about', work: 'projects', projects: 'projects', stats: 'stats', finder: 'projects', settings: 'settings', achievements: 'achievements', games: 'hobbies', hobbies: 'hobbies', movies: 'hobbies', films: 'favs', social: 'social' }[k];
-      var home = ['guestbook', 'draw', 'terminal', 'arcade', 'play', 'type', 'wyr', 'review', 'index', 'doom'].indexOf(k) >= 0;
-      if (to || home) location.replace(to ? '/#' + to : '/');
-    })();
-  </script>
+  <script src="/404.js"></script>
   <style>
     @font-face { font-family: Selawik; font-weight: 300; src: url(/assets/fonts/selawkl.woff2) format("woff2"); }
     @font-face { font-family: Selawik; font-weight: 400; src: url(/assets/fonts/selawk.woff2) format("woff2"); }
@@ -36,6 +29,5 @@
     <p>This page isn’t on the dashboard. It may have moved when byhamza.dev became an Xbox 360.</p>
     <a href="/"><i><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 14.9 10 5.1l3.5 9.8M7.7 11.6h4.6"/></svg></i> Xbox Home</a>
   </main>
-  <script>addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') location.href = '/'; });</script>
 </body>
 </html>

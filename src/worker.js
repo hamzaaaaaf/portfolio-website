@@ -15,7 +15,8 @@ import { EmailMessage } from 'cloudflare:email';
 //   VALORANT_REGION  eu, na, ap, kr, latam or br (eu if unset)
 //   OMDB_API_KEY     OMDb key, for IMDb ratings
 //   STEAM_API_KEY    Steam Web API key, for full library hours
-//   GITHUB_TOKEN     optional; GitHub limits anonymous requests from shared IPs
+//   GITHUB_TOKEN     optional; GitHub limits anonymous requests from shared IPs, and
+//                    without it the repo list falls back to ungh.cc
 //   FORTNITE_API_KEY fortnite-api.com key, for Fortnite stats
 //   FORTNITE_NAME    Epic (or PSN) display name, kept out of the repo and the page
 //   JINA_API_KEY     optional; a jina.ai key, so reading Letterboxd isn't rate limited
@@ -86,19 +87,34 @@ async function leetcode() {
 
 /* ---------- GitHub ---------- */
 
-async function github(env) {
+async function github(env, prev) {
   const headers = { accept: 'application/vnd.github+json' };
   if (env.GITHUB_TOKEN) headers.authorization = `Bearer ${env.GITHUB_TOKEN}`;
-  const repos = (await get(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=pushed`, { headers })).filter((r) => !r.fork);
-  // Share of repos by main language: one request, so the rate limit lasts.
-  const count = {};
-  for (const r of repos) if (r.language) count[r.language] = (count[r.language] || 0) + 1;
-  const total = Object.values(count).reduce((x, y) => x + y, 0) || 1;
+  let repos = null, languages = null;
+  try {
+    repos = (await get(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=pushed`, { headers }))
+      .filter((r) => !r.fork)
+      .map((r) => ({ name: r.name, stars: r.stargazers_count, pushed: r.pushed_at, language: r.language }));
+    // Share of repos by main language: one request, so the rate limit lasts.
+    const count = {};
+    for (const r of repos) if (r.language) count[r.language] = (count[r.language] || 0) + 1;
+    const total = Object.values(count).reduce((x, y) => x + y, 0) || 1;
+    languages = Object.entries(count).sort((x, y) => y[1] - x[1]).slice(0, 5).map(([name, c]) => [name, Math.round((c / total) * 100)]);
+  } catch (err) {
+    // GitHub limits anonymous requests by address, and Cloudflare's are shared,
+    // so its API often says no. ungh.cc serves the same list from its own
+    // cache. It has no languages, so the last ones known stay.
+    const d = await get(`https://ungh.cc/users/${GITHUB_USER}/repos`).catch(() => { throw err; });
+    repos = (d.repos || []).map((r) => ({ name: r.name, stars: r.stars || 0, pushed: r.pushedAt }))
+      .sort((a, b) => String(b.pushed).localeCompare(String(a.pushed)));
+    if (!repos.length) throw err;
+    languages = (prev && prev.languages) || [];
+  }
   return {
     repos: repos.length,
-    stars: repos.reduce((n, r) => n + r.stargazers_count, 0),
-    languages: Object.entries(count).sort((x, y) => y[1] - x[1]).slice(0, 5).map(([name, c]) => [name, Math.round((c / total) * 100)]),
-    latest: repos[0] ? { name: repos[0].name, pushed: repos[0].pushed_at } : null,
+    stars: repos.reduce((n, r) => n + r.stars, 0),
+    languages,
+    latest: repos[0] ? { name: repos[0].name, pushed: repos[0].pushed } : null,
   };
 }
 
@@ -487,7 +503,7 @@ async function refresh(env) {
   const imdb = JSON.parse((await env.FEED.get('imdb')) || '{}');
   const jobs = {
     leetcode: () => leetcode(),
-    github: () => github(env),
+    github: () => github(env, prev.github),
     movies: () => letterboxd(env, imdb),
     steam: () => steam(env),
     psn: () => psn(env),
@@ -516,7 +532,7 @@ async function feed(env, ctx, force) {
     // Serve what's there now and refresh in the background, once.
     ctx.waitUntil(env.FEED.put('refreshing', '1', { expirationTtl: 300 }).then(() => refresh(env)));
   }
-  return Response.json(data, { headers: { 'cache-control': 'public, max-age=300' } });
+  return Response.json(data, { headers: { 'cache-control': 'public, max-age=300', 'x-content-type-options': 'nosniff' } });
 }
 
 // The live-cursor Durable Object is retired. Preview builds can't apply class
@@ -530,10 +546,15 @@ export class Room extends DurableObject {}
 // Email Routing. Limits keep it from being used to flood the inbox: three
 // messages an hour from one address, and twenty a day in all.
 const CONTACT_LIMITS = { perHour: 3, perDay: 20 };
-const reply = (status, body) => Response.json(body, { status, headers: { 'cache-control': 'no-store' } });
+const reply = (status, body) => Response.json(body, { status, headers: { 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' } });
 
 async function contact(request, env) {
   if (request.method !== 'POST') return reply(405, { error: 'method', message: 'Send messages with POST.' });
+  // Browsers say which page a POST came from. Only this site's own page counts.
+  let from = '';
+  try { from = new URL(request.headers.get('origin') || '').host; } catch { /* no usable Origin */ }
+  if (from !== new URL(request.url).host) return reply(403, { error: 'origin', message: 'Messages can only be sent from the site itself.' });
+  if (!(request.headers.get('content-type') || '').includes('application/json')) return reply(415, { error: 'type', message: 'That message didn’t come through properly.' });
   if (!env.MAIL || !env.CONTACT_TO) return reply(503, { error: 'off', message: 'Messages aren’t switched on yet.' });
   let body;
   try { body = await request.json(); } catch { return reply(400, { error: 'bad', message: 'That message didn’t come through properly.' }); }
