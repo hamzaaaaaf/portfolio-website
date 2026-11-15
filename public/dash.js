@@ -11,6 +11,8 @@
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  // A key's value only if the map itself has it: #constructor names nothing.
+  const own = (map, k) => (Object.prototype.hasOwnProperty.call(map, k) ? map[k] : undefined);
   const html = (s) => { const t = document.createElement('template'); t.innerHTML = s.trim(); return t.content.firstElementChild; };
   const store = {
     get(k, d) { try { const v = localStorage.getItem(`dx.${k}`); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
@@ -489,8 +491,8 @@
     if (el) el.classList.add('on');
   }
   // The mouse plays the same tick as the stick when it moves onto something new.
-  function hover(el) {
-    if (activeEl === el || touched()) return;
+  function hover(el, e) {
+    if (activeEl === el || (e ? still(e) : touched())) return;
     setActive(el);
     sfx('focus');
   }
@@ -503,12 +505,17 @@
   function setPadMode(on) {
     document.body.classList.toggle('pad', on);
   }
-  addEventListener('mousemove', (e) => { if (e.movementX || e.movementY) { inputMode = 'mouse'; setPadMode(false); } }, { passive: true });
   // A tap sends mouse events after its touch events. Treating those as a hover
   // would repaint what is under the finger, and iOS then drops the tap itself.
   let touchAt = -1e9;
   addEventListener('touchstart', () => { touchAt = performance.now(); }, { passive: true, capture: true });
   const touched = () => performance.now() - touchAt < 900;
+  // A screen that changes under a mouse lying still sends mouse events as well.
+  // Nobody is pointing at anything then, so the highlight stays with the keys
+  // or the controller: only a mouse that has moved since its last event counts.
+  let mouseX = -1, mouseY = -1;
+  const still = (e) => touched() || (e.clientX === mouseX && e.clientY === mouseY);
+  addEventListener('mousemove', (e) => { if (!still(e)) { inputMode = 'mouse'; setPadMode(false); } mouseX = e.clientX; mouseY = e.clientY; }, { passive: true });
 
   // TryMoveDashboardFocus: nearest candidate in the pressed direction,
   // scored as secondary distance x 2.4 plus primary distance.
@@ -591,6 +598,7 @@
   function paintTabs() {
     tabBtns.forEach((b, i) => { b.classList.toggle('sel', i === tabIndex); b.setAttribute('aria-selected', String(i === tabIndex)); });
     Object.values(pageEls).forEach((p) => p.classList.toggle('cur', p.dataset.tab === curTab()));
+    Nav.sync();
   }
   // MoveTab + AnimateTabChange: a 420 ms quartic slide of a 3-page strip,
   // with the side previews sliding in from outside.
@@ -725,6 +733,7 @@
       top() { return stack.length ? stack[stack.length - 1].name : null; },
       api() { return stack.length ? stack[stack.length - 1].api : null; },
       has(name) { return stack.some((o) => o.name === name); },
+      count() { return stack.length; },
       // DashX360 opens one menu at a time: opening a menu closes the others
       // (game details is the exception and opens over a list).
       clear() { [...stack].reverse().forEach((o) => { if (o.api.dismiss) o.api.dismiss(); }); stack.length = 0; syncDash(); },
@@ -736,6 +745,7 @@
   const FULL = ['settings', 'win'];
   let dashHidden = false, leaving = null, syncQueued = false, quietReturn = false;
   function syncDash() {
+    Nav.sync();
     // Stack changes made together (close one menu, open the next) settle once.
     if (syncQueued) return;
     syncQueued = true;
@@ -833,7 +843,7 @@
       box.style.transform = '';
       box.innerHTML = items.join('');
       $$('[data-nav]', box).forEach((b) => {
-        b.addEventListener('mouseenter', () => { if (touched()) return; hover(b); if (b.dataset.tip) describe(...b.dataset.tip.split('|')); });
+        b.addEventListener('mousemove', (e) => { if (activeEl === b || still(e)) return; hover(b); if (b.dataset.tip) describe(...b.dataset.tip.split('|')); });
         b.addEventListener('focus', () => { if (b.dataset.tip) describe(...b.dataset.tip.split('|')); });
         b.addEventListener('click', (e) => onClick(b, e));
       });
@@ -975,6 +985,7 @@
         return true;
       },
       refocus() { if (!el) return; const f = $('.set__left [data-nav]', el); if (f) focusEl(f); },
+      back: () => close(),
       dismiss() { overlayOut(el, 'fade'); el = null; },
     };
     return { open, close };
@@ -997,7 +1008,7 @@
       el.innerHTML = `<div class="themes__back"></div><div class="themes__panel"><div class="themes__head">Select Theme</div>${THEMES.map((t) => `<button type="button" class="tbtn" data-nav data-theme="${t.id}">${esc(t.name)}${t.id === S.theme ? '<small>Current</small>' : ''}</button>`).join('')}</div>
         <div class="hints ofoot themes__foot"><span class="h" data-act="a">${G('A')} Select   </span><span class="h" data-act="b">${G('B')} Back   </span></div>`;
       $$('.tbtn', el).forEach((b) => {
-        b.addEventListener('mouseenter', () => hover(b));
+        b.addEventListener('mousemove', (e) => hover(b, e));
         b.addEventListener('click', () => pick(b));
       });
       Overlays.push('themes', api);
@@ -1229,7 +1240,7 @@
   const Win = (() => {
     let el = null, id = null, spec = null;
     function open(which) {
-      if (!WINDOWS[which]) return;
+      if (!own(WINDOWS, which)) return;
       Overlays.clear();
       id = which;
       el = overlayEl('win');
@@ -1253,7 +1264,7 @@
       body.scrollTop = 0;
       $('.win__foot', el).innerHTML = [spec.a && ['a', spec.a], spec.x && ['x', spec.x], ['b', 'Back']].filter(Boolean).map(([k, t]) => `<span class="h" data-act="${k}">${G(k.toUpperCase())} ${esc(t)}   </span>`).join('');
       $$('[data-nav]', body).forEach((b) => {
-        b.addEventListener('mouseenter', () => hover(b));
+        b.addEventListener('mousemove', (e) => hover(b, e));
         b.addEventListener('click', () => spec.run(+b.dataset.i));
       });
       const first = (spec.focus != null && $(`[data-nav][data-i="${spec.focus}"]`, body)) || $('[data-nav]', body);
@@ -1286,11 +1297,12 @@
         return true;
       },
       refocus() { if (el) { const f = $('.win__body [data-nav]', el); if (f) focusEl(f); } },
+      back: () => close(),
       dismiss() { overlayOut(el, 'fade'); el = null; },
     };
     // Repaint when the live stats arrive while a window is open.
     const refresh = () => { if (el) paint(); };
-    return { open, refresh, close };
+    return { open, refresh, close, get id() { return el ? id : null; }, get title() { return el && spec ? spec.title : ''; } };
   })();
   /* ================= Message Hamza: compose and the on-screen keyboard ================= */
   // The draft stays put if the window closes, so a slip of B loses nothing.
@@ -1324,55 +1336,91 @@
   }
 
   // The Xbox 360 keyboard: letters and numbers in a grid, then Shift, Symbols,
-  // Space, Backspace and Done. A real keyboard types straight in.
+  // Space, Backspace and Done. The box above the keys is a real text field, so
+  // a real keyboard, a phone's own keyboard, paste, the caret and every
+  // language's way of typing all work, and the keys on screen type at the caret.
   const Keyboard = (() => {
     const ROWS = { abc: ['abcdefg123', 'hijklmn456', 'opqrstu789', "vwxyz.'-0@"], sym: ['!?#$%&*()_', '+=/\\:;"<>~', ',.[]{}^|`€', '£¥°§•¿¡«»…'] };
     const KEYS = [['shift', 'Shift', 'LT'], ['sym', 'Symbols', 'RT'], ['space', 'Space', 'Y'], ['back', 'Backspace', 'X'], ['done', 'Done', 'Start']];
-    let el = null, field = 0, text = '', shift = false, sym = false, sel = 0;
+    const coarse = matchMedia('(pointer: coarse)');
+    // ownKeys: on a touch screen, the visitor has asked for the phone's keyboard.
+    let el = null, input = null, field = 0, shift = false, sym = false, sel = 0, ownKeys = false;
     const spec = () => FIELDS[field];
     function open(i) {
       if (el) return;
-      field = i; text = draft[FIELDS[i][0]]; shift = false; sym = false; sel = 0;
+      field = i; shift = false; sym = false; sel = 0;
+      const [k, label, max, multi] = spec();
+      // The email box stays type="text": the caret can't be read or set on type="email".
+      const mode = k === 'email' ? 'email' : 'text';
+      const attrs = `id="kb-input" name="${k}" class="kb__input${multi ? ' kb__input--multi' : ''}" maxlength="${max}" autocomplete="${multi ? 'off' : k}" autocapitalize="${k === 'email' ? 'off' : k === 'name' ? 'words' : 'sentences'}" autocorrect="${multi ? 'on' : 'off'}" spellcheck="${multi}" enterkeyhint="${multi ? 'enter' : 'done'}"`;
       el = overlayEl('kb');
-      el.innerHTML = `<div class="kb__panel"><div class="kb__label"></div><div class="kb__box"><span class="kb__text"></span><i class="kb__caret"></i></div><div class="kb__count"></div><div class="kb__keys"></div></div>
+      el.setAttribute('aria-label', label);
+      el.innerHTML = `<div class="kb__panel"><label class="kb__label" for="kb-input">${esc(label)}</label>${multi ? `<textarea ${attrs}></textarea>` : `<input type="text" ${attrs}>`}<div class="kb__count"></div><div class="kb__keys"></div></div>
         <div class="hints ofoot kb__foot"><span class="h" data-act="a">${G('A')} Select   </span><span class="h" data-act="b">${G('B')} Back   </span><span class="h" data-act="x">${G('X')} Backspace   </span><span class="h" data-act="y">${G('Y')} Space   </span><span class="h" data-act="start"><i class="kpill">Start</i> Done</span></div>`;
-      el.addEventListener('click', (e) => {
-        const k = e.target.closest('[data-k]');
-        if (k) { sel = +k.dataset.k; press(); return; }
-        const h = e.target.closest('[data-act]');
-        if (h) handle(h.dataset.act);
+      input = $('.kb__input', el);
+      input.value = draft[k];
+      input.setSelectionRange(input.value.length, input.value.length);
+      // On a touch screen the caret shows but the phone's keyboard stays down,
+      // so the 360 keys are what you get; a tap on the box brings the phone's up,
+      // and from then on it comes up by itself.
+      const quiet = coarse.matches && !ownKeys;
+      input.setAttribute('inputmode', quiet ? 'none' : mode);
+      if (quiet) input.placeholder = 'Tap here for your own keyboard';
+      input.addEventListener('pointerdown', () => {
+        if (!input || input.getAttribute('inputmode') !== 'none') return;
+        ownKeys = true;
+        input.setAttribute('inputmode', mode);
+        input.placeholder = '';
+        // The keyboard only follows a change of mode when focus arrives afresh,
+        // and the tap itself is about to give it back.
+        input.blur();
       });
-      el.addEventListener('mousemove', (e) => { const k = e.target.closest('[data-k]'); if (k && +k.dataset.k !== sel && !touched()) { sel = +k.dataset.k; sfx('focus'); paint(); } });
+      input.addEventListener('input', changed);
+      // The bar of hints along the bottom is handled with every other one.
+      el.addEventListener('click', (e) => { const key = e.target.closest('[data-k]'); if (key) { sel = +key.dataset.k; press(); } });
+      // A click on a key, or beside the box, must not take the caret out of it.
+      el.addEventListener('mousedown', (e) => { if (e.target !== input) e.preventDefault(); });
+      el.addEventListener('mousemove', (e) => { const key = e.target.closest('[data-k]'); if (key && +key.dataset.k !== sel && !still(e)) { sel = +key.dataset.k; sfx('focus'); paint(); } });
       Overlays.push('kb', api);
       paint();
+      changed();
+      focusInput();
       sfx('menu-in');
       if (!reduced.matches) { layerIn(el, 0, 120, 0); layerIn($('.kb__panel', el), 0, 260, 0); anim($('.kb__panel', el), [{ translate: '0 40px' }, { translate: '0 0' }], 260, E.cubicOut); }
     }
+    function focusInput() { if (input) { try { input.focus({ preventScroll: true }); } catch (e) { /* not focusable */ } } }
     const chars = () => ROWS[sym ? 'sym' : 'abc'].map((r) => [...r].map((c) => (shift && !sym ? c.toUpperCase() : c)));
     function paint() {
       if (!el) return;
-      const [, label, max, multi] = spec();
-      $('.kb__label', el).textContent = label;
-      $('.kb__box', el).classList.toggle('kb__box--multi', multi);
-      const t = $('.kb__text', el);
-      t.textContent = text;
-      $('.kb__box', el).scrollTop = $('.kb__box', el).scrollHeight;
-      $('.kb__count', el).textContent = `${text.length} / ${max}`;
-      const grid = chars();
-      $('.kb__keys', el).innerHTML = grid.map((row, r) => row.map((c, i) => `<button type="button" class="kkey${sel === r * 10 + i ? ' on' : ''}" data-k="${r * 10 + i}">${esc(c)}</button>`).join('')).join('')
-        + KEYS.map(([k, name, btn], j) => `<button type="button" class="kkey kkey--wide${sel === 40 + j ? ' on' : ''}${(k === 'shift' && shift) || (k === 'sym' && sym) ? ' lit' : ''}" data-k="${40 + j}"><small>${btn}</small>${name}</button>`).join('');
+      $('.kb__keys', el).innerHTML = chars().map((row, r) => row.map((c, i) => `<button type="button" tabindex="-1" class="kkey${sel === r * 10 + i ? ' on' : ''}" data-k="${r * 10 + i}">${esc(c)}</button>`).join('')).join('')
+        + KEYS.map(([k, name, btn], j) => `<button type="button" tabindex="-1" class="kkey kkey--wide${sel === 40 + j ? ' on' : ''}${(k === 'shift' && shift) || (k === 'sym' && sym) ? ' lit' : ''}" data-k="${40 + j}"><small>${btn}</small>${name}</button>`).join('');
     }
+    // After any change: the count, and the end of the text kept in view.
+    function changed() {
+      if (!el) return;
+      $('.kb__count', el).textContent = `${input.value.length} / ${spec()[2]}`;
+      if (input.selectionEnd === input.value.length) { input.scrollTop = input.scrollHeight; input.scrollLeft = input.scrollWidth; }
+    }
+    const caret = () => { const a = input.selectionStart == null ? input.value.length : input.selectionStart; return [a, input.selectionEnd == null ? a : input.selectionEnd]; };
+    // What the keys on screen type goes in at the caret, over any selection.
     function insert(s) {
       const [, , max, multi] = spec();
       s = multi ? s.replace(/\r\n?/g, '\n') : s.replace(/[\r\n]+/g, ' ');
       s = s.replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, '');
       if (!s) return;
-      const room = max - text.length;
+      const [a, b] = caret();
+      const room = max - (input.value.length - (b - a));
       if (room <= 0) { sfx('back'); return; }
-      text += s.slice(0, room);
-      paint();
+      input.setRangeText(s.slice(0, room), a, b, 'end');
+      changed();
     }
-    function backspace() { if (text) { text = [...text].slice(0, -1).join(''); paint(); } }
+    function backspace() {
+      let [a, b] = caret();
+      // With nothing selected, one whole character goes, even an emoji.
+      if (a === b) { if (!a) return; a -= [...input.value.slice(0, a)].pop().length; }
+      input.setRangeText('', a, b, 'end');
+      changed();
+    }
     function press() {
       if (sel < 40) {
         const r = Math.floor(sel / 10), c = sel % 10;
@@ -1404,20 +1452,30 @@
       }
       if (n !== sel) { sel = n; sfx('focus'); paint(); }
     }
+    // What's in the box goes into the draft however the keyboard closes.
+    function keep() {
+      const [k, , max, multi] = spec();
+      draft[k] = (multi ? input.value.replace(/\r\n?/g, '\n') : input.value.replace(/[\r\n]+/g, ' ')).slice(0, max);
+      draft.status = '';
+    }
+    function leave() {
+      const node = el;
+      keep();
+      // Letting go of the box puts a phone's keyboard away, and the page back
+      // where it was if the phone scrolled it to show the box.
+      try { input.blur(); } catch (e) { /* already gone */ }
+      if (window.scrollX || window.scrollY) window.scrollTo(0, 0);
+      el = null; input = null;
+      overlayOut(node, 'fade');
+    }
     // done: Start or Done moves on to the next field; B stays on this one.
     function close(done) {
       if (!el) return;
-      const [k] = spec();
-      draft[k] = text;
-      if (!draft.opened) draft.opened = Date.now();
-      draft.status = '';
       draft.focus = done ? Math.min(field + 1, 3) : field;
-      const node = el;
-      el = null;
+      leave();
       sfx(done ? 'select' : 'menu-out');
       Overlays.pop('kb');
       Win.refresh();
-      overlayOut(node, 'fade');
     }
     function handle(a) {
       if (!el) return true;
@@ -1431,29 +1489,31 @@
       else if (a === 'start') close(true);
       return true;
     }
-    const api = { handle, refocus() {}, dismiss() { if (el) { overlayOut(el, 'fade'); el = null; } } };
-    // Typing on a real keyboard goes straight into the box. Enter finishes a
-    // one-line field and starts a new line in the message; Ctrl or Cmd + Enter
-    // finishes either. Arrow keys still move around the keys on screen.
+    const api = { handle, refocus: focusInput, back: () => close(false), dismiss() { if (el) leave(); } };
+    // While the keyboard is up the dashboard's own keys are off: G has to type
+    // a g, not open the Guide. Escape goes back, Tab and Enter finish (in the
+    // message Enter starts a new line, and Ctrl or Cmd + Enter finishes), and
+    // everything else is the text field's own business.
     addEventListener('keydown', (e) => {
       if (!el || Guide.isOpen) return;
-      const [, , , multi] = spec();
+      e.stopImmediatePropagation();
+      const multi = spec()[3];
+      if (e.isComposing || e.keyCode === 229) return;
+      if (e.key === 'Escape') { e.preventDefault(); close(false); return; }
+      if (e.key === 'Tab') { e.preventDefault(); close(true); return; }
+      if (e.key === 'Enter' && (!multi || e.metaKey || e.ctrlKey)) { e.preventDefault(); close(true); return; }
+      if (e.target === input || e.metaKey || e.ctrlKey) return;
+      // The caret isn't in the box (it was never given, or was taken away):
+      // arrows walk the keys on screen, and typing still lands in the box.
       const arrows = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
-      let used = true;
-      if (arrows[e.key]) { inputMode = 'key'; setPadMode(true); move(arrows[e.key]); }
-      else if (e.key === 'Escape') close(false);
-      else if (e.key === 'Enter') { if (e.metaKey || e.ctrlKey || !multi) close(true); else insert('\n'); }
-      else if (e.key === 'Backspace') backspace();
-      else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'v') used = false;
-      else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) insert(e.key);
-      else if (e.key.length === 1 && e.altKey && !e.metaKey && !e.ctrlKey) insert(e.key);
-      else if (e.key !== 'Tab' && e.key !== 'Home' && e.key !== 'F1') used = false;
-      if (used || e.key === 'Tab') { e.preventDefault(); e.stopImmediatePropagation(); }
+      if (arrows[e.key]) { e.preventDefault(); inputMode = 'key'; setPadMode(true); move(arrows[e.key]); return; }
+      if (e.key === 'Enter') insert('\n'); else if (e.key === 'Backspace') backspace(); else if (e.key.length === 1) insert(e.key); else return;
+      e.preventDefault();
+      focusInput();
     }, true);
-    addEventListener('paste', (e) => { if (!el || Guide.isOpen) return; e.preventDefault(); insert((e.clipboardData || window.clipboardData).getData('text') || ''); }, true);
+    addEventListener('paste', (e) => { if (!el || Guide.isOpen || e.target === input) return; e.preventDefault(); insert((e.clipboardData || window.clipboardData).getData('text') || ''); focusInput(); }, true);
     return { open };
   })();
-
 
   /* ================= Xbox Guide ================= */
   const Guide = (() => {
@@ -1530,7 +1590,7 @@
       const list = $('.gd__list', canvas);
       list.innerHTML = items().map(([t, icon, , count], i) => `<button type="button" class="grow${i === sel ? ' sel' : ''}" role="menuitem" data-i="${i}"><span>${esc(t)}</span><span class="cnt">${count ? esc(count) : ''}</span>${icon ? svg(icon) : '<span></span>'}</button>`).join('');
       $$('.grow', list).forEach((r) => {
-        r.addEventListener('mouseenter', () => { if (+r.dataset.i !== sel && !touched()) { sel = +r.dataset.i; sfx('guide-hover'); paint(true); } });
+        r.addEventListener('mousemove', (e) => { if (+r.dataset.i !== sel && !still(e)) { sel = +r.dataset.i; sfx('guide-hover'); paint(true); } });
         r.addEventListener('click', () => { sel = +r.dataset.i; activate(); });
       });
       if (nudge) { const s = $('.grow.sel', list); if (s) { s.classList.remove('nudge'); void s.offsetWidth; s.classList.add('nudge'); } }
@@ -1540,6 +1600,7 @@
     async function open(sub) {
       if (open_ || busy || booting) return;
       busy = true; open_ = true;
+      Nav.sync();
       returnFocus = activeEl;
       tab = 2; sel = 0; screen = 'main'; direct = !!sub;
       build(); paint();
@@ -1573,6 +1634,7 @@
       if (!open_) return;
       if (playSound) sfx(direct ? 'back' : 'guide-close');
       open_ = false; busy = true;
+      Nav.sync();
       const gd = $('.gd', canvas);
       const done = () => {
         layer.hidden = true; canvas.innerHTML = ''; busy = false;
@@ -1617,6 +1679,7 @@
     /* ----- Achievements (community overlay) ----- */
     function openScreen(name) {
       screen = name;
+      Nav.sync();
       if (name === 'achievements') { achDetail = false; achSel = 0; }
       const over = $('.gd__over', canvas);
       over.innerHTML = `<div class="gx__dim"></div><div class="gx gx--${name}"><div class="gx__head"></div><div class="gx__body"></div></div>`;
@@ -1632,6 +1695,7 @@
     function closeScreen() {
       if (direct) { close(); return; }
       screen = 'main';
+      Nav.sync();
       $('.gd__over', canvas).innerHTML = '';
       sfx('guide-back');
       paint();
@@ -1652,7 +1716,7 @@
             <div class="ach__grid"><div>${ACHIEVEMENTS.map((x, i) => `<button type="button" class="ach${g[x.id] ? '' : ' locked'}${i === achSel ? ' sel' : ''}" data-i="${i}" aria-label="${esc(x.t)}"><i>${g[x.id] ? svg('trophy', '0 0 30 32') : svg('lock', '0 0 36 32')}</i></button>`).join('')}</div></div>
             <div class="ach__foot"><b style="font-weight:400">${achSel + 1} of ${ACHIEVEMENTS.length} ${on ? 'unlocked' : 'locked'}</b><span>${gamerscore()} of 1000G</span></div>`;
           $$('.ach', body).forEach((b) => {
-            b.addEventListener('mouseenter', () => { if (+b.dataset.i !== achSel && !touched()) { achSel = +b.dataset.i; paintScreen(); } });
+            b.addEventListener('mousemove', (e) => { if (+b.dataset.i !== achSel && !still(e)) { achSel = +b.dataset.i; paintScreen(); } });
             b.addEventListener('click', () => { if (+b.dataset.i !== achSel) { achSel = +b.dataset.i; sfx('guide-hover'); paintScreen(); } });
           });
           const row = Math.floor(achSel / 7), grid = $('.ach__grid > div', body);
@@ -1695,7 +1759,7 @@
     }
     function toggle() { if (open_) close(); else open(); }
     setInterval(() => { if (open_) { const c = $('.gd__clock', canvas); if (c) c.textContent = clockText(); } }, 10000);
-    return { open, close, toggle, handle, get isOpen() { return open_; } };
+    return { open, close, toggle, handle, get isOpen() { return open_; }, get screen() { return open_ ? screen : null; } };
   })();
 
   /* ================= Full screen ================= */
@@ -1775,7 +1839,7 @@
   };
   addEventListener('keydown', (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
-    const t = e.target, typing = t && t.tagName === 'INPUT' && t.type !== 'file';
+    const t = e.target, typing = t && ((t.tagName === 'INPUT' && t.type !== 'file') || t.tagName === 'TEXTAREA');
     if (typing) { if (e.key === 'Escape') { e.preventDefault(); t.blur(); act('b'); } return; }
     if (e.key === 'Tab') { e.preventDefault(); if (!gateWaiting && !bootSkippable) { inputMode = 'key'; setPadMode(true); act(e.shiftKey ? 'lb' : 'rb'); } return; }
     const a = KEYS[e.code];
@@ -1790,7 +1854,7 @@
   // Mouse: hover makes a tile active, a click activates it.
   function wirePage(page) {
     $$('.t', page).forEach((b) => {
-      b.addEventListener('mousemove', () => { if (activeEl !== b && !animatingTab && !touched()) { inputMode = 'mouse'; setPadMode(false); setActive(b); sfx('focus'); } });
+      b.addEventListener('mousemove', (e) => { if (activeEl !== b && !animatingTab && !still(e)) { inputMode = 'mouse'; setPadMode(false); setActive(b); sfx('focus'); } });
       b.addEventListener('mouseleave', () => { if (activeEl === b && inputMode === 'mouse') setActive(null); });
       b.addEventListener('click', () => { if (animatingTab) return; focusEl(b); lastFocus[curTab()] = b; activateTile(b); });
     });
@@ -2040,26 +2104,118 @@
     visit(curTab());
   }
 
-  /* ================= Deep links ================= */
+  /* ================= Deep links, the address bar and the Back button ================= */
+  // What an address names: a tab, or something that opens over the dashboard.
+  const TAB_NAMES = { home: 'about', games: 'hobbies', movies: 'hobbies', films: 'hobbies' };
+  const WIN_NAMES = { me: 'about', profile: 'about', work: 'projects', apps: 'projects', journey: 'played', contact: 'compose' };
+  // Two windows share a name with a tab, so they go by another one.
+  const WIN_HASH = { about: 'me', projects: 'work' };
+  function named(hash) {
+    const h = String(hash || '').replace(/^#/, '').toLowerCase();
+    const tab = own(TAB_NAMES, h) || h;
+    if (TABS.some((t) => t.k === tab)) return { tab };
+    if (['achievements', 'settings', 'themes'].includes(h)) return { menu: h };
+    const win = own(WIN_NAMES, h) || h;
+    return own(WINDOWS, win) ? { win } : {};
+  }
+  function openNamed(t) {
+    if (t.menu === 'achievements') Guide.open('achievements');
+    else if (t.menu === 'settings') Settings.open();
+    else if (t.menu === 'themes') Themes.open();
+    else if (t.win) Win.open(t.win);
+  }
   function route() {
     // /?to=<screen> and #<screen> both open a tab or a window.
     const q = new URLSearchParams(location.search).get('to');
-    if (q) history.replaceState(null, '', `/#${q}`);
-    const h = location.hash.slice(1).toLowerCase();
-    if (!h) return;
-    const tab = { home: 'about', games: 'hobbies', movies: 'hobbies', films: 'hobbies' }[h] || h;
-    const tabI = TABS.findIndex((t) => t.k === tab);
-    if (tabI >= 0) { tabIndex = tabI; return; }
-    const after = () => {
-      if (h === 'achievements') Guide.open('achievements');
-      else if (h === 'settings') Settings.open();
-      else if (h === 'journey') Win.open('played');
-      else if (WINDOWS[h]) Win.open(h);
-      else if (['profile', 'me'].includes(h)) Win.open('about');
-      else if (['work', 'apps'].includes(h)) Win.open('projects');
-    };
-    const wait_ = setInterval(() => { if (!booting) { clearInterval(wait_); setTimeout(after, 400); } }, 100);
+    if (q) { try { history.replaceState(history.state, '', `/#${encodeURIComponent(q)}`); } catch (e) { /* keep the address as it came */ } }
+    const t = named(location.hash);
+    if (t.tab) tabIndex = TABS.findIndex((x) => x.k === t.tab);
+    // Menus wait for the dashboard to be up; from then on the address keeps up with the screen.
+    const tick = setInterval(() => {
+      if (booting) return;
+      clearInterval(tick);
+      setTimeout(() => { if (!booting) openNamed(named(location.hash)); Nav.start(); }, 400);
+    }, 100);
   }
+
+  // Every menu that is open is one step in the browser's history, so the Back
+  // button, or the back gesture on a phone, closes the top one the way B does
+  // instead of leaving the site. The address says what is on screen, so a
+  // copied link opens the same thing.
+  const Nav = (() => {
+    const TITLE = document.title, writes = [];
+    let started = false, timer = 0, stepping = 0;
+    const depth = () => Overlays.count() + (Guide.isOpen ? 1 : 0);
+    // Each step is stamped with how many menus are open at it.
+    const have = () => { try { return (history.state && history.state.dx) | 0; } catch (e) { return 0; } };
+    const stamped = () => { try { return !!history.state && typeof history.state.dx === 'number'; } catch (e) { return true; } };
+    const base = () => location.pathname + location.search;
+    const tabHash = () => (curTab() === HOME ? '' : `#${curTab()}`);
+    function where() {
+      if (Guide.screen === 'achievements') return ['#achievements', 'Achievements'];
+      if (Overlays.has('win')) return [`#${own(WIN_HASH, Win.id) || Win.id}`, Win.title];
+      if (Overlays.has('settings')) return ['#settings', 'System Settings'];
+      if (Overlays.has('themes')) return ['#themes', 'Themes'];
+      const k = curTab();
+      return [tabHash(), k === HOME ? '' : k[0].toUpperCase() + k.slice(1)];
+    }
+    // Browsers cut off a page that rewrites its history too often, so a change
+    // of address that can wait does, and a new step never has to.
+    function write(push, dx, url) {
+      const now = Date.now();
+      while (writes.length && now - writes[0] > 30000) writes.shift();
+      if (!push && writes.length >= 60) return false;
+      try { history[push ? 'pushState' : 'replaceState']({ dx }, '', url); } catch (e) { return false; }
+      writes.push(now);
+      return true;
+    }
+    function run() {
+      timer = 0;
+      if (!started || stepping) return;
+      const want = depth(), got = have(), [hash, title] = where();
+      const name = title ? `${title} · ${ME.tag}` : TITLE;
+      if (document.title !== name) document.title = name;
+      if (want < got) {
+        // Closed with B: step back over what the menus added.
+        stepping = setTimeout(() => { stepping = 0; }, 2000);
+        try { history.go(want - got); } catch (e) { clearTimeout(stepping); stepping = 0; }
+      } else if (want > got) {
+        // The step underneath stays the dashboard's own.
+        if (!stamped()) write(false, got, base() + tabHash());
+        for (let i = got + 1; i <= want; i++) write(true, i, base() + hash);
+      } else if ((location.hash !== hash || !stamped()) && !write(false, got, base() + hash)) timer = setTimeout(run, 2000);
+    }
+    function sync() { if (started && !timer) timer = setTimeout(run, 0); }
+    function start() { if (!started) { started = true; run(); } }
+    function closeTop() {
+      if (Guide.isOpen) { Guide.close(); return; }
+      const top = Overlays.api();
+      if (top && top.back) top.back();
+    }
+    function moved(e) {
+      if (!started) return;
+      if (stepping) { if (e.type === 'popstate') { clearTimeout(stepping); stepping = 0; sync(); } return; }
+      const t = named(location.hash);
+      if (!stamped()) {
+        // An address typed by hand: go where it says.
+        if (Guide.isOpen) Guide.close(false, true);
+        Overlays.clear();
+        if (t.tab) goTab(t.tab); else openNamed(t);
+        write(false, depth(), base() + location.hash);
+        if (!depth() && !animatingTab) focusDefault();
+      } else if (e.type === 'popstate') {
+        const got = have();
+        // Back closes what is on top; Forward opens it again.
+        if (depth() > got) { for (let n = depth() - got; n > 0 && depth(); n--) closeTop(); }
+        else if (depth() < got) openNamed(t);
+        else if (!got && !animatingTab) { const tab = t.tab || (location.hash.length < 2 ? HOME : ''); if (tab) goTab(tab); }
+      }
+      sync();
+    }
+    addEventListener('popstate', moved);
+    addEventListener('hashchange', moved);
+    return { sync, start };
+  })();
 
   addEventListener('resize', () => { fit(); renderPeeks(); });
 

@@ -6,7 +6,7 @@ Every screen is DashX360's 1280×720 canvas scaled to fit the window, so tile po
 
 - **Tabs**: about, projects, hobbies and social. Each tile opens its own window, or goes straight to the project's page.
 - **About**: who I am, education, tech stack, Message Me, LinkedIn and achievements. My photo is a click away, in About Me.
-- **Message Me**: type a message on an Xbox 360 style on-screen keyboard (or a real one) and it's emailed to me. See [Messages](#messages).
+- **Message Me**: type a message on an Xbox 360 style on-screen keyboard and it's emailed to me. The box above the keys is a real text field, so a real keyboard, a phone's own keyboard (tap the box), paste and autofill all work too. See [Messages](#messages).
 - **Projects**: Panic Pack!, Instagram Unliker and this site, plus live LeetCode and GitHub stats.
 - **Hobbies**: where it began (Batman: Arkham Asylum and Minecraft), my gaming journey and favourite games, live Valorant, Fortnite, PlayStation and Steam stats, most played across every platform, and my favourite and latest films from Letterboxd with IMDb ratings.
 - **Settings and Open Tray** live in the Xbox Guide. Open Tray behaves like a console with no disc in it: it opens and closes the tray.
@@ -26,6 +26,8 @@ Every screen is DashX360's 1280×720 canvas scaled to fit the window, so tile po
 | Full screen | in the Guide, under Settings | F |
 
 Xbox, PlayStation and Nintendo controllers are mapped by button position, so the bottom face button is always A. Mouse, trackpad swipes and touch work too: the Guide also opens from the Guide hint at the bottom left, or the gamerpic at the top right.
+
+The browser's Back button, or the back gesture on a phone, closes whatever is open one layer at a time, the way B does, and Forward opens it again. The address follows the screen, so any of it can be linked: `byhamza.dev/#projects` is the Projects tab, `byhamza.dev/#education` opens Education and `byhamza.dev/#compose` opens the message window.
 
 On a window wider than 16:9 the side previews of the neighbouring tabs spread out to the edges. Without JavaScript, and on paper, the page is a plain summary of what's on the dashboard.
 
