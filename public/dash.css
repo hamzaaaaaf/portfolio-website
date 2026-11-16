@@ -1,6 +1,7 @@
 /* byhamza.dev: a web port of DashX360's Metro dashboard (github.com/ZivvoZ/dashx360).
    Every screen is a 1280x720 canvas scaled to fit the window, like DashX360's
-   Viewbox, so the pixel values below are DashX360's own. */
+   Viewbox, so the pixel values below are DashX360's own. A window taller than
+   it is wide gets the rules under "A tall window" near the end instead. */
 
 @font-face { font-family: Selawik; font-weight: 300; font-display: block; src: url(/assets/fonts/selawkl.woff2) format("woff2"); }
 @font-face { font-family: Selawik; font-weight: 350; font-display: block; src: url(/assets/fonts/selawksl.woff2) format("woff2"); }
@@ -42,6 +43,8 @@ img { display: block; -webkit-user-drag: none; }
 /* Full-window layers, each with a 1280x720 canvas in the middle. */
 .layer { position: fixed; inset: 0; overflow: hidden; }
 .canvas { position: absolute; left: 50%; top: 50%; width: 1280px; height: 720px; margin: -360px 0 0 -640px; transform: scale(var(--s)); }
+/* A tall window: the canvas is the window's width and height, from its top left. */
+body.tall .canvas { left: var(--left, 0px); top: var(--top, 0px); width: var(--cw); height: var(--ch); margin: 0; transform-origin: 0 0; }
 .abs { position: absolute; }
 .tx { position: absolute; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.33; }
 .wrap { white-space: normal; }
@@ -248,6 +251,8 @@ img { display: block; -webkit-user-drag: none; }
 .wbig small { display: block; font-size: 16px; color: rgba(255, 255, 255, .7); }
 .wbig--mail { font-size: 38px !important; }
 .wcols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+/* A long title is cut short; it must not widen its column. */
+.wcols > * { min-width: 0; }
 .wcols .wrows dt { width: 150px; }
 .wcols--val { grid-template-columns: 1.25fr 1fr; gap: 30px; }
 .wcols--val .wrows dt { width: 140px; }
@@ -264,6 +269,7 @@ img { display: block; -webkit-user-drag: none; }
 .wsend .wpick { flex: none; width: 260px; margin: 0; }
 .wsend p { margin: 0 !important; font-size: 16px !important; }
 .kb::before { content: ""; position: absolute; inset: -4000px; background: rgba(0, 0, 0, .62); }
+.typing .win__foot { visibility: hidden; }
 .kb__panel { position: absolute; left: 240px; top: 92px; width: 800px; padding: 22px 26px 26px; background: linear-gradient(#f3f5f5, #dfe3e4); color: #2b2f31; box-shadow: 0 18px 50px rgba(0, 0, 0, .5); }
 .kb__label { display: block; font-size: 20px; line-height: 1.3; }
 /* A real text field, so it has to opt back in to being selectable. */
@@ -425,8 +431,9 @@ img { display: block; -webkit-user-drag: none; }
 .ach__top .a-d { margin-top: 8px; font-size: 21px; color: rgba(255, 255, 255, .9); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ach__top .a-r { text-align: right; font-size: 24px; }
 .ach__top .a-r span { display: block; margin-top: 8px; font-size: 22px; color: rgba(255, 255, 255, .91); }
-.ach__grid { position: absolute; left: 0; right: 0; top: 161px; bottom: 36px; overflow: hidden; }
-.ach__grid > div { display: flex; flex-wrap: wrap; padding: 18px 22px 0 62px; transition: transform .2s var(--cubic-out); }
+.ach__grid { position: absolute; left: 0; right: 0; top: 161px; bottom: 36px; overflow: hidden auto; overscroll-behavior: contain; scrollbar-width: none; }
+.ach__grid::-webkit-scrollbar { display: none; }
+.ach__grid > div { display: flex; flex-wrap: wrap; padding: 18px 22px 8px 62px; }
 .ach { width: 97px; height: 104px; display: grid; place-items: center; color: #8b9295; }
 .ach i { width: 78px; height: 78px; display: grid; place-items: center; }
 .ach.sel i { background: var(--green); color: #fff; }
@@ -443,9 +450,95 @@ img { display: block; -webkit-user-drag: none; }
   .obtn:hover { border-color: rgba(0, 0, 0, .4); box-shadow: 0 0 10px rgba(121, 213, 68, .6); }
 }
 
-/* Small screens: the canvas still scales, a hint suggests turning the phone. */
-.rotate { position: fixed; left: 0; right: 0; bottom: max(16px, env(safe-area-inset-bottom)); z-index: 95; text-align: center; font-size: 14px; color: rgba(255, 255, 255, .75); pointer-events: none; display: none; }
-@media (orientation: portrait) and (max-width: 820px) { .rotate { display: block; } }
+/* ---------- A tall window: a phone held upright, a tablet, a narrow window ----------
+   The same tiles in columns (two on a phone: .tall2, three on a tablet: .tall3),
+   on a canvas as wide as the window and as tall as it needs. Pages scroll, and
+   every menu fills the canvas. */
+body.tall .me { right: 9px; top: calc(12px + var(--lift, 0px)); }
+body.tall .tabs { left: 9px; top: calc(52px + var(--lift, 0px)); gap: 24px; }
+body.tall3 .tabs { gap: 38px; }
+body.tall .frame { top: calc(104px + var(--lift, 0px)); width: var(--cw); height: calc(var(--ch) - 154px - var(--lift, 0px)); }
+body.tall .page { width: var(--cw); height: 100%; overflow: hidden auto; overscroll-behavior: contain; scrollbar-width: none; }
+body.tall .page::-webkit-scrollbar { display: none; }
+.page__end { position: absolute; left: 0; width: 1px; height: 1px; }
+body.tall .peek, body.tall .peek-hit { display: none; }
+/* The hints are buttons here, so they are bigger and easier to hit. */
+body.tall .foot, body.tall .ofoot { left: 12px; top: calc(var(--ch) - 44px); }
+body.tall .hints { font-size: 18px; }
+body.tall .hints .h { padding: 7px 0; }
+body.tall .g, body.tall .gorb { width: 22px; height: 22px; }
+body.tall .kpill { padding: 0 8px; font-size: 14px; line-height: 22px; border-radius: 11px; }
+body.tall .toast { left: calc(var(--cw) / 2 - 159.67px); top: calc(var(--ch) - 132px); }
+body.tall #loading .ring { left: calc(var(--cw) / 2 - 48px); top: calc(var(--ch) / 2 - 48px); }
+/* The boot video keeps its shape, on the white it ends on. */
+body.tall #boot video { object-fit: contain; }
+body.tall .statcol > span { margin-bottom: 11px; }
+body.tall .say { text-align: center; }
+/* On a touch screen no tile is picked out until a keyboard or controller is in use. */
+@media (hover: none) {
+  body.tall:not(.pad) .t.on { z-index: 0; transform: none; }
+  body.tall:not(.pad) .t.on > .f { box-shadow: none; }
+  body.tall:not(.pad) .foot [data-act="a"] { display: none; }
+}
+
+body.tall .win__title, body.tall .set__title { left: 14px; right: 14px; top: 14px; font-size: 28px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body.tall .win__panel { left: 7px; top: 62px; width: calc(var(--cw) - 14px); height: calc(var(--ch) - 116px); }
+body.tall2 .win__body { padding: 22px 18px; }
+body.tall2 .win__body p { font-size: 19px; }
+body.tall2 .wrows dt, body.tall2 .wcols .wrows dt { width: 152px; padding-right: 8px; }
+body.tall2 .wcols, body.tall3 .wcols--val { grid-template-columns: 1fr; gap: 22px; }
+body.tall2 .wstack { grid-template-columns: 1fr; }
+body.tall2 .wpair img { height: 150px; }
+body.tall2 .wpair figcaption { display: block; }
+body.tall2 .wpair b { display: block; font-size: 20px; line-height: 1.25; }
+body.tall2 .wposters { grid-template-columns: 1fr 1fr; }
+body.tall2 .wjourney b { font-size: 19px; }
+body.tall2 .wjourney small { font-size: 13px; }
+body.tall2 .wgames { columns: 1; }
+body.tall2 .wsend { flex-wrap: wrap; gap: 10px 18px; }
+body.tall2 .wbig { font-size: 44px !important; }
+body.tall2 .wbig--mail { font-size: 30px !important; }
+
+body.tall .set__frame { left: 7px; top: 62px; width: calc(var(--cw) - 14px); height: calc(var(--ch) - 116px); grid-template-columns: 1fr 1fr; }
+body.tall2 .set__frame { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) 148px; }
+body.tall2 .set__right { padding: 16px 20px 0; }
+body.tall2 .set__right h3 { font-size: 22px; }
+body.tall2 .set__right p { margin-top: 8px; font-size: 18px; line-height: 26px; }
+body.tall .themes__panel { left: calc(var(--cw) / 2 - 210px); top: 96px; }
+
+body.tall .kb__panel { left: 7px; top: 58px; width: calc(var(--cw) - 14px); }
+body.tall2 .kb__panel { padding: 14px 10px 12px; }
+body.tall2 .kb__keys { gap: 4px; }
+body.tall2 .kkey { height: 52px; }
+body.tall2 .kkey--wide { font-size: 14px; }
+body.tall2 .kkey--wide small, body.tall2 .kb__foot [data-act="a"], body.tall2 .kb__foot [data-act="x"], body.tall2 .kb__foot [data-act="y"] { display: none; }
+
+body.tall .gd__blade { top: calc(var(--ch) / 2 - 170px); }
+body.tall .gd__title { top: calc(var(--ch) / 2 - 209px); }
+body.tall .gd__pic { top: calc(var(--ch) / 2 - 228px); }
+body.tall .gd__clock { top: calc(var(--ch) / 2 - 208px); }
+body.tall2 .gd__blade { left: 7px; width: 466px; grid-template-columns: 46px 1fr 46px; }
+body.tall2 .gd__s0, body.tall2 .gd__s4 { display: none; }
+body.tall2 .gd__title { left: 14px; }
+body.tall2 .gd__pic { left: calc(var(--cw) / 2 - 24px); }
+body.tall2 .gd__clock { left: auto; right: 14px; width: auto; text-align: right; }
+body.tall3 .gd__blade { left: 10px; }
+body.tall3 .gd__title { left: 50px; }
+body.tall3 .gd__pic { left: 303px; }
+body.tall3 .gd__clock { left: 486px; }
+/* Achievements on their own fill the screen here, so the dashboard behind goes darker. */
+body.tall #guide.direct { background: rgba(0, 0, 0, .88); }
+body.tall .gx { left: 7px; top: 56px; width: calc(var(--cw) - 14px); height: calc(var(--ch) - 118px); }
+body.tall .gx__body { height: calc(100% - 44px); }
+body.tall .gx__head img { left: calc(50% - 18px); }
+body.tall2 .ach__top { display: block; height: 186px; }
+body.tall2 .ach__top .a-t { font-size: 23px; }
+body.tall2 .ach__top .a-d { font-size: 18px; line-height: 1.3; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+body.tall2 .ach__top .a-r { margin-top: 8px; text-align: left; font-size: 18px; }
+body.tall2 .ach__top .a-r span { display: inline; margin: 0 0 0 12px; font-size: 16px; }
+body.tall2 .ach__grid { top: 187px; }
+body.tall2 .ach__grid > div { padding: 14px 0 8px 38px; }
+body.tall3 .ach__grid > div { padding-left: 58px; padding-right: 0; }
 
 /* On paper there is no dashboard: the summary prints as a plain page. */
 @media print {
