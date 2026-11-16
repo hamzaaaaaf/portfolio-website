@@ -155,15 +155,48 @@
   const S = Object.assign({}, DEFAULTS, store.get('settings', {}));
   const saveSettings = () => store.set('settings', S);
 
-  /* ================= Scale ================= */
+  /* ================= Scale and shape ================= */
+  // A window wider than it is tall gets the 16:9 canvas, scaled to fit.
   // EXTRA: canvas pixels of spare room on each side when the window is wider
   // than 16:9, which the side previews spread into.
-  let EXTRA = 0;
+  // A tall window (a phone held upright, a tablet, a narrow browser window)
+  // gets the same tiles in columns instead: two on a phone, three on a tablet.
+  // The canvas is then as wide as the window and as tall as it needs to be
+  // (CW by CH), and the pages scroll.
+  let EXTRA = 0, PORTRAIT = false, COLS = 0, CW = 1280, CH = 720, fitWidth = 0;
+  // Room a phone keeps for its status bar and home indicator when the site runs full screen.
+  const safe = document.body.appendChild(html('<i aria-hidden="true" style="position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)"></i>'));
+  // Says whether the layout changed, so the tiles can be laid out again.
   function fit() {
-    const s = Math.min(innerWidth / 1280, innerHeight / 720);
-    EXTRA = Math.max(0, Math.round((innerWidth / s - 1280) / 2));
+    const w = innerWidth, h = innerHeight, was = `${PORTRAIT}/${COLS}`;
+    let s, top = 0, left = 0;
+    fitWidth = w;
+    PORTRAIT = w < h * 0.9;
+    if (PORTRAIT) {
+      const pad = getComputedStyle(safe);
+      top = parseFloat(pad.paddingTop) || 0;
+      COLS = w >= 600 ? 3 : 2;
+      CW = COLS === 3 ? 714 : 480;
+      // On a big upright screen the columns stop growing and sit in the middle.
+      s = Math.min(w / CW, 1.3);
+      left = (w - CW * s) / 2;
+      CH = Math.round((h - top - (parseFloat(pad.paddingBottom) || 0)) / s * 100) / 100;
+      EXTRA = 0;
+    } else {
+      COLS = 0; CW = 1280; CH = 720;
+      s = Math.min(w / 1280, h / 720);
+      EXTRA = Math.max(0, Math.round((w / s - 1280) / 2));
+    }
     root.style.setProperty('--s', s);
     root.style.setProperty('--extra', `${EXTRA}px`);
+    root.style.setProperty('--cw', `${CW}px`);
+    root.style.setProperty('--ch', `${CH}px`);
+    root.style.setProperty('--top', `${top}px`);
+    root.style.setProperty('--left', `${left}px`);
+    document.body.classList.toggle('tall', PORTRAIT);
+    document.body.classList.toggle('tall2', COLS === 2);
+    document.body.classList.toggle('tall3', COLS === 3);
+    return was !== `${PORTRAIT}/${COLS}`;
   }
   fit();
 
@@ -277,8 +310,52 @@
   const px = (o) => Object.entries(o).map(([k, v]) => `${k}:${typeof v === 'number' ? `${v}px` : v}`).join(';');
   // A focused tile grows 7%, but never more than 7 px a side, so a big tile
   // can't cover the start of its neighbours' labels.
-  const tile = (id, x, y, w, h, inner, { label = '', bg = '', cls = '', def = false } = {}) =>
-    `<button class="t${cls ? ` ${cls}` : ''}" data-t="${id}"${def ? ' data-default' : ''} data-x="${x}" data-y="${y}" data-w="${w}" data-h="${h}" style="${px({ left: x, top: y, width: w, height: h })};--g:${Math.min(1.07, 1 + 14 / w).toFixed(4)}" aria-label="${esc(label)}"><span class="f"${bg ? ` style="background:${bg}"` : ''}>${inner}</span></button>`;
+  function tile(id, x, y, w, h, inner, { label = '', bg = '', cls = '', def = false } = {}) {
+    [x, y, w, h] = (PORTRAIT && TALL[COLS][id]) || [x, y, w, h];
+    pageEnd = Math.max(pageEnd, y + h);
+    // Tiles whose artwork depends on their size are given it.
+    const art = typeof inner === 'function' ? inner(w, h) : inner;
+    return `<button class="t${cls ? ` ${cls}` : ''}" data-t="${id}"${def ? ' data-default' : ''} data-x="${x}" data-y="${y}" data-w="${w}" data-h="${h}" style="${px({ left: x, top: y, width: w, height: h })};--g:${Math.min(1.07, 1 + 14 / w).toFixed(4)}" aria-label="${esc(label)}"><span class="f"${bg ? ` style="background:${bg}"` : ''}>${art}</span></button>`;
+  }
+  // Where each tile goes on a tall window: columns of 232 px, 2 px apart, with
+  // every tile as close as it can be to the size it has on the 16:9 canvas.
+  const tc = (i) => 7 + i * 234;
+  const TALL = {
+    2: {
+      'about.me': [tc(0), 8, 466, 397], 'about.education': [tc(0), 407, 232, 131], 'about.stack': [tc(1), 407, 232, 131],
+      'about.message': [tc(0), 540, 232, 130], 'about.linkedin': [tc(1), 540, 232, 130], 'about.achievements': [tc(0), 672, 466, 132],
+      'projects.panic': [tc(0), 8, 466, 263], 'projects.unliker': [tc(0), 273, 232, 132], 'projects.site': [tc(1), 273, 232, 132],
+      'projects.list': [tc(0), 407, 232, 132], 'projects.github': [tc(0), 541, 232, 132], 'projects.stats': [tc(1), 407, 232, 266],
+      'hobbies.origin': [tc(0), 8, 466, 263], 'hobbies.valorant': [tc(0), 273, 232, 131], 'hobbies.fortnite': [tc(1), 273, 232, 131],
+      'hobbies.played': [tc(0), 406, 232, 131], 'hobbies.most': [tc(1), 406, 232, 131], 'hobbies.psn': [tc(0), 539, 232, 132], 'hobbies.steam': [tc(1), 539, 232, 132],
+      'hobbies.favs': [tc(0), 673, 232, 132], 'hobbies.recent': [tc(1), 673, 232, 132],
+      'social.github': [7, 8, 154, 122], 'social.message': [163, 8, 154, 122], 'social.linkedin': [319, 8, 154, 122],
+    },
+    3: {
+      'about.me': [tc(0), 8, 466, 397], 'about.education': [tc(2), 8, 232, 131], 'about.stack': [tc(2), 141, 232, 131], 'about.message': [tc(2), 274, 232, 131],
+      'about.linkedin': [tc(0), 407, 232, 132], 'about.achievements': [tc(1), 407, 466, 132],
+      'projects.panic': [tc(0), 8, 466, 263], 'projects.stats': [tc(2), 8, 232, 397], 'projects.unliker': [tc(0), 273, 232, 132], 'projects.site': [tc(1), 273, 232, 132],
+      'projects.list': [tc(0), 407, 232, 132], 'projects.github': [tc(1), 407, 466, 132],
+      'hobbies.origin': [tc(0), 8, 466, 263], 'hobbies.valorant': [tc(2), 8, 232, 131], 'hobbies.fortnite': [tc(2), 141, 232, 130],
+      'hobbies.played': [tc(0), 273, 232, 131], 'hobbies.most': [tc(1), 273, 232, 131], 'hobbies.psn': [tc(2), 273, 232, 131],
+      'hobbies.steam': [tc(0), 406, 232, 132], 'hobbies.favs': [tc(1), 406, 232, 132], 'hobbies.recent': [tc(2), 406, 232, 132],
+      'social.github': [tc(0), 8, 232, 122], 'social.message': [tc(1), 8, 232, 122], 'social.linkedin': [tc(2), 8, 232, 122],
+    },
+  };
+  // A page of tiles. A tall one scrolls, so it ends a little below whatever is lowest on it.
+  let pageEnd = 0, tallest = 0;
+  function page(k, build, least = 0) {
+    pageEnd = least;
+    const inner = build();
+    tallest = Math.max(tallest, pageEnd);
+    return `<div class="page" data-tab="${k}">${inner}${PORTRAIT ? `<i class="page__end" style="top:${pageEnd + 10}px"></i>` : ''}</div>`;
+  }
+  // A tall window with room to spare (a tablet) has the tabs and tiles start a
+  // third of the way into it, so they don't sit hard against the top.
+  function liftTiles() {
+    const spare = PORTRAIT ? CH - 164 - tallest : 0;
+    root.style.setProperty('--lift', `${Math.round(clamp(spare / 3, 0, 150))}px`);
+  }
   const img = (src, box, cls = 'ico') => `<img class="${cls}" src="${src}" alt=""${box ? ` style="${px(box)}"` : ''} draggable="false">`;
   const fill = (src) => `<img class="fill" src="${src}" alt="" draggable="false">`;
   const tx = (text, box, extra = '') => `<span class="tx${extra}" style="${px(box)}">${esc(text)}</span>`;
@@ -326,32 +403,31 @@
   // About is the landing page: who I am, with the photo a click away in About Me.
   function pageAbout() {
     const c0 = 692, c1 = 876, w = 182;
-    return `<div class="page" data-tab="about">
+    return page('about', () => `
       ${tile('about.me', 224, 31, 466, 397, `<span class="hello"><img src="/favicon.svg" alt=""><b>${esc(ME.tag)}</b><span>${esc(ME.short)}</span><em>${esc(ME.motto)}</em></span>${bar(30, 'rgba(0,0,0,.35)')}${tx('About Me', { left: 10, bottom: 6, 'font-size': 17 })}<span class="presence">${esc(ME.status)}</span>`, { label: 'About Me', bg: 'radial-gradient(120% 90% at 20% 0%,#3d93f0 0%,#1b6fd1 38%,#0b3f86 75%,#062a5c 100%)', def: true })}
-      ${tile('about.education', c0, 31, w, 131, glyph('cap', w, 131, 42) + label('Education'), { label: 'Education', bg: grad('#18c2b4 0%,#0b958b 55%,#06635c 100%') })}
+      ${tile('about.education', c0, 31, w, 131, (tw, th) => glyph('cap', tw, th, 42) + label('Education'), { label: 'Education', bg: grad('#18c2b4 0%,#0b958b 55%,#06635c 100%') })}
       ${tile('about.stack', c1, 31, w, 131, `<span class="stackrow">${['py', 'java', 'js', 'godot'].map((i) => svg(i)).join('')}</span>${label('Tech Stack')}`, { label: 'Tech Stack', bg: grad('#f7923a 0%,#e5650c 55%,#a8430a 100%') })}
-      ${tile('about.message', c0, 164, w, 130, glyph('mail', w, 130, 42) + label('Message Me'), { label: 'Message Me' })}
+      ${tile('about.message', c0, 164, w, 130, (tw, th) => glyph('mail', tw, th, 42) + label('Message Me'), { label: 'Message Me' })}
       ${tile('about.linkedin', c1, 164, w, 130, `${LINKEDIN}${shade('rgba(0,0,0,0) 0%,rgba(0,0,0,0) 58%,rgba(0,0,0,.4) 100%')}`, { label: 'LinkedIn', bg: '#fff' })}
-      ${tile('about.achievements', c0, 296, w * 2 + 2, 132, `${glyph('trophy', w * 2 + 2, 132, 42, '0 0 30 32')}<span class="tile__note"><span data-gs>0</span> of 1000G</span>${label('Achievements')}`, { label: 'Achievements', bg: grad('#9a5ce0 0%,#7b3fbf 50%,#4b1f8a 100%') })}
-    </div>`;
+      ${tile('about.achievements', c0, 296, w * 2 + 2, 132, (tw, th) => `${glyph('trophy', tw, th, 42, '0 0 30 32')}<span class="tile__note"><span data-gs>0</span> of 1000G</span>${label('Achievements')}`, { label: 'Achievements', bg: grad('#9a5ce0 0%,#7b3fbf 50%,#4b1f8a 100%') })}`);
   }
 
   function pageProjects() {
-    return `<div class="page" data-tab="projects">
-      ${tile('projects.list', 224, 31, 185, 197, `${img(`${A}icons/mygames.webp`, icoBox(185, 197, 72, 72, { mt: -24 }))}${label('All Projects', 19)}`, { label: 'All Projects' })}
-      ${tile('projects.github', 224, 230, 185, 198, githubArt(185, 198), { label: 'GitHub', bg: '#1b1f23' })}
+    return page('projects', () => `
+      ${tile('projects.list', 224, 31, 185, 197, (tw, th) => { const i = th < 160 ? 58 : 72; return `${img(`${A}icons/mygames.webp`, icoBox(tw, th, i, i, { mt: -24 }))}${label('All Projects', 19)}`; }, { label: 'All Projects' })}
+      ${tile('projects.github', 224, 230, 185, 198, (tw, th) => githubArt(tw, th), { label: 'GitHub', bg: '#1b1f23' })}
       ${tile('projects.panic', 411, 31, 466, 263, picture(`${A}tiles/panic-pack.webp`, 'Panic Pack!', 'Godot 4 · Free download for Windows'), { label: 'Panic Pack!', bg: grad('#2d100d 0%,#e27522 50%,#321a16 100%'), def: true })}
       ${tile('projects.unliker', 411, 296, 232, 132, picture(`${A}tiles/instagram-unliker.webp`, 'Instagram Unliker'), { label: 'Instagram Unliker', bg: grad('#ff78aa 0%,#d62976 50%,#4f0c4a 100%') })}
       ${tile('projects.site', 645, 296, 232, 132, picture(`${A}tiles/byhamza-dev.webp`, 'byhamza.dev'), { label: 'byhamza.dev', bg: '#3c4143' })}
-      ${tile('projects.stats', 879, 31, 179, 397, `<span class="statcol"><b>${live('lc', '·')}</b><span>LeetCode solved</span><b>${live('ghRepos', '·')}</b><span>Public repos</span><b>${live('lcDays', '·')}</b><span>Active days</span></span>${label('Stats')}${brand('leetcode', 22)}`, { label: 'Stats', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}
-    </div>`;
+      ${tile('projects.stats', 879, 31, 179, 397, `<span class="statcol"><b>${live('lc', '·')}</b><span>LeetCode solved</span><b>${live('ghRepos', '·')}</b><span>Public repos</span><b>${live('lcDays', '·')}</b><span>Active days</span></span>${label('Stats')}${brand('leetcode', 22)}`, { label: 'Stats', bg: grad('#171a5c 0%,#9333c4 50%,#10103a 100%') })}`);
   }
 
   // Hobbies: games and films on one page, four columns of 207 px.
   function pageHobbies() {
     const c = [224, 433, 642, 851], w = 207;
-    const favs = [0, 1, 2, 3].map((i) => `<span class="poster" style="left:${8 + i * 49}px;top:10px;width:44px;height:66px">${livePic(`fav${i}`)}</span>`).join('');
-    return `<div class="page" data-tab="hobbies">
+    // Four posters spread across whatever width the tile has.
+    const favs = (tw) => [0, 1, 2, 3].map((i) => `<span class="poster" style="left:${Math.round(8 + i * (tw - 60) / 3)}px;top:10px;width:44px;height:66px">${livePic(`fav${i}`)}</span>`).join('');
+    return page('hobbies', () => `
       ${tile('hobbies.origin', c[0], 31, w * 2 + 2, 263, picture(ORIGIN.art, 'Where It Began', ORIGIN.games.map(([g]) => g).join(' and ')), { label: 'Where it began', bg: '#1a120c', def: true })}
       ${tile('hobbies.valorant', c[2], 31, w, 131, valorantArt(), { label: 'Valorant', bg: VAL_BG })}
       ${tile('hobbies.fortnite', c[2], 164, w, 130, `<span class="tile__big">${live('fnBig', 'Fortnite')}</span><span class="tile__note">${live('fnSub', '')}</span>${label('Fortnite')}${brand('fortnite', 24)}`, { label: 'Fortnite', bg: FN_BG })}
@@ -359,20 +435,21 @@
       ${tile('hobbies.most', c[3], 164, w, 130, `${livePic('mostArt')}${shade('rgba(10,14,16,.86) 0%,rgba(10,14,16,.7) 60%,rgba(10,14,16,.9) 100%')}<span class="lines">${live('most0', '', 'li')}${live('most1', '', 'li')}${live('most2', '', 'li')}</span>${label('Most Played')}`, { label: 'Most Played', bg: grad('#3d4a52 0%,#20282d 100%') })}
       ${tile('hobbies.psn', c[0], 296, w, 132, `<span class="tile__big">${live('psnLevel', 'Trophies')}</span><span class="tile__note">${live('psnSub', '')}</span>${label('PlayStation')}${brand('playstation', 28)}`, { label: 'PlayStation', bg: grad('#2b6fd6 0%,#0f3f8f 55%,#081d45 100%') })}
       ${tile('hobbies.steam', c[1], 296, w, 132, `<span class="tile__big">${live('steamBig', 'Steam')}</span><span class="tile__note">${live('steamSub', '')}</span>${label('Steam')}${brand('steam')}`, { label: 'Steam', bg: grad('#2a475e 0%,#1b2838 60%,#0e141b 100%') })}
-      ${tile('hobbies.favs', c[2], 296, w, 132, `${favs}${bar(30, 'rgba(0,0,0,.55)')}${tx('Favourite Films', { left: 10, bottom: 6, 'font-size': 17 })}${lbDots(10)}`, { label: 'Favourite Films', bg: grad('#4a3a5a 0%,#2a2034 60%,#17121d 100%') })}
-      ${tile('hobbies.recent', c[3], 296, w, 132, `${glyph('film', w, 132, 40)}${livePic('film0')}${shade('rgba(0,0,0,.15) 0%,rgba(0,0,0,.35) 45%,rgba(0,0,0,.85) 100%')}<span class="tile__note">${live('film0', '')}</span>${label('Latest Films')}${lbDots()}`, { label: 'Latest Films', bg: '#2a2d30' })}
-    </div>`;
+      ${tile('hobbies.favs', c[2], 296, w, 132, (tw) => `${favs(tw)}${bar(30, 'rgba(0,0,0,.55)')}${tx('Favourite Films', { left: 10, bottom: 6, 'font-size': 17 })}${lbDots(10)}`, { label: 'Favourite Films', bg: grad('#4a3a5a 0%,#2a2034 60%,#17121d 100%') })}
+      ${tile('hobbies.recent', c[3], 296, w, 132, (tw, th) => `${glyph('film', tw, th, 40)}${livePic('film0')}${shade('rgba(0,0,0,.15) 0%,rgba(0,0,0,.35) 45%,rgba(0,0,0,.85) 100%')}<span class="tile__note">${live('film0', '')}</span>${label('Latest Films')}${lbDots()}`, { label: 'Latest Films', bg: '#2a2d30' })}`);
   }
 
   function pageSocial() {
     const fx = 224, fy = 31, lab = (t) => tx(t, { left: 8, bottom: 8, 'font-size': 15 });
-    return `<div class="page" data-tab="social">
-      ${img(`${A}tiles/avatars.webp`, { left: fx + 219, top: fy + 87, width: 300, height: 256, opacity: 0.96, 'object-fit': 'contain' }, 'abs')}
-      <div class="say" style="left:${fx + 540}px;top:${fy + 120}px"><b>Say hello</b><span>Message me about projects, uni or games.</span><em>${esc(LINKS.email)}</em></div>
-      ${tile('social.github', fx, fy, 177, 122, glyph('github', 177, 122, 46) + lab('GitHub'), { label: 'GitHub', bg: grad('#3a4148 0%,#24292f 55%,#121518 100%') })}
-      ${tile('social.message', fx, fy + 123, 177, 122, glyph('mail', 177, 122, 46) + lab('Message Me'), { label: 'Message Me', def: true })}
-      ${tile('social.linkedin', fx, fy + 246, 177, 122, glyph('linkedin', 177, 122, 44) + lab('LinkedIn'), { label: 'LinkedIn' })}
-    </div>`;
+    // On a tall window the three tiles sit in a row, with the picture and the words under them.
+    const art = PORTRAIT ? { left: CW / 2 - 150, top: 148 } : { left: fx + 219, top: fy + 87 };
+    const say = PORTRAIT ? { left: CW / 2 - 200, top: 416, width: 400 } : { left: fx + 540, top: fy + 120 };
+    return page('social', () => `
+      ${img(`${A}tiles/avatars.webp`, { ...art, width: 300, height: 256, opacity: 0.96, 'object-fit': 'contain' }, 'abs')}
+      <div class="say" style="${px(say)}"><b>Say hello</b><span>Message me about projects, uni or games.</span><em>${esc(LINKS.email)}</em></div>
+      ${tile('social.github', fx, fy, 177, 122, (tw, th) => glyph('github', tw, th, 46) + lab('GitHub'), { label: 'GitHub', bg: grad('#3a4148 0%,#24292f 55%,#121518 100%') })}
+      ${tile('social.message', fx, fy + 123, 177, 122, (tw, th) => glyph('mail', tw, th, 46) + lab('Message Me'), { label: 'Message Me', def: true })}
+      ${tile('social.linkedin', fx, fy + 246, 177, 122, (tw, th) => glyph('linkedin', tw, th, 44) + lab('LinkedIn'), { label: 'LinkedIn' })}`, PORTRAIT ? 566 : 0);
   }
 
   const PAGES = { about: pageAbout, projects: pageProjects, hobbies: pageHobbies, social: pageSocial };
@@ -411,12 +488,12 @@
       <span class="toast__icon"><img class="orb" src="${A}ui/xbox-orb.webp" alt=""><img class="alert" src="${A}ui/live-alert.webp" alt=""></span>
       <span class="toast__text"><div></div><div></div></span>
     </div>`;
+  liftTiles();
   const host = $('.host'), pagesEl = $('.pages'), stripEl = $('.strip');
   const pageEls = Object.fromEntries($$('.page', pagesEl).map((p) => [p.dataset.tab, p]));
   const tabBtns = $$('.tab');
   const peekL = $('.peek--l'), peekR = $('.peek--r');
   const bgTheme = $('.bg-theme');
-  document.body.insertAdjacentHTML('beforeend', '<p class="rotate">Turn your phone sideways for the full dashboard</p>');
 
   /* ================= Toast (RunSignInToastSequenceAsync) ================= */
   const toastEl = $('.toast'), toastQueue = [];
@@ -505,6 +582,14 @@
   function setPadMode(on) {
     document.body.classList.toggle('pad', on);
   }
+  // On a tall window the page scrolls: bring a tile the keys moved to into view.
+  function reveal(el) {
+    const p = PORTRAIT && el && el.closest('.page');
+    if (!p) return;
+    const top = el.offsetTop - 12, bottom = el.offsetTop + el.offsetHeight + 12 - p.clientHeight;
+    const to = p.scrollTop > top ? top : p.scrollTop < bottom ? bottom : p.scrollTop;
+    if (to !== p.scrollTop) p.scrollTo({ top: Math.max(0, to), behavior: reduced.matches ? 'auto' : 'smooth' });
+  }
   // A tap sends mouse events after its touch events. Treating those as a hover
   // would repaint what is under the finger, and iOS then drops the tap itself.
   let touchAt = -1e9;
@@ -571,7 +656,8 @@
     if (cands[0]) focusEl(cands[0].el);
   }
   function renderPeeks() {
-    const prev = TABS[tabIndex - 1], next = TABS[tabIndex + 1];
+    // No room for them on a tall window: the tabs and a swipe do the job.
+    const prev = !PORTRAIT && TABS[tabIndex - 1], next = !PORTRAIT && TABS[tabIndex + 1];
     const fillPeek = (box, t, crop) => {
       const inner = $('.peek__in', box);
       inner.innerHTML = '';
@@ -611,23 +697,26 @@
     if (!silent) sfx(`tab-switch-${Math.min(from, next)}`);
     tabIndex = next;
     const oldPage = pageEls[TABS[from].k], newPage = pageEls[TABS[next].k];
-    const oldClone = cleanClone(oldPage), newClone = cleanClone(newPage);
+    const oldClone = cleanClone(oldPage), newClone = cleanClone(newPage), scrolled = oldPage.scrollTop;
     setActive(null);
     paintTabs();
     updateBackgrounds();
     visit(curTab());
     stripEl.innerHTML = '';
     oldClone.style.left = '0px';
-    newClone.style.left = `${dir * 1280}px`;
+    newClone.style.left = `${dir * CW}px`;
     stripEl.append(oldClone, newClone);
     stripEl.hidden = false;
     pagesEl.classList.add('sliding');
+    // A page that was scrolled slides away as it was; the next one starts at its top.
+    oldClone.scrollTop = scrolled;
+    newPage.scrollTop = 0;
     animatingTab = true;
     renderPeeks();
     anim($('.peek__in', peekL), [{ translate: `${-104 - EXTRA}px 0` }, { translate: '0 0' }], 420, E.quartInOut);
     anim($('.peek__in', peekR), [{ translate: `${104 + EXTRA}px 0` }, { translate: '0 0' }], 420, E.quartInOut);
     focusDefault();
-    const slide = [{ translate: '0 0' }, { translate: `${-dir * 1280}px 0` }];
+    const slide = [{ translate: '0 0' }, { translate: `${-dir * CW}px 0` }];
     anim(oldClone, slide, 420, E.quartInOut);
     anim(newClone, slide, 420, E.quartInOut).finished.then(() => {
       animatingTab = false;
@@ -1382,6 +1471,8 @@
       el.addEventListener('mousedown', (e) => { if (e.target !== input) e.preventDefault(); });
       el.addEventListener('mousemove', (e) => { const key = e.target.closest('[data-k]'); if (key && +key.dataset.k !== sel && !still(e)) { sel = +key.dataset.k; sfx('focus'); paint(); } });
       Overlays.push('kb', api);
+      // The window underneath has hints in the same place; only the keyboard's show.
+      dashCanvas.classList.add('typing');
       paint();
       changed();
       focusInput();
@@ -1465,6 +1556,8 @@
       // where it was if the phone scrolled it to show the box.
       try { input.blur(); } catch (e) { /* already gone */ }
       if (window.scrollX || window.scrollY) window.scrollTo(0, 0);
+      dashCanvas.classList.remove('typing');
+      setTimeout(refit, 400);
       el = null; input = null;
       overlayOut(node, 'fade');
     }
@@ -1521,6 +1614,8 @@
     let open_ = false, busy = false, tab = 2, sel = 0, screen = 'main', bladeSound = 0;
     // direct: a screen opened straight from a tile, so backing out leaves the Guide.
     let achSel = 0, achDetail = false, returnFocus = null, direct = false;
+    // Achievements in a row: seven on the 16:9 canvas, fewer on a tall window.
+    const achCols = () => (COLS === 2 ? 4 : COLS === 3 ? 6 : 7);
     const NAMES = ['Games & Apps', ME.tag, 'Xbox Home', 'Media', 'Settings'];
     const closeThen = (fn) => () => { close(false); fn(); };
     const win = (id) => closeThen(() => Win.open(id));
@@ -1711,7 +1806,7 @@
           body.innerHTML = `<button type="button" class="ach-game sel"><img src="${ME.pic}" alt=""><span><b>byhamza.dev</b><span>${unlocked} of ${ACHIEVEMENTS.length} Achievements</span></span></button><div class="ach__foot"><span></span></div>`;
           $('.ach-game', body).addEventListener('click', () => { achDetail = true; achSel = 0; sfx('guide-select'); paintScreen(); });
         } else {
-          const a = ACHIEVEMENTS[achSel], on = !!g[a.id];
+          const a = ACHIEVEMENTS[achSel], on = !!g[a.id], was = $('.ach__grid', body), at = was ? was.scrollTop : 0;
           body.innerHTML = `<div class="ach__top"><div><b>byhamza.dev</b><div class="a-t">${esc(a.t)}</div><div class="a-d">${esc(a.d)}</div></div><div class="a-r">${on ? 'Unlocked' : 'Locked'} · ${a.g}G<span>${on ? new Date(g[a.id]).toLocaleDateString('en-GB') : ''}</span></div></div>
             <div class="ach__grid"><div>${ACHIEVEMENTS.map((x, i) => `<button type="button" class="ach${g[x.id] ? '' : ' locked'}${i === achSel ? ' sel' : ''}" data-i="${i}" aria-label="${esc(x.t)}"><i>${g[x.id] ? svg('trophy', '0 0 30 32') : svg('lock', '0 0 36 32')}</i></button>`).join('')}</div></div>
             <div class="ach__foot"><b style="font-weight:400">${achSel + 1} of ${ACHIEVEMENTS.length} ${on ? 'unlocked' : 'locked'}</b><span>${gamerscore()} of 1000G</span></div>`;
@@ -1719,8 +1814,12 @@
             b.addEventListener('mousemove', (e) => { if (+b.dataset.i !== achSel && !still(e)) { achSel = +b.dataset.i; paintScreen(); } });
             b.addEventListener('click', () => { if (+b.dataset.i !== achSel) { achSel = +b.dataset.i; sfx('guide-hover'); paintScreen(); } });
           });
-          const row = Math.floor(achSel / 7), grid = $('.ach__grid > div', body);
-          grid.style.transform = `translateY(${-Math.max(0, row - 2) * 104}px)`;
+          // The grid stays where it was scrolled to, and brings the chosen one into view.
+          const grid = $('.ach__grid', body), cur = $('.ach.sel', grid);
+          grid.scrollTop = at;
+          const top = cur.offsetTop - 18, bottom = cur.offsetTop + cur.offsetHeight + 8 - grid.clientHeight;
+          const to = at > top ? top : at < bottom ? bottom : at;
+          if (to !== at) grid.scrollTo({ top: to, behavior: reduced.matches ? 'auto' : 'smooth' });
         }
         setFoot([['a', 'Select'], ['b', 'Back']]);
       }
@@ -1732,12 +1831,12 @@
           else if (a === 'b') closeScreen();
           return true;
         }
-        const total = ACHIEVEMENTS.length, col = achSel % 7;
+        const total = ACHIEVEMENTS.length, per = achCols(), col = achSel % per;
         let i = achSel;
         if (a === 'left') i = Math.max(0, achSel - 1);
         if (a === 'right') i = Math.min(total - 1, achSel + 1);
-        if (a === 'up') i = achSel - 7 < 0 ? col : achSel - 7;
-        if (a === 'down') i = achSel + 7 >= total ? Math.min(Math.floor((total - 1) / 7) * 7 + col, total - 1) : achSel + 7;
+        if (a === 'up') i = achSel - per < 0 ? col : achSel - per;
+        if (a === 'down') i = achSel + per >= total ? Math.min(Math.floor((total - 1) / per) * per + col, total - 1) : achSel + per;
         if (i !== achSel) { achSel = i; sfx('guide-hover'); paintScreen(); }
         if (a === 'b') { achDetail = false; sfx('guide-back'); paintScreen(); }
         return true;
@@ -1759,7 +1858,9 @@
     }
     function toggle() { if (open_) close(); else open(); }
     setInterval(() => { if (open_) { const c = $('.gd__clock', canvas); if (c) c.textContent = clockText(); } }, 10000);
-    return { open, close, toggle, handle, get isOpen() { return open_; }, get screen() { return open_ ? screen : null; } };
+    // The window changed shape: a screen that counts columns is drawn again.
+    const refit = () => { if (open_ && screen !== 'main') paintScreen(); };
+    return { open, close, toggle, handle, refit, get isOpen() { return open_; }, get screen() { return open_ ? screen : null; } };
   })();
 
   /* ================= Full screen ================= */
@@ -1812,9 +1913,9 @@
       const cands = pageCands();
       let cur = document.activeElement && document.activeElement.closest && document.activeElement.closest('.t, [data-nav]');
       if (!cur || !cands.some((c) => c.el === cur)) cur = null;
-      if (!cur) { focusDefault(); sfx('focus'); return; }
+      if (!cur) { focusDefault(); reveal(activeEl); sfx('focus'); return; }
       const n = bestInDirection(cands, cur, a);
-      if (n) { focusEl(n); lastFocus[curTab()] = n; sfx('focus'); }
+      if (n) { focusEl(n); reveal(n); lastFocus[curTab()] = n; sfx('focus'); }
       else if (a === 'left' || a === 'right') moveTab(a === 'left' ? -1 : 1);
       return;
     }
@@ -1875,7 +1976,8 @@
     if (booting || Guide.isOpen || overlayOpen()) return;
     clearTimeout(wheelQuiet);
     wheelQuiet = setTimeout(() => { wheelSpent = false; }, 240);
-    const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    // On a tall window the wheel scrolls the page, and only a sideways swipe changes tab.
+    const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : PORTRAIT ? 0 : e.deltaY;
     if (wheelSpent || Math.abs(d) < 12) return;
     wheelSpent = true;
     if (!animatingTab) moveTab(d > 0 ? 1 : -1);
@@ -2217,7 +2319,29 @@
     return { sync, start };
   })();
 
-  addEventListener('resize', () => { fit(); renderPeeks(); });
+  // The window turned or changed shape: when that changes the layout, the
+  // tiles are laid out again for it. What is open stays open.
+  function relayout() {
+    setActive(null);
+    Object.keys(lastFocus).forEach((k) => delete lastFocus[k]);
+    tallest = 0;
+    pagesEl.innerHTML = TABS.map((t) => PAGES[t.k]()).join('');
+    liftTiles();
+    $$('.page', pagesEl).forEach((p) => { pageEls[p.dataset.tab] = p; wirePage(p); });
+    fillLive();
+    refreshScore();
+    paintTabs();
+    Guide.refit();
+    if (!booting && !overlayOpen() && !Guide.isOpen) focusDefault();
+  }
+  function refit() { if (fit()) relayout(); else liftTiles(); renderPeeks(); }
+  // Some phones shrink the window to make room for their keyboard. That is not
+  // the window changing shape, so while the box is being typed in and the
+  // width hasn't changed, everything stays the size it was.
+  addEventListener('resize', () => {
+    const typing = document.activeElement && document.activeElement.classList.contains('kb__input');
+    if (!typing || innerWidth !== fitWidth) refit();
+  });
 
   /* ================= Go ================= */
   const about = $('.about');

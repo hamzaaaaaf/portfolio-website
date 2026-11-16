@@ -2,7 +2,7 @@
 
 My personal site, built like the Xbox 360 dashboard because the 360 was my first console. It's a web port of [DashX360](https://github.com/ZivvoZ/dashx360) by ZivvoZ, the Metro dashboard recreated for Windows. Live at **[byhamza.dev](https://byhamza.dev)**.
 
-Every screen is DashX360's 1280×720 canvas scaled to fit the window, so tile positions, colours, fonts, animation timings and sound cues come straight from its XAML and C#. The content is mine.
+Every screen is DashX360's 1280×720 canvas scaled to fit the window, so tile positions, colours, fonts, animation timings and sound cues come straight from its XAML and C#. A phone held upright gets the same tiles in columns instead. The content is mine.
 
 - **Tabs**: about, projects, hobbies and social. Each tile opens its own window, or goes straight to the project's page.
 - **About**: who I am, education, tech stack, Message Me, LinkedIn and achievements. My photo is a click away, in About Me.
@@ -28,6 +28,8 @@ Every screen is DashX360's 1280×720 canvas scaled to fit the window, so tile po
 Xbox, PlayStation and Nintendo controllers are mapped by button position, so the bottom face button is always A. Mouse, trackpad swipes and touch work too: the Guide also opens from the Guide hint at the bottom left, or the gamerpic at the top right.
 
 The browser's Back button, or the back gesture on a phone, closes whatever is open one layer at a time, the way B does, and Forward opens it again. The address follows the screen, so any of it can be linked: `byhamza.dev/#projects` is the Projects tab, `byhamza.dev/#education` opens Education and `byhamza.dev/#compose` opens the message window.
+
+On a window taller than it is wide (a phone held upright, a tablet, a narrow browser window) the tiles keep their sizes but sit in columns, two on a phone and three on a tablet. The pages scroll, a swipe or a tap on a tab changes tab, and every window, the keyboard and the Guide fill the screen. Turn the phone on its side and the 16:9 dashboard is back.
 
 On a window wider than 16:9 the side previews of the neighbouring tabs spread out to the edges. Without JavaScript, and on paper, the page is a plain summary of what's on the dashboard.
 
